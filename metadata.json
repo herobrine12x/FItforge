@@ -1,0 +1,6 @@
+{
+  "name": "SmartGym - Workout Recommender & Progress Tracker",
+  "description": "An OOP-driven fitness application featuring automated BMI health profiling, smart 5-exercise workout split recommendations, live session stopwatches with rest countdown timers, complete workout history CRUD management, and PDF/CSV report exports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

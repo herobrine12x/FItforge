@@ -12,15 +12,15 @@ export function WorkoutPage() {
   const location = useLocation();
   const [recordManager] = useState(() => new RecordManager());
 
-  // Determine split passed from Recommender or localStorage
-  const activeSplit = useMemo<SplitType>(() => {
+  // Determine split passed from Recommender or localStorage (null if none chosen)
+  const activeSplit = useMemo<SplitType | null>(() => {
     const stateSplit = location.state?.splitType;
     if (stateSplit) return stateSplit as SplitType;
 
     const storedSplit = localStorage.getItem('fitforge_active_split');
     if (storedSplit) return storedSplit as SplitType;
 
-    return 'push';
+    return null;
   }, [location.state]);
 
   const handleWorkoutSaved = () => {

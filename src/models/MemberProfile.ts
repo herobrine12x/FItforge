@@ -1,4 +1,4 @@
-import { ExperienceLevel, FitnessGoal, ActivityLevel, IMemberProfileData } from './types';
+import { ExperienceLevel, FitnessGoal, ActivityLevel, IMemberProfileData, EquipmentType } from './types';
 
 /**
  * OOP Principle: Encapsulation
@@ -16,6 +16,7 @@ export class MemberProfile {
   private _weightKg!: number;
   private _experienceLevel!: ExperienceLevel;
   private _weeklyGoal!: number;
+  private _availableEquipment!: EquipmentType[];
   private _updatedAt: string;
 
   constructor(data: IMemberProfileData) {
@@ -31,6 +32,13 @@ export class MemberProfile {
     this.weightKg = data.weightKg;
     this.experienceLevel = data.experienceLevel;
     this.weeklyGoal = data.weeklyGoal || data.targetWorkoutsPerWeek || 3;
+    this.availableEquipment = data.availableEquipment || [
+      'Bodyweight',
+      'Dumbbell',
+      'Barbell',
+      'Machine',
+      'Cable',
+    ];
   }
 
   // ID and foreign key userId
@@ -160,6 +168,29 @@ export class MemberProfile {
     this.touch();
   }
 
+  // Available Equipment: encapsulated getter and setter
+  // Options: Bodyweight, Dumbbell, Barbell, Machine, Cable. Bodyweight cannot be turned off. Default: all options.
+  public get availableEquipment(): EquipmentType[] {
+    return this._availableEquipment;
+  }
+
+  public set availableEquipment(value: EquipmentType[] | undefined | null) {
+    const ALL_EQUIPMENT: EquipmentType[] = ['Bodyweight', 'Dumbbell', 'Barbell', 'Machine', 'Cable'];
+    if (!Array.isArray(value) || value.length === 0) {
+      this._availableEquipment = [...ALL_EQUIPMENT];
+      this.touch();
+      return;
+    }
+    const filtered = value.filter((eq) => ALL_EQUIPMENT.includes(eq as EquipmentType));
+    // Bodyweight is always included and cannot be turned off
+    if (!filtered.includes('Bodyweight')) {
+      filtered.unshift('Bodyweight');
+    }
+    const unique = Array.from(new Set(filtered));
+    this._availableEquipment = unique.length > 0 ? unique : [...ALL_EQUIPMENT];
+    this.touch();
+  }
+
   public getCalculator(): {
     calculateBMI: () => number;
     getHealthCategory: () => string;
@@ -222,6 +253,7 @@ export class MemberProfile {
       experienceLevel: this._experienceLevel,
       weeklyGoal: this._weeklyGoal,
       targetWorkoutsPerWeek: this._weeklyGoal,
+      availableEquipment: this.availableEquipment,
       fitnessGoal: 'muscle_gain',
       activityLevel: 'moderate',
       updatedAt: this._updatedAt,

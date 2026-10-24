@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { ErrorBoundary } from './ErrorBoundary';
 
 interface NavItem {
   name: string;
@@ -160,7 +161,9 @@ export function AppLayout() {
       {/* ================= MAIN CONTENT VIEWPORT ================= */}
       <main className="flex-1 md:ml-64 lg:ml-72 flex flex-col min-h-screen">
         <div className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-28 md:pb-12">
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </div>
 
         {/* Footer Disclaimer on every page */}

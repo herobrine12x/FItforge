@@ -1,6 +1,6 @@
 import { Exercise } from './Exercise';
 import { ExerciseLibrary } from './ExerciseLibrary';
-import { ExperienceLevel } from './types';
+import { EquipmentType, ExperienceLevel } from './types';
 
 /**
  * Deterministic pseudo-random number generator (Mulberry32)
@@ -15,15 +15,24 @@ function pseudoRandom(seed: number): () => number {
 }
 
 /**
- * OOP Principle: Abstraction
+ * OOP Principle: Abstraction & Polymorphism
  * WorkoutPlan is an abstract base class establishing the contract for training splits.
- * Subclasses implement polymorphic getExercises(level) querying the ExerciseLibrary pool
+ * Subclasses implement polymorphic getExercises(level, availableEquipment) querying the ExerciseLibrary pool
  * and define split-specific MET values for calorie calculation.
+ * Centralizes equipment filtering and bodyweight fallbacks polymorphically.
  */
 export abstract class WorkoutPlan {
   protected _name: string;
   protected _currentSeed: number = 0;
   protected _currentLevel: ExperienceLevel = 'Intermediate';
+  protected _availableEquipment: EquipmentType[] = [
+    'Bodyweight',
+    'Dumbbell',
+    'Barbell',
+    'Machine',
+    'Cable',
+  ];
+  protected _hasEquipmentSwaps: boolean = false;
 
   constructor(name: string, _experienceLevel?: any, _fitnessGoal?: any) {
     this._name = name;
@@ -41,6 +50,42 @@ export abstract class WorkoutPlan {
     return this._currentSeed;
   }
 
+  public get hasEquipmentSwaps(): boolean {
+    return this._hasEquipmentSwaps;
+  }
+
+  public get availableEquipment(): EquipmentType[] {
+    return this._availableEquipment;
+  }
+
+  public set availableEquipment(equipment: EquipmentType[] | undefined | null) {
+    if (equipment && equipment.length > 0) {
+      this._availableEquipment = [...equipment];
+      if (!this._availableEquipment.includes('Bodyweight')) {
+        this._availableEquipment.unshift('Bodyweight');
+      }
+    } else {
+      this._availableEquipment = [
+        'Bodyweight',
+        'Dumbbell',
+        'Barbell',
+        'Machine',
+        'Cable',
+      ];
+    }
+  }
+
+  /**
+   * Checks if any exercises in the split pool match the user's available equipment
+   */
+  public hasMatchingExercises(availableEquipment?: EquipmentType[]): boolean {
+    const allowed = availableEquipment && availableEquipment.length > 0
+      ? availableEquipment
+      : this._availableEquipment;
+    const pool = this.getPool();
+    return pool.some((ex) => allowed.includes(ex.equipment as EquipmentType));
+  }
+
   /**
    * Retrieves the full exercise pool for this split from the ExerciseLibrary
    */
@@ -51,7 +96,7 @@ export abstract class WorkoutPlan {
   /**
    * Abstract method: Subclasses provide their custom prescription of 5 exercises
    */
-  public abstract getExercises(level: ExperienceLevel): Exercise[];
+  public abstract getExercises(level: ExperienceLevel, availableEquipment?: EquipmentType[]): Exercise[];
 
   /**
    * Abstract method: Returns the Metabolic Equivalent of Task (MET) value for this split.
@@ -75,7 +120,7 @@ export abstract class WorkoutPlan {
    * Shuffles the exercise selection for this split using an optional seed.
    * Passing no seed or a numeric seed enables alternate deterministic sets.
    */
-  public shuffle(seed?: number | string): Exercise[] {
+  public shuffle(seed?: number | string, availableEquipment?: EquipmentType[]): Exercise[] {
     if (typeof seed === 'number') {
       this._currentSeed = seed;
     } else if (typeof seed === 'string') {
@@ -89,24 +134,51 @@ export abstract class WorkoutPlan {
       this._currentSeed = Math.floor(Math.random() * 100000) + 1;
     }
 
-    return this.getExercises(this._currentLevel);
+    return this.getExercises(this._currentLevel, availableEquipment || this._availableEquipment);
   }
 
   /**
-   * Helper algorithm for subclasses:
+   * Polymorphic helper algorithm for all subclasses:
    * Selects exactly 5 exercises from pool satisfying:
-   * 1. Matches requested level prescription (Beginner, Intermediate, Advanced).
-   * 2. Must include at least 2 distinct target muscles.
-   * 3. Never repeats an exercise.
-   * 4. Permuted deterministically by seed.
+   * 1. Filters by user availableEquipment (Bodyweight always allowed).
+   * 2. If filtered pool is too small, fills gap with closest bodyweight alternative.
+   * 3. Sets hasEquipmentSwaps note flag when replacements are made.
+   * 4. Matches requested level prescription (Beginner, Intermediate, Advanced).
+   * 5. Must include at least 2 distinct target muscles where possible.
+   * 6. Never repeats an exercise within the selection.
+   * 7. Permuted deterministically by seed.
+   * 8. Returns empty array if no exercises at all match the split pool.
    */
   protected selectFiveExercises(
     pool: Exercise[],
     level: ExperienceLevel,
-    isTimedInterval: boolean = false
+    isTimedInterval: boolean = false,
+    availableEquipment?: EquipmentType[]
   ): Exercise[] {
     this._currentLevel = level;
+    this._hasEquipmentSwaps = false;
     const normalizedLevel = String(level).toLowerCase();
+
+    // Determine allowed equipment (Bodyweight is always included)
+    const allowedEquipment: EquipmentType[] =
+      availableEquipment && availableEquipment.length > 0
+        ? [...availableEquipment]
+        : [...this._availableEquipment];
+
+    if (!allowedEquipment.includes('Bodyweight')) {
+      allowedEquipment.unshift('Bodyweight');
+    }
+
+    // 1. Filter candidate pool by equipment availability
+    const matchingPool = pool.filter((ex) =>
+      allowedEquipment.includes(ex.equipment as EquipmentType)
+    );
+
+    // Requirement 8: If no exercises at all match a split (for example Pull with no equipment), return empty
+    if (matchingPool.length === 0) {
+      this._hasEquipmentSwaps = false;
+      return [];
+    }
 
     // Configure sets, reps, rest interval based on difficulty tier
     let defaultSets = 4;
@@ -145,9 +217,6 @@ export abstract class WorkoutPlan {
       }
     }
 
-    // Sort/rank candidates prioritizing the chosen level
-    const candidates = [...pool];
-
     // Score function based on level preference
     const scoreCandidate = (ex: Exercise): number => {
       const exDiff = ex.difficulty.toLowerCase();
@@ -166,6 +235,8 @@ export abstract class WorkoutPlan {
       if (exDiff === 'advanced') return 2;
       return 2;
     };
+
+    const candidates = [...matchingPool];
 
     // Deterministic shuffle with seed
     if (this._currentSeed !== 0) {
@@ -197,20 +268,57 @@ export abstract class WorkoutPlan {
       }
     }
 
-    // Pass 3: Fill up to exactly 5 distinct exercises
+    // Pass 3: Fill up to 5 distinct exercises from matchingPool
     for (let i = 0; i < candidates.length && selected.length < 5; i++) {
       const cand = candidates[i];
-      if (!selected.some((s) => s.id === cand.id)) {
+      if (!selected.some((s) => s.id === cand.id || s.name === cand.name)) {
         selected.push(cand);
         usedMuscles.add(cand.targetMuscle);
       }
     }
 
-    // Fallback if pool had fewer than 5
-    let fallbackIdx = 0;
-    while (selected.length < 5 && pool.length > 0) {
-      selected.push(pool[fallbackIdx % pool.length]);
-      fallbackIdx++;
+    // Requirement 5: Never return fewer than 5 exercises.
+    // If the filtered pool is too small, fill the gap with the closest bodyweight alternative
+    // for the same target muscle, and show note flag: hasEquipmentSwaps = true
+    if (selected.length < 5) {
+      this._hasEquipmentSwaps = true;
+      const allExercises = ExerciseLibrary.getInstance().getAllExercises();
+      const bodyweightCatalog = allExercises.filter(
+        (e) =>
+          e.equipment === 'Bodyweight' &&
+          !selected.some((s) => s.id === e.id || s.name === e.name)
+      );
+
+      const poolMuscles = Array.from(new Set(pool.map((e) => e.targetMuscle)));
+
+      while (selected.length < 5) {
+        const targetMuscle = poolMuscles[selected.length % poolMuscles.length];
+
+        // 1. Try exact target muscle match
+        let match = bodyweightCatalog.find(
+          (e) =>
+            e.targetMuscle.toLowerCase() === targetMuscle.toLowerCase() &&
+            !selected.some((s) => s.id === e.id || s.name === e.name)
+        );
+
+        // 2. If no exact muscle match in bodyweight catalog, take any unused bodyweight exercise
+        if (!match) {
+          match = bodyweightCatalog.find(
+            (e) => !selected.some((s) => s.id === e.id || s.name === e.name)
+          );
+        }
+
+        if (match) {
+          selected.push(match);
+        } else {
+          // If bodyweight catalog completely exhausted, recycle matching pool
+          if (matchingPool.length > 0) {
+            selected.push(matchingPool[selected.length % matchingPool.length]);
+          } else {
+            break;
+          }
+        }
+      }
     }
 
     // Prescribe sets, reps, rest

@@ -136,4 +136,29 @@ export class Exercise {
       instructions: this.instructions,
     };
   }
+
+  public static fromJSON(data: any): Exercise {
+    const ex = new Exercise(
+      data.id || `ex_${Date.now()}`,
+      data.name,
+      data.targetMuscle || 'Full Body',
+      (data.equipment as EquipmentType) || 'Bodyweight',
+      (data.difficulty as DifficultyLevel) || 'Intermediate',
+      data.formTip || data.tip || '',
+      data.imageUrl
+    );
+    if (data.sets !== undefined) ex.sets = data.sets;
+    if (data.reps !== undefined) ex.reps = data.reps;
+    if (data.restSeconds !== undefined) ex.restSeconds = data.restSeconds;
+    if (data.defaultSets !== undefined) ex.defaultSets = data.defaultSets;
+    if (data.defaultReps !== undefined) ex.defaultReps = data.defaultReps;
+    if (data.suggestedRestSeconds !== undefined) ex.suggestedRestSeconds = data.suggestedRestSeconds;
+    if (data.secondaryMuscles && Array.isArray(data.secondaryMuscles)) {
+      ex.secondaryMuscles = [...data.secondaryMuscles];
+    }
+    if (data.instructions && Array.isArray(data.instructions)) {
+      ex.instructions = [...data.instructions];
+    }
+    return ex;
+  }
 }

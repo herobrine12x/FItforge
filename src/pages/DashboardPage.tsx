@@ -91,6 +91,27 @@ export function DashboardPage() {
             <p className="text-sm text-[#A1A1AA] leading-relaxed">
               Track your biometrics, monitor weekly targets, and elevate your fitness progression with intelligent splits.
             </p>
+
+            {/* Small Equipment Badges */}
+            <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
+              <span className="text-[11px] font-mono text-[#A1A1AA] uppercase tracking-wider mr-1">
+                Equipment:
+              </span>
+              {(currentProfile?.availableEquipment || [
+                'Bodyweight',
+                'Dumbbell',
+                'Barbell',
+                'Machine',
+                'Cable',
+              ]).map((eq) => (
+                <span
+                  key={eq}
+                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-[#0B0B0F]/80 text-[#C6FF3D] border border-[#C6FF3D]/30 shadow-sm"
+                >
+                  {eq}
+                </span>
+              ))}
+            </div>
           </div>
 
           <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto">

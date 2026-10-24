@@ -21,14 +21,16 @@ import {
   User,
   Volume2,
   VolumeX,
+  Wrench,
 } from 'lucide-react';
 import { ConfirmModal } from '../components/ConfirmModal';
+import { EquipmentSelector } from '../components/EquipmentSelector';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { BMICalculator } from '../models/BMICalculator';
 import { RecordManager } from '../models/RecordManager';
 import { ReportGenerator } from '../models/ReportGenerator';
-import { ExperienceLevel } from '../models/types';
+import { EquipmentType, ExperienceLevel } from '../models/types';
 import { cmToFtIn, ftInToCm, kgToLb, lbToKg } from '../utils/units';
 
 export function SettingsPage() {
@@ -210,6 +212,38 @@ export function SettingsPage() {
     } else {
       info('Rest-timer audio muted.');
     }
+  };
+
+  // ================= EQUIPMENT AVAILABILITY =================
+  const [equipment, setEquipment] = useState<EquipmentType[]>(() => {
+    return currentProfile?.availableEquipment || [
+      'Bodyweight',
+      'Dumbbell',
+      'Barbell',
+      'Machine',
+      'Cable',
+    ];
+  });
+
+  useEffect(() => {
+    if (currentProfile?.availableEquipment) {
+      const profileEq = currentProfile.availableEquipment;
+      setEquipment((prev) => {
+        if (
+          prev.length === profileEq.length &&
+          prev.every((item, idx) => item === profileEq[idx])
+        ) {
+          return prev;
+        }
+        return [...profileEq];
+      });
+    }
+  }, [currentProfile?.availableEquipment]);
+
+  const handleEquipmentChange = (newEquipment: EquipmentType[]) => {
+    setEquipment(newEquipment);
+    updateProfile({ availableEquipment: newEquipment });
+    success('Equipment availability updated.');
   };
 
   // ================= 3. DATA MANAGEMENT (CSV EXPORT & CLEAR HISTORY) =================
@@ -691,7 +725,36 @@ export function SettingsPage() {
           </div>
         </div>
 
-        {/* ================= CARD 3: DATA MANAGEMENT ================= */}
+        {/* ================= CARD 3: EQUIPMENT AVAILABILITY ================= */}
+        <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between">
+          <div className="space-y-5">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-[#24242E]">
+              <div className="w-8 h-8 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+                <Wrench className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase tracking-wide">
+                  Equipment Availability
+                </h2>
+                <p className="text-[11px] text-[#A1A1AA]">
+                  Presets and gear filters for workout routine generation.
+                </p>
+              </div>
+            </div>
+
+            <EquipmentSelector
+              selectedEquipment={equipment}
+              onChange={handleEquipmentChange}
+            />
+          </div>
+
+          <div className="pt-4 border-t border-[#24242E] text-[11px] font-mono text-[#A1A1AA] flex items-center justify-between">
+            <span>Saved to athlete profile</span>
+            <span className="text-[#C6FF3D]">{equipment.length} / 5 types active</span>
+          </div>
+        </div>
+
+        {/* ================= CARD 4: DATA MANAGEMENT ================= */}
         <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between">
           <div className="space-y-5">
             <div className="flex items-center gap-2.5 pb-3 border-b border-[#24242E]">

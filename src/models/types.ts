@@ -91,6 +91,7 @@ export interface IMemberProfileData {
   weightKg: number;
   experienceLevel: ExperienceLevel;
   weeklyGoal: number;
+  availableEquipment?: EquipmentType[];
   updatedAt?: string;
   fullName?: string;
   fitnessGoal?: FitnessGoal;

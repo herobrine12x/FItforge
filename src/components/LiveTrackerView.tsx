@@ -47,6 +47,7 @@ interface LiveTrackerViewProps {
   currentProfile: MemberProfile | null;
   recordManager: RecordManager;
   initialSplit?: ExtendedSplitType | SplitType | string | null;
+  initialExercises?: any[] | null;
   onWorkoutSaved: () => void;
   onActiveStateChange?: (isActive: boolean) => void;
 }
@@ -56,6 +57,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   currentProfile,
   recordManager,
   initialSplit = null,
+  initialExercises = null,
   onWorkoutSaved,
   onActiveStateChange,
 }) => {
@@ -76,11 +78,14 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     return WorkoutPlanFactory.create(selectedSplit);
   }, [selectedSplit]);
 
-  // Prescribed 5 exercises derived polymorphically from the selected split
+  // Prescribed 5 exercises derived polymorphically from the selected split and user equipment
   const exercises: Exercise[] = useMemo(() => {
+    if (initialExercises && Array.isArray(initialExercises) && initialExercises.length === 5) {
+      return initialExercises.map((data) => Exercise.fromJSON(data));
+    }
     if (!workoutPlan) return [];
-    return workoutPlan.getExercises(experienceLevel);
-  }, [workoutPlan, experienceLevel]);
+    return workoutPlan.getExercises(experienceLevel, currentProfile?.availableEquipment);
+  }, [workoutPlan, experienceLevel, currentProfile?.availableEquipment, initialExercises]);
 
   // Clickable checklist state for the 5 exercises
   const [completedExercises, setCompletedExercises] = useState<boolean[]>([
@@ -426,6 +431,8 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     setCompletedExercises([false, false, false, false, false]);
     try {
       localStorage.removeItem('fitforge_active_split');
+      localStorage.removeItem('fitforge_active_exercises');
+      localStorage.removeItem('fitforge_active_level');
     } catch {
       // safe
     }

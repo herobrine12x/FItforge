@@ -1,5 +1,5 @@
 import { Exercise } from './Exercise';
-import { ExperienceLevel } from './types';
+import { EquipmentType, ExperienceLevel } from './types';
 import { WorkoutPlan } from './WorkoutPlan';
 
 /**
@@ -17,8 +17,8 @@ export class HomeBodyweightSplit extends WorkoutPlan {
     return 5.0; // Lowest MET
   }
 
-  public getExercises(level: ExperienceLevel): Exercise[] {
+  public getExercises(level: ExperienceLevel, availableEquipment?: EquipmentType[]): Exercise[] {
     const pool = this.getPool();
-    return this.selectFiveExercises(pool, level, false);
+    return this.selectFiveExercises(pool, level, false, availableEquipment);
   }
 }

@@ -23,8 +23,23 @@ export function WorkoutPage() {
     return null;
   }, [location.state]);
 
+  const customExercises = useMemo(() => {
+    if (location.state?.customExercises) {
+      return location.state.customExercises;
+    }
+    try {
+      const stored = localStorage.getItem('fitforge_active_exercises');
+      if (stored) return JSON.parse(stored);
+    } catch {
+      // safe
+    }
+    return null;
+  }, [location.state]);
+
   const handleWorkoutSaved = () => {
     localStorage.removeItem('fitforge_active_split');
+    localStorage.removeItem('fitforge_active_exercises');
+    localStorage.removeItem('fitforge_active_level');
     navigate('/history');
   };
 
@@ -36,6 +51,7 @@ export function WorkoutPage() {
         currentProfile={currentProfile}
         recordManager={recordManager}
         initialSplit={activeSplit}
+        initialExercises={customExercises}
         onWorkoutSaved={handleWorkoutSaved}
       />
     </div>

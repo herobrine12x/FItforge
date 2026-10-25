@@ -2,7 +2,9 @@ import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   Activity,
+  Award,
   BarChart3,
+  Calendar,
   Dumbbell,
   History,
   LayoutDashboard,
@@ -24,7 +26,9 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Summary', path: '/summary', icon: Award },
   { name: 'Recommender', path: '/recommender', icon: Dumbbell },
+  { name: 'Weekly Guide', path: '/schedule', icon: Calendar },
   { name: 'Workout', path: '/workout', icon: PlayCircle },
   { name: 'History', path: '/history', icon: History },
   { name: 'Reports', path: '/reports', icon: BarChart3 },

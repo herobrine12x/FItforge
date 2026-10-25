@@ -4,6 +4,7 @@ import { AppLayout } from './components/AppLayout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { WeeklyGuideView } from './components/WeeklyGuideView';
 import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { HistoryPage } from './pages/HistoryPage';
@@ -12,6 +13,7 @@ import { RecommenderPage } from './pages/RecommenderPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { Stage1TestPage } from './pages/Stage1TestPage';
+import { SummaryPage } from './pages/SummaryPage';
 import { WorkoutPage } from './pages/WorkoutPage';
 
 export default function App() {
@@ -48,7 +50,9 @@ export default function App() {
             >
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/summary" element={<SummaryPage />} />
               <Route path="/recommender" element={<RecommenderPage />} />
+              <Route path="/schedule" element={<WeeklyGuideView />} />
               <Route path="/workout" element={<WorkoutPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/reports" element={<ReportsPage />} />

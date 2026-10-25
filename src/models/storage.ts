@@ -15,6 +15,10 @@ export const STORAGE_KEYS = {
   PROFILES: 'profiles',
   WORKOUT_RECORDS: 'workout_records',
   SETTINGS: 'settings',
+  SCHEDULED_WORKOUTS: 'scheduled_workouts',
+  WEEKLY_SCHEDULE: 'weekly_schedule',
+  CUSTOM_ROUTINES: 'custom_routines',
+  BADGES: 'badges',
 } as const;
 
 // In-memory backing store for SSR/Node test execution

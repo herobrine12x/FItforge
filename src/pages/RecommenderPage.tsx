@@ -5,6 +5,7 @@ import {
   AlertCircle,
   AlertTriangle,
   ArrowRight,
+  Calendar,
   CheckCircle2,
   Clock,
   Compass,
@@ -233,16 +234,27 @@ export function RecommenderPage() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleStartWorkout}
-          disabled={exercises.length === 0}
-          className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d5ff6a] disabled:opacity-40 disabled:cursor-not-allowed text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 shadow-lg shadow-[#C6FF3D]/20 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shrink-0"
-        >
-          <Play className="w-4 h-4 fill-[#0B0B0F]" />
-          <span>Start This Workout</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => navigate('/schedule')}
+            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#F4F4F6] font-heading font-black uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 cursor-pointer shrink-0"
+          >
+            <Calendar className="w-4 h-4 text-[#C6FF3D]" />
+            <span>Customize Weekly Schedule</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleStartWorkout}
+            disabled={exercises.length === 0}
+            className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d5ff6a] disabled:opacity-40 disabled:cursor-not-allowed text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 shadow-lg shadow-[#C6FF3D]/20 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shrink-0"
+          >
+            <Play className="w-4 h-4 fill-[#0B0B0F]" />
+            <span>Start This Workout</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* ================= BMI OVERWEIGHT / OBESE LOW-IMPACT WARM-UP NOTE ================= */}

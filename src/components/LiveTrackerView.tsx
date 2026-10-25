@@ -3,9 +3,12 @@ import confetti from 'canvas-confetti';
 import { useNavigate } from 'react-router-dom';
 import {
   AlertTriangle,
+  ArrowLeft,
   ArrowRight,
   Check,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Clock,
   Compass,
   Dumbbell,
@@ -15,7 +18,10 @@ import {
   Play,
   RotateCcw,
   Save,
+  Settings,
+  SkipForward,
   Sparkles,
+  Trophy,
   Volume2,
   VolumeX,
   X,
@@ -52,6 +58,9 @@ interface LiveTrackerViewProps {
   onActiveStateChange?: (isActive: boolean) => void;
 }
 
+type SessionState = 'ready' | 'guided' | 'finished';
+type GuidedPhase = 'work' | 'rest' | 'get_ready';
+
 export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   currentUser,
   currentProfile,
@@ -62,14 +71,15 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   onActiveStateChange,
 }) => {
   const navigate = useNavigate();
-  const { userPreferences } = useAuth();
+  const { userPreferences, updatePreferences } = useAuth();
   const { success: showToastSuccess, info: showToastInfo } = useToast();
 
-  // Active training split (null if no plan was picked yet)
+  // Active training split
   const [selectedSplit, setSelectedSplit] = useState<ExtendedSplitType | string | null>(initialSplit);
 
-  // Experience level for exercise prescription
+  // Experience level & athlete biometrics
   const experienceLevel: ExperienceLevel = currentProfile?.experienceLevel || 'intermediate';
+  const isBeginner = (experienceLevel || '').toLowerCase() === 'beginner';
   const userWeightKg: number = currentProfile?.weightKg || 70;
 
   // Active WorkoutPlan subclass instance
@@ -78,7 +88,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     return WorkoutPlanFactory.create(selectedSplit);
   }, [selectedSplit]);
 
-  // Prescribed 5 exercises derived polymorphically from the selected split and user equipment
+  // Prescribed 5 exercises derived polymorphically from the selected split and equipment
   const exercises: Exercise[] = useMemo(() => {
     if (initialExercises && Array.isArray(initialExercises) && initialExercises.length === 5) {
       return initialExercises.map((data) => Exercise.fromJSON(data));
@@ -87,43 +97,95 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     return workoutPlan.getExercises(experienceLevel, currentProfile?.availableEquipment);
   }, [workoutPlan, experienceLevel, currentProfile?.availableEquipment, initialExercises]);
 
-  // Clickable checklist state for the 5 exercises
-  const [completedExercises, setCompletedExercises] = useState<boolean[]>([
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
+  // ================= SECONDS PER REP SETTING =================
+  const [secondsPerRep, setSecondsPerRep] = useState<number>(() => {
+    try {
+      const stored = localStorage.getItem('fitforge_seconds_per_rep');
+      if (stored) return Number(stored);
+    } catch {
+      // safe
+    }
+    return userPreferences.secondsPerRep || 4;
+  });
 
-  // ================= STOPWATCH STATE & TIMER SAFETY =================
+  const [isPaceModalOpen, setIsPaceModalOpen] = useState(false);
+
+  const handleUpdateSecondsPerRep = (val: number) => {
+    setSecondsPerRep(val);
+    try {
+      localStorage.setItem('fitforge_seconds_per_rep', String(val));
+    } catch {
+      // safe
+    }
+    updatePreferences({ secondsPerRep: val });
+    showToastSuccess(`Tempo adjusted: ${val} seconds per rep.`);
+    setIsPaceModalOpen(false);
+  };
+
+  // ================= GUIDED SESSION FLOW STATES =================
+  const [sessionState, setSessionState] = useState<SessionState>('ready');
+  const [phase, setPhase] = useState<GuidedPhase>('work');
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState<number>(0);
+  const [currentSetIndex, setCurrentSetIndex] = useState<number>(1);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+
+  // Sets actually completed per exercise (5 exercises)
+  const [completedSetsByExercise, setCompletedSetsByExercise] = useState<number[]>([0, 0, 0, 0, 0]);
+
+  // ================= STOPWATCH TIMER =================
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
   const [isStopwatchRunning, setIsStopwatchRunning] = useState<boolean>(false);
   const stopwatchIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ================= REST COUNTDOWN TIMER STATE & SAFETY =================
-  const [isRestActive, setIsRestActive] = useState<boolean>(false);
-  const [restDuration, setRestDuration] = useState<number>(60);
+  // ================= WORK PHASE COUNTDOWN TIMER =================
+  const [workRemaining, setWorkRemaining] = useState<number>(0);
+  const [workTotalDuration, setWorkTotalDuration] = useState<number>(40);
+  const workIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ================= REST PHASE COUNTDOWN TIMER =================
   const [restRemaining, setRestRemaining] = useState<number>(0);
-  const [restExerciseName, setRestExerciseName] = useState<string>('');
+  const [restTotalDuration, setRestTotalDuration] = useState<number>(60);
   const restIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ================= FINISH MODAL & NOTES =================
-  const [isFinishModalOpen, setIsFinishModalOpen] = useState<boolean>(false);
+  // ================= GET READY (3-2-1) COUNTDOWN TIMER =================
+  const [getReadyRemaining, setGetReadyRemaining] = useState<number>(3);
+  const getReadyIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ================= FINISH MODAL, NOTES & OVERVIEW =================
   const [sessionNotes, setSessionNotes] = useState<string>('');
-  const [isAbandonModalOpen, setIsAbandonModalOpen] = useState<boolean>(false);
+  const [isQuitModalOpen, setIsQuitModalOpen] = useState<boolean>(false);
+  const [isOverviewExpanded, setIsOverviewExpanded] = useState<boolean>(true);
 
-  // Reset checklist when split changes
-  useEffect(() => {
-    setCompletedExercises([false, false, false, false, false]);
-  }, [selectedSplit]);
+  // Current active exercise object
+  const currentExercise = exercises[currentExerciseIndex] || exercises[0];
+  const currentExTotalSets = currentExercise?.sets || currentExercise?.defaultSets || 3;
+  const currentExReps = typeof currentExercise?.reps === 'number'
+    ? currentExercise.reps
+    : parseInt(String(currentExercise?.reps || '10'), 10) || 10;
 
-  // Active session status check: session is considered active if stopwatch is running,
-  // time has elapsed, or at least one exercise is checked
-  const completedCount = completedExercises.filter(Boolean).length;
-  const progressPercent = Math.round((completedCount / 5) * 100);
-  const isSessionActive = isStopwatchRunning || stopwatchSeconds > 0 || completedCount > 0;
+  // Calculate total workout sets & completed sets
+  const totalWorkoutSets = useMemo(() => {
+    return exercises.reduce((acc, ex) => acc + (ex.sets || ex.defaultSets || 3), 0) || 15;
+  }, [exercises]);
 
+  const totalCompletedSets = useMemo(() => {
+    return completedSetsByExercise.reduce((acc, count) => acc + count, 0);
+  }, [completedSetsByExercise]);
+
+  // Exercises completed count: an exercise is Complete ONLY after its last set
+  const completedCount = useMemo(() => {
+    return exercises.filter((ex, idx) => {
+      const required = ex.sets || ex.defaultSets || 3;
+      return (completedSetsByExercise[idx] || 0) >= required;
+    }).length;
+  }, [exercises, completedSetsByExercise]);
+
+  const progressPercent = Math.min(100, Math.round((totalCompletedSets / totalWorkoutSets) * 100));
+
+  // Session active check: if guided mode has started or stopwatch is running
+  const isSessionActive = sessionState === 'guided' || stopwatchSeconds > 0;
+
+  // Sync active state with parent / layout
   useEffect(() => {
     if (onActiveStateChange) {
       onActiveStateChange(isSessionActive);
@@ -145,29 +207,32 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     };
   }, [isSessionActive]);
 
-  // Clean up all timers on unmount
+  // Clear all timer intervals on component unmount
   useEffect(() => {
     return () => {
-      if (stopwatchIntervalRef.current) {
-        clearInterval(stopwatchIntervalRef.current);
-        stopwatchIntervalRef.current = null;
-      }
-      if (restIntervalRef.current) {
-        clearInterval(restIntervalRef.current);
-        restIntervalRef.current = null;
-      }
+      if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
+      if (workIntervalRef.current) clearInterval(workIntervalRef.current);
+      if (restIntervalRef.current) clearInterval(restIntervalRef.current);
+      if (getReadyIntervalRef.current) clearInterval(getReadyIntervalRef.current);
     };
   }, []);
 
-  // Stopwatch interval manager (guaranteed to never run twice or leak)
+  // Reset exercise sets tracker when split changes
   useEffect(() => {
-    if (isStopwatchRunning) {
-      // Clear any prior interval before creating a new one
+    setCompletedSetsByExercise([0, 0, 0, 0, 0]);
+    setCurrentExerciseIndex(0);
+    setCurrentSetIndex(1);
+    setSessionState('ready');
+    setPhase('work');
+    setIsPaused(false);
+  }, [selectedSplit]);
+
+  // ================= 1. SESSION STOPWATCH INTERVAL =================
+  useEffect(() => {
+    if (isStopwatchRunning && !isPaused && sessionState === 'guided') {
       if (stopwatchIntervalRef.current) {
         clearInterval(stopwatchIntervalRef.current);
-        stopwatchIntervalRef.current = null;
       }
-
       stopwatchIntervalRef.current = setInterval(() => {
         setStopwatchSeconds((prev) => prev + 1);
       }, 1000);
@@ -184,34 +249,84 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         stopwatchIntervalRef.current = null;
       }
     };
-  }, [isStopwatchRunning]);
+  }, [isStopwatchRunning, isPaused, sessionState]);
 
-  // Rest countdown interval manager
+  // ================= 2. WORK PHASE TIMER =================
+  // Initializes work timer when entering work phase or changing exercise/set
+  const startWorkPhase = (exIndex: number, setNum: number) => {
+    const ex = exercises[exIndex];
+    const reps = typeof ex?.reps === 'number'
+      ? ex.reps
+      : parseInt(String(ex?.reps || '10'), 10) || 10;
+    const duration = Math.max(5, reps * secondsPerRep);
+
+    setWorkTotalDuration(duration);
+    setWorkRemaining(duration);
+    setPhase('work');
+  };
+
   useEffect(() => {
-    if (isRestActive && restRemaining > 0) {
+    if (sessionState === 'guided' && phase === 'work' && !isPaused) {
+      if (workIntervalRef.current) {
+        clearInterval(workIntervalRef.current);
+      }
+
+      workIntervalRef.current = setInterval(() => {
+        setWorkRemaining((prev) => {
+          if (prev <= 1) {
+            if (workIntervalRef.current) {
+              clearInterval(workIntervalRef.current);
+              workIntervalRef.current = null;
+            }
+            // Sound notification on timer expiration
+            if (userPreferences.soundEnabled && !sounds.muted) {
+              sounds.playCountdownBeep(true);
+            }
+            // Requirement 3: When the countdown ends it waits for the user to press I'm done and never auto-completes the set.
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (workIntervalRef.current) {
+        clearInterval(workIntervalRef.current);
+        workIntervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (workIntervalRef.current) {
+        clearInterval(workIntervalRef.current);
+        workIntervalRef.current = null;
+      }
+    };
+  }, [sessionState, phase, isPaused, userPreferences.soundEnabled]);
+
+  // ================= 3. REST PHASE TIMER =================
+  useEffect(() => {
+    if (sessionState === 'guided' && phase === 'rest' && !isPaused && restRemaining > 0) {
       if (restIntervalRef.current) {
         clearInterval(restIntervalRef.current);
-        restIntervalRef.current = null;
       }
 
       restIntervalRef.current = setInterval(() => {
         setRestRemaining((prev) => {
           if (prev <= 1) {
-            // Timer finished
             if (restIntervalRef.current) {
               clearInterval(restIntervalRef.current);
               restIntervalRef.current = null;
             }
-            setIsRestActive(false);
-
-            // Play end sound if sound setting is enabled
+            // Beep at rest expiration
             if (userPreferences.soundEnabled && !sounds.muted) {
               sounds.playCountdownBeep(true);
             }
+            // Trigger Get Ready 3-2-1 countdown
+            startGetReadyPhase();
             return 0;
           }
 
-          // Countdown beeps on last 3 seconds
+          // Countdown beeps on last 3 seconds (3, 2, 1)
           if (prev <= 4 && prev > 1) {
             if (userPreferences.soundEnabled && !sounds.muted) {
               sounds.playCountdownBeep(false);
@@ -221,7 +336,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           return prev - 1;
         });
       }, 1000);
-    } else if (!isRestActive) {
+    } else {
       if (restIntervalRef.current) {
         clearInterval(restIntervalRef.current);
         restIntervalRef.current = null;
@@ -234,47 +349,136 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         restIntervalRef.current = null;
       }
     };
-  }, [isRestActive, restRemaining, userPreferences.soundEnabled]);
+  }, [sessionState, phase, isPaused, restRemaining, userPreferences.soundEnabled]);
 
-  // Stopwatch Controls
-  const handleStartStopwatch = () => {
+  // ================= 4. GET READY (3-2-1) PHASE TIMER =================
+  const startGetReadyPhase = () => {
+    setPhase('get_ready');
+    setGetReadyRemaining(3);
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playCountdownBeep(false);
+    }
+  };
+
+  useEffect(() => {
+    if (sessionState === 'guided' && phase === 'get_ready' && !isPaused) {
+      if (getReadyIntervalRef.current) {
+        clearInterval(getReadyIntervalRef.current);
+      }
+
+      getReadyIntervalRef.current = setInterval(() => {
+        setGetReadyRemaining((prev) => {
+          if (prev <= 1) {
+            if (getReadyIntervalRef.current) {
+              clearInterval(getReadyIntervalRef.current);
+              getReadyIntervalRef.current = null;
+            }
+            if (userPreferences.soundEnabled && !sounds.muted) {
+              sounds.playCountdownBeep(true);
+            }
+            // Advance to the next set or next exercise
+            advanceToNextSet();
+            return 0;
+          }
+
+          if (userPreferences.soundEnabled && !sounds.muted) {
+            sounds.playCountdownBeep(false);
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (getReadyIntervalRef.current) {
+        clearInterval(getReadyIntervalRef.current);
+        getReadyIntervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (getReadyIntervalRef.current) {
+        clearInterval(getReadyIntervalRef.current);
+        getReadyIntervalRef.current = null;
+      }
+    };
+  }, [sessionState, phase, isPaused, userPreferences.soundEnabled]);
+
+  // ================= ADVANCING SETS & EXERCISES =================
+  const advanceToNextSet = () => {
+    const currentEx = exercises[currentExerciseIndex];
+    const totalSets = currentEx?.sets || currentEx?.defaultSets || 3;
+
+    if (currentSetIndex < totalSets) {
+      // Advance to next set of same exercise
+      const nextSet = currentSetIndex + 1;
+      setCurrentSetIndex(nextSet);
+      startWorkPhase(currentExerciseIndex, nextSet);
+    } else {
+      // Advance to next exercise
+      if (currentExerciseIndex < exercises.length - 1) {
+        const nextExIdx = currentExerciseIndex + 1;
+        setCurrentExerciseIndex(nextExIdx);
+        setCurrentSetIndex(1);
+        startWorkPhase(nextExIdx, 1);
+      } else {
+        // All exercises completed!
+        handleCompleteWorkout();
+      }
+    }
+  };
+
+  // ================= WORKOUT ACTIONS =================
+  // 1. Start Workout from Ready screen
+  const handleStartWorkout = () => {
     if (userPreferences.soundEnabled && !sounds.muted) {
       sounds.playTick();
     }
+    setSessionState('guided');
     setIsStopwatchRunning(true);
+    setIsPaused(false);
+    setCurrentExerciseIndex(0);
+    setCurrentSetIndex(1);
+    startWorkPhase(0, 1);
   };
 
-  const handlePauseStopwatch = () => {
+  // 2. User presses "I'm done" on current set
+  const handleSetDone = () => {
     if (userPreferences.soundEnabled && !sounds.muted) {
       sounds.playTick();
     }
-    setIsStopwatchRunning(false);
+
+    // Stop work interval
+    if (workIntervalRef.current) {
+      clearInterval(workIntervalRef.current);
+      workIntervalRef.current = null;
+    }
+
+    // Record set completion
+    setCompletedSetsByExercise((prev) => {
+      const updated = [...prev];
+      updated[currentExerciseIndex] = Math.min(
+        currentExTotalSets,
+        (updated[currentExerciseIndex] || 0) + 1
+      );
+      return updated;
+    });
+
+    // Check if this was the last set of the last exercise (Exercise 5, last set)
+    const isFinalSetOfFinalExercise =
+      currentExerciseIndex === exercises.length - 1 && currentSetIndex >= currentExTotalSets;
+
+    if (isFinalSetOfFinalExercise) {
+      // Requirement 6: After the last set of the last exercise, skip the rest and show the Finish and Save screen
+      handleCompleteWorkout();
+    } else {
+      // Automatically transition to rest phase
+      const restTime = currentExercise?.restSeconds || currentExercise?.suggestedRestSeconds || 60;
+      setRestTotalDuration(restTime);
+      setRestRemaining(restTime);
+      setPhase('rest');
+    }
   };
 
-  const handleResetStopwatch = () => {
-    if (userPreferences.soundEnabled && !sounds.muted) {
-      sounds.playTick();
-    }
-    if (stopwatchIntervalRef.current) {
-      clearInterval(stopwatchIntervalRef.current);
-      stopwatchIntervalRef.current = null;
-    }
-    setIsStopwatchRunning(false);
-    setStopwatchSeconds(0);
-  };
-
-  // Rest Timer Controls
-  const handleStartRest = (seconds: number, exerciseName: string) => {
-    if (userPreferences.soundEnabled && !sounds.muted) {
-      sounds.playTick();
-    }
-    const safeDuration = Math.max(5, Math.round(seconds || 60));
-    setRestDuration(safeDuration);
-    setRestRemaining(safeDuration);
-    setRestExerciseName(exerciseName);
-    setIsRestActive(true);
-  };
-
+  // 3. Skip Rest button
   const handleSkipRest = () => {
     if (userPreferences.soundEnabled && !sounds.muted) {
       sounds.playTick();
@@ -283,42 +487,171 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
       clearInterval(restIntervalRef.current);
       restIntervalRef.current = null;
     }
-    setIsRestActive(false);
     setRestRemaining(0);
+    startGetReadyPhase();
   };
 
+  // 4. Add +15s to rest
   const handleAddRestTime = (seconds: number) => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
     setRestRemaining((prev) => prev + seconds);
-    setRestDuration((prev) => prev + seconds);
+    setRestTotalDuration((prev) => prev + seconds);
   };
 
-  // Exercise Checklist Toggle
-  const handleToggleExercise = (index: number) => {
-    const wasCompleted = completedExercises[index];
-    const targetExercise = exercises[index];
-
-    // Sound effect
+  // 5. Previous Set button
+  const handlePreviousSet = () => {
     if (userPreferences.soundEnabled && !sounds.muted) {
       sounds.playTick();
     }
 
-    // Auto-start stopwatch on first check if not running
-    if (!isStopwatchRunning && stopwatchSeconds === 0) {
-      setIsStopwatchRunning(true);
-    }
+    // Clear any rest or get-ready intervals
+    if (restIntervalRef.current) clearInterval(restIntervalRef.current);
+    if (getReadyIntervalRef.current) clearInterval(getReadyIntervalRef.current);
 
-    const updated = [...completedExercises];
-    updated[index] = !wasCompleted;
-    setCompletedExercises(updated);
-
-    // If transitioning from incomplete to complete, automatically trigger rest countdown
-    if (!wasCompleted && targetExercise) {
-      const restSec = targetExercise.restSeconds || targetExercise.suggestedRestSeconds || 60;
-      handleStartRest(restSec, targetExercise.name);
+    if (currentSetIndex > 1) {
+      const prevSet = currentSetIndex - 1;
+      setCurrentSetIndex(prevSet);
+      startWorkPhase(currentExerciseIndex, prevSet);
+    } else if (currentExerciseIndex > 0) {
+      const prevExIdx = currentExerciseIndex - 1;
+      const prevExSets = exercises[prevExIdx].sets || exercises[prevExIdx].defaultSets || 3;
+      setCurrentExerciseIndex(prevExIdx);
+      setCurrentSetIndex(prevExSets);
+      startWorkPhase(prevExIdx, prevExSets);
     }
   };
 
-  // Real-time calories burned calculation: calories = MET x weightKg x (stopwatchSeconds / 3600)
+  // 6. Skip Exercise button
+  const handleSkipExercise = () => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
+
+    // Clear timers
+    if (restIntervalRef.current) clearInterval(restIntervalRef.current);
+    if (getReadyIntervalRef.current) clearInterval(getReadyIntervalRef.current);
+    if (workIntervalRef.current) clearInterval(workIntervalRef.current);
+
+    if (currentExerciseIndex < exercises.length - 1) {
+      const nextExIdx = currentExerciseIndex + 1;
+      setCurrentExerciseIndex(nextExIdx);
+      setCurrentSetIndex(1);
+      startWorkPhase(nextExIdx, 1);
+    } else {
+      // On last exercise, skip triggers finish
+      handleCompleteWorkout();
+    }
+  };
+
+  // 7. Pause / Resume Toggle
+  const handleTogglePause = () => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
+    setIsPaused((prev) => !prev);
+  };
+
+  // 8. Complete Workout (transitions to Finish & Save screen)
+  const handleCompleteWorkout = () => {
+    setIsStopwatchRunning(false);
+    setIsPaused(false);
+    setSessionState('finished');
+
+    // Clean up timers
+    if (workIntervalRef.current) clearInterval(workIntervalRef.current);
+    if (restIntervalRef.current) clearInterval(restIntervalRef.current);
+    if (getReadyIntervalRef.current) clearInterval(getReadyIntervalRef.current);
+
+    // Audio and confetti celebration
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playFanfare();
+    }
+    try {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#C6FF3D', '#3B82F6', '#10B981', '#F59E0B'],
+      });
+    } catch {
+      // safe
+    }
+  };
+
+  // 9. Save Workout to Database
+  const handleSaveWorkout = () => {
+    if (!currentUser || !workoutPlan) return;
+
+    const finalMinutes = Math.max(1, Math.round(stopwatchSeconds / 60));
+    const finalCalories = currentCalories;
+    const planName = workoutPlan.name;
+
+    try {
+      recordManager.addRecord({
+        userId: currentUser.id,
+        date: new Date().toISOString(),
+        title: `${planName} Guided Session`,
+        splitName: planName,
+        splitType: workoutPlan.splitType,
+        durationMinutes: finalMinutes,
+        caloriesBurned: finalCalories,
+        exercisesCompleted: completedCount,
+        totalExercises: 5,
+        notes: sessionNotes.trim() || `Completed ${totalCompletedSets} of ${totalWorkoutSets} sets across ${completedCount} exercises in ${finalMinutes}m.`,
+      });
+
+      // Clear active stored split
+      try {
+        localStorage.removeItem('fitforge_active_split');
+        localStorage.removeItem('fitforge_active_exercises');
+        localStorage.removeItem('fitforge_active_level');
+      } catch {
+        // safe
+      }
+
+      showToastSuccess(
+        `Workout saved! Logged ${finalMinutes}m and ${displayCalories} kcal burned.`
+      );
+
+      onWorkoutSaved();
+    } catch (err) {
+      console.error('Failed to save workout session:', err);
+      showToastInfo('Error saving workout. Please try again.');
+    }
+  };
+
+  // 10. Quit & Discard Session
+  const handleConfirmQuit = () => {
+    setIsStopwatchRunning(false);
+    setIsPaused(false);
+    setStopwatchSeconds(0);
+    setSessionState('ready');
+    setPhase('work');
+    setCompletedSetsByExercise([0, 0, 0, 0, 0]);
+    setCurrentExerciseIndex(0);
+    setCurrentSetIndex(1);
+
+    if (stopwatchIntervalRef.current) clearInterval(stopwatchIntervalRef.current);
+    if (workIntervalRef.current) clearInterval(workIntervalRef.current);
+    if (restIntervalRef.current) clearInterval(restIntervalRef.current);
+    if (getReadyIntervalRef.current) clearInterval(getReadyIntervalRef.current);
+
+    try {
+      localStorage.removeItem('fitforge_active_split');
+      localStorage.removeItem('fitforge_active_exercises');
+      localStorage.removeItem('fitforge_active_level');
+    } catch {
+      // safe
+    }
+
+    setIsQuitModalOpen(false);
+    showToastInfo('Workout session discarded.');
+    navigate('/recommender');
+  };
+
+  // ================= REAL-TIME CALORIES CALCULATION =================
   const { currentCalories, displayCalories } = useMemo(() => {
     if (!workoutPlan || stopwatchSeconds <= 0 || userWeightKg <= 0) {
       return { currentCalories: 0, displayCalories: '0' };
@@ -357,90 +690,48 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Open Finish Modal
-  const handleOpenFinishModal = () => {
-    if (userPreferences.soundEnabled && !sounds.muted) {
-      sounds.playTick();
+  // Estimated total routine duration in minutes (calculated for Ready screen)
+  const estimatedRoutineMinutes = useMemo(() => {
+    if (!exercises || exercises.length === 0) return 30;
+    const totalSec = exercises.reduce((acc, ex) => {
+      const sets = ex.sets || ex.defaultSets || 3;
+      const reps = typeof ex.reps === 'number'
+        ? ex.reps
+        : parseInt(String(ex.reps || '10'), 10) || 10;
+      const rest = ex.restSeconds || ex.suggestedRestSeconds || 60;
+      const work = reps * secondsPerRep;
+      return acc + (sets * work) + (Math.max(1, sets - 1) * rest) + 30; // 30s buffer between exercises
+    }, 0);
+    return Math.max(15, Math.round(totalSec / 60));
+  }, [exercises, secondsPerRep]);
+
+  // Next up preview calculation for Guided View
+  const nextUpPreview = useMemo(() => {
+    if (!currentExercise) return null;
+    if (currentSetIndex < currentExTotalSets) {
+      return `Next up: Set ${currentSetIndex + 1} of ${currentExTotalSets} (${currentExercise.name})`;
     }
-    setIsFinishModalOpen(true);
-  };
-
-  // Save Workout Session to Database
-  const handleSaveWorkout = () => {
-    if (!currentUser || !workoutPlan) return;
-
-    // Calculate final metrics
-    const finalMinutes = Math.max(1, Math.round(stopwatchSeconds / 60));
-    const finalCalories = currentCalories;
-    const planName = workoutPlan.name;
-
-    try {
-      recordManager.addRecord({
-        userId: currentUser.id,
-        date: new Date().toISOString(),
-        title: `${planName} Session`,
-        splitName: planName,
-        splitType: workoutPlan.splitType,
-        durationMinutes: finalMinutes,
-        caloriesBurned: finalCalories,
-        exercisesCompleted: completedCount,
-        totalExercises: 5,
-        notes: sessionNotes.trim() || `Completed ${completedCount} of 5 exercises in ${finalMinutes}m.`,
-      });
-
-      // Clear active stored split
-      try {
-        localStorage.removeItem('fitforge_active_split');
-        localStorage.removeItem('fitforge_active_level');
-      } catch {
-        // Safe storage
-      }
-
-      // Fanfare & Confetti
-      if (userPreferences.soundEnabled && !sounds.muted) {
-        sounds.playFanfare();
-      }
-      try {
-        confetti({
-          particleCount: 90,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#C6FF3D', '#3B82F6', '#10B981', '#F59E0B'],
-        });
-      } catch {
-        // Confetti fallback
-      }
-
-      // Toast notification
-      showToastSuccess(
-        `Workout saved! Logged ${finalMinutes}m and ${displayCalories} kcal burned.`
-      );
-
-      setIsFinishModalOpen(false);
-      onWorkoutSaved();
-    } catch (err) {
-      console.error('Failed to save workout session:', err);
-      showToastInfo('Error saving workout. Please try again.');
+    if (currentExerciseIndex < exercises.length - 1) {
+      const nextEx = exercises[currentExerciseIndex + 1];
+      const nextSets = nextEx.sets || nextEx.defaultSets || 3;
+      return `Next up: Exercise ${currentExerciseIndex + 2} — ${nextEx.name} (Set 1 of ${nextSets})`;
     }
-  };
+    return 'Next up: Finish & Save Workout 🏆';
+  }, [currentExercise, currentSetIndex, currentExTotalSets, currentExerciseIndex, exercises]);
 
-  // Abandon Session Flow
-  const handleConfirmAbandon = () => {
-    handleResetStopwatch();
-    handleSkipRest();
-    setCompletedExercises([false, false, false, false, false]);
-    try {
-      localStorage.removeItem('fitforge_active_split');
-      localStorage.removeItem('fitforge_active_exercises');
-      localStorage.removeItem('fitforge_active_level');
-    } catch {
-      // safe
-    }
-    showToastInfo('Workout session cancelled.');
-    navigate('/recommender');
-  };
+  // SVG circular calculations
+  const ringRadius = 58;
+  const ringCircumference = 2 * Math.PI * ringRadius;
 
-  // ================= SCENARIO A: NO PLAN CHOSEN PROMPT =================
+  // Work ring offset
+  const workRatio = workTotalDuration > 0 ? Math.max(0, Math.min(1, workRemaining / workTotalDuration)) : 0;
+  const workStrokeOffset = ringCircumference * (1 - workRatio);
+
+  // Rest ring offset
+  const restRatio = restTotalDuration > 0 ? Math.max(0, Math.min(1, restRemaining / restTotalDuration)) : 0;
+  const restStrokeOffset = ringCircumference * (1 - restRatio);
+
+  // ================= SCENARIO A: NO PLAN CHOSEN =================
   if (!selectedSplit || !workoutPlan) {
     const allSplits: { id: ExtendedSplitType; name: string; desc: string }[] = [
       { id: 'push', name: 'Push Split', desc: 'Chest, Shoulders & Triceps' },
@@ -454,7 +745,6 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
     return (
       <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-300">
-        {/* Header */}
         <div className="flex items-center gap-3 pb-4 border-b border-[#24242E]">
           <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D]">
             <Dumbbell className="w-5 h-5" />
@@ -464,12 +754,11 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               Live Workout Session
             </h1>
             <p className="text-xs text-[#A1A1AA] mt-0.5">
-              Real-time workout execution, interactive stopwatch, and rest intervals.
+              Guided workout mode with set countdowns, automatic rest intervals, and live progress.
             </p>
           </div>
         </div>
 
-        {/* Prompt Card */}
         <div className="p-8 sm:p-10 rounded-3xl bg-[#16161D] border border-[#24242E] text-center space-y-6 shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#C6FF3D]/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -482,7 +771,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               No Workout Plan Selected
             </h2>
             <p className="text-sm text-[#A1A1AA] leading-relaxed">
-              You haven't selected a training routine yet. Visit the Workout Recommender to get an automated 5-exercise prescription tailored to your BMI and experience tier.
+              Select a routine to enter Guided Workout Mode. You will receive a structured 5-exercise regimen with custom set tempos and recovery periods.
             </p>
           </div>
 
@@ -498,7 +787,6 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             </button>
           </div>
 
-          {/* Quick-Pick Alternative */}
           <div className="pt-6 border-t border-[#24242E] space-y-3">
             <div className="text-[11px] font-mono uppercase tracking-wider text-[#A1A1AA]">
               Or Quick-Start a Workout Split
@@ -513,7 +801,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     try {
                       localStorage.setItem('fitforge_active_split', split.id);
                     } catch {
-                      // Safe
+                      // safe
                     }
                   }}
                   className="px-3.5 py-2 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-xs font-semibold text-[#F4F4F6] transition-all flex items-center gap-2 cursor-pointer"
@@ -531,16 +819,226 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     );
   }
 
-  // ================= SCENARIO B: ACTIVE LIVE SESSION VIEW =================
-  // Circular Ring SVG Calculations (radius 48, circumference ~301.59)
-  const ringRadius = 48;
-  const ringCircumference = 2 * Math.PI * ringRadius;
-  const restRatio = restDuration > 0 ? Math.max(0, Math.min(1, restRemaining / restDuration)) : 0;
-  const strokeOffset = ringCircumference * (1 - restRatio);
+  // ================= SCENARIO B: READY SCREEN (Requirement 1) =================
+  if (sessionState === 'ready') {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-300">
+        {/* Header Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#24242E]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
+              <Dumbbell className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+                  {workoutPlan.name}
+                </h1>
+                <span className="px-2.5 py-0.5 rounded-full bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 text-[10px] font-mono font-bold text-[#C6FF3D] uppercase">
+                  Ready Mode
+                </span>
+              </div>
+              <p className="text-xs text-[#A1A1AA] mt-0.5">
+                {SPLIT_DESCRIPTIONS[String(selectedSplit).toLowerCase()] ||
+                  'Structured 5-exercise resistance routine tailored for your profile.'}
+              </p>
+            </div>
+          </div>
 
+          {/* Quick Actions: Switch Plan & Tempo Setting */}
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => setIsPaceModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono text-[#F4F4F6] transition-colors cursor-pointer"
+              title="Configure seconds per rep tempo"
+            >
+              <Settings className="w-3.5 h-3.5 text-[#C6FF3D]" />
+              <span>{secondsPerRep}s / rep</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSelectedSplit(null)}
+              className="px-3 py-1.5 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs font-semibold text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+            >
+              Switch Plan
+            </button>
+          </div>
+        </div>
+
+        {/* Ready Briefing Card */}
+        <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-72 h-72 bg-[#C6FF3D]/5 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Overview Metrics Strip */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-center font-mono">
+            <div className="space-y-0.5">
+              <span className="text-[10px] uppercase text-[#A1A1AA] block">Exercises</span>
+              <span className="text-xl font-black text-[#F4F4F6]">5 Exercises</span>
+              <span className="text-[10px] text-[#A1A1AA] block">Sequential</span>
+            </div>
+            <div className="space-y-0.5">
+              <span className="text-[10px] uppercase text-[#A1A1AA] block">Total Sets</span>
+              <span className="text-xl font-black text-[#F4F4F6]">{totalWorkoutSets} Sets</span>
+              <span className="text-[10px] text-[#A1A1AA] block">Prescribed</span>
+            </div>
+            <div className="space-y-0.5">
+              <span className="text-[10px] uppercase text-[#C6FF3D] block font-bold">Estimated Time</span>
+              <span className="text-xl font-black text-[#C6FF3D]">{estimatedRoutineMinutes} mins</span>
+              <span className="text-[10px] text-[#A1A1AA] block">Work + Rest</span>
+            </div>
+            <div className="space-y-0.5">
+              <span className="text-[10px] uppercase text-[#A1A1AA] block">Intensity Rating</span>
+              <span className="text-xl font-black text-[#F4F4F6]">
+                {workoutPlan.getMETValue().toFixed(1)} MET
+              </span>
+              <span className="text-[10px] text-orange-400 font-bold block">
+                ~{Math.round(workoutPlan.getMETValue() * userWeightKg * (estimatedRoutineMinutes / 60))} kcal
+              </span>
+            </div>
+          </div>
+
+          {/* Big "Start Workout" CTA Button */}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={handleStartWorkout}
+              className="w-full py-4 sm:py-5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-heading font-black text-xl sm:text-2xl uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer shadow-xl shadow-[#C6FF3D]/20 hover:scale-[1.01] active:scale-[0.99]"
+            >
+              <Play className="w-6 h-6 fill-current stroke-[2.5]" />
+              <span>Start Workout</span>
+            </button>
+            <p className="text-center text-xs text-[#A1A1AA] mt-2.5 font-mono">
+              Pressing Start starts the session stopwatch and opens Exercise 1, Set 1 in guided mode.
+            </p>
+          </div>
+
+          {/* Ordered 5-Exercise Routine List */}
+          <div className="space-y-4 pt-4 border-t border-[#24242E]">
+            <div className="flex items-center justify-between">
+              <h2 className="font-heading text-xl font-bold uppercase tracking-wider text-[#F4F4F6]">
+                Prescribed 5-Exercise Routine (Order of Execution)
+              </h2>
+              <span className="text-xs font-mono text-[#A1A1AA]">
+                Pace: {secondsPerRep}s / rep
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              {exercises.map((exercise, index) => {
+                const sets = exercise.sets || exercise.defaultSets || 3;
+                const reps = exercise.reps || exercise.defaultReps || 10;
+                const rest = exercise.restSeconds || exercise.suggestedRestSeconds || 60;
+
+                return (
+                  <div
+                    key={exercise.id || index}
+                    className="p-4 sm:p-5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors hover:border-[#383848]"
+                  >
+                    <div className="flex items-start sm:items-center gap-3.5">
+                      <div className="w-8 h-8 rounded-xl bg-[#16161D] border border-[#24242E] text-[#C6FF3D] font-mono font-bold text-sm flex items-center justify-center shrink-0">
+                        {index + 1}
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-[#C6FF3D]/10 text-[#C6FF3D] font-bold">
+                            {exercise.targetMuscle}
+                          </span>
+                          <span className="text-[10px] font-mono text-[#A1A1AA]">
+                            · {exercise.equipment}
+                          </span>
+                        </div>
+
+                        <h3 className="text-base font-bold text-[#F4F4F6]">
+                          {exercise.name}
+                        </h3>
+
+                        {/* Beginner Form Cue Line (Requirement 1: Beginners get a short tip line for each exercise) */}
+                        {isBeginner ? (
+                          <div className="text-xs text-[#C6FF3D] font-mono flex items-center gap-1.5 pt-0.5">
+                            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                            <span>
+                              Beginner Tip: {exercise.formTip || 'Maintain steady cadence and control the weight on every rep.'}
+                            </span>
+                          </div>
+                        ) : (
+                          exercise.formTip && (
+                            <p className="text-xs text-[#A1A1AA] italic line-clamp-1">
+                              Cue: {exercise.formTip}
+                            </p>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 font-mono text-left sm:text-right pt-2 sm:pt-0 border-t sm:border-t-0 border-[#24242E]/50">
+                      <div>
+                        <div className="text-xs font-bold text-[#F4F4F6]">
+                          {sets} sets × {reps} reps
+                        </div>
+                        <div className="text-[10px] text-[#A1A1AA]">
+                          Rest: {rest}s
+                        </div>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-lg bg-[#16161D] text-[10px] font-mono text-[#A1A1AA] border border-[#24242E]">
+                        Pending
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Pace Settings Modal */}
+        {isPaceModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/80 backdrop-blur-sm">
+            <div className="bg-[#16161D] border border-[#24242E] rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-[#24242E] pb-3">
+                <h3 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase">
+                  Workout Pace Tempo
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setIsPaceModalOpen(false)}
+                  className="text-[#A1A1AA] hover:text-[#F4F4F6]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <p className="text-xs text-[#A1A1AA]">
+                Set the suggested time per repetition for work countdown rings (default is 4 seconds).
+              </p>
+              <div className="grid grid-cols-5 gap-2">
+                {[2, 3, 4, 5, 6].map((sec) => (
+                  <button
+                    key={sec}
+                    type="button"
+                    onClick={() => handleUpdateSecondsPerRep(sec)}
+                    className={`py-2 rounded-xl text-xs font-bold font-mono transition-all border ${
+                      secondsPerRep === sec
+                        ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D]'
+                        : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E]'
+                    }`}
+                  >
+                    {sec}s
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ================= SCENARIO C: GUIDED WORKOUT MODE =================
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* ================= PAGE TOP HEADER & ABANDON BUTTON ================= */}
+      {/* ================= TOP HUD: STOPWATCH, CALORIES, PAUSE & CONTROLS ================= */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#24242E]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
@@ -548,256 +1046,136 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+              <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-[#F4F4F6]">
                 {workoutPlan.name}
               </h1>
-              {isStopwatchRunning && (
-                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-[10px] font-mono text-emerald-400">
+              {isPaused ? (
+                <span className="px-2 py-0.5 rounded-full bg-amber-950/60 border border-amber-500/40 text-[10px] font-mono text-amber-400 font-bold">
+                  PAUSED
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-[10px] font-mono text-emerald-400 font-bold">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  LIVE
+                  GUIDED LIVE
                 </span>
               )}
             </div>
             <p className="text-xs text-[#A1A1AA] mt-0.5">
-              {SPLIT_DESCRIPTIONS[String(selectedSplit).toLowerCase()] ||
-                '5-exercise resistance routine tailored for your profile.'}
+              Exercise {currentExerciseIndex + 1} of 5 · Set {currentSetIndex} of {currentExTotalSets}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          {/* Sound Indicator */}
-          <div
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#16161D] border border-[#24242E] text-xs text-[#A1A1AA]"
-            title={userPreferences.soundEnabled ? 'Rest timer sounds enabled' : 'Rest timer sounds muted'}
+        {/* Global Controls: Audio, Pace, Pause, Quit */}
+        <div className="flex items-center gap-2">
+          {/* Pause / Resume Button (Requirement 4) */}
+          <button
+            type="button"
+            onClick={handleTogglePause}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 cursor-pointer shadow-md ${
+              isPaused
+                ? 'bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] shadow-[#C6FF3D]/15'
+                : 'bg-amber-500 hover:bg-amber-400 text-[#0B0B0F] shadow-amber-500/10'
+            }`}
           >
-            {userPreferences.soundEnabled && !sounds.muted ? (
+            {isPaused ? (
               <>
-                <Volume2 className="w-3.5 h-3.5 text-[#C6FF3D]" />
-                <span className="text-[10px] font-mono text-[#F4F4F6]">Audio On</span>
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Resume</span>
               </>
             ) : (
               <>
-                <VolumeX className="w-3.5 h-3.5 text-zinc-500" />
-                <span className="text-[10px] font-mono text-zinc-500">Muted</span>
+                <Pause className="w-3.5 h-3.5 fill-current" />
+                <span>Pause</span>
               </>
             )}
-          </div>
+          </button>
 
-          {/* Change Plan Button */}
+          {/* Sound Toggle */}
           <button
             type="button"
             onClick={() => {
-              if (isSessionActive) {
-                setIsAbandonModalOpen(true);
-              } else {
-                setSelectedSplit(null);
-              }
+              const next = !userPreferences.soundEnabled;
+              updatePreferences({ soundEnabled: next });
+              if (next && !sounds.muted) sounds.playTick();
             }}
-            className="px-3 py-1.5 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs font-semibold text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+            className="p-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs text-[#A1A1AA] transition-colors cursor-pointer"
+            title={userPreferences.soundEnabled ? 'Mute audio cues' : 'Enable audio cues'}
+            aria-label="Toggle sound"
           >
-            Switch Plan
+            {userPreferences.soundEnabled && !sounds.muted ? (
+              <Volume2 className="w-4 h-4 text-[#C6FF3D]" />
+            ) : (
+              <VolumeX className="w-4 h-4 text-zinc-500" />
+            )}
           </button>
-        </div>
-      </div>
 
-      {/* ================= PRECISION HUD: STOPWATCH & CALORIES ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-        {/* Stopwatch Card (8 cols) */}
-        <div className="md:col-span-8 p-5 sm:p-6 rounded-3xl bg-[#16161D] border border-[#24242E] shadow-xl flex flex-col justify-between gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
-              <Clock className="w-4 h-4 text-[#C6FF3D]" />
-              <span className="uppercase tracking-wider">Session Stopwatch</span>
-            </div>
-            <span
-              className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-md ${
-                isStopwatchRunning
-                  ? 'bg-[#C6FF3D]/10 text-[#C6FF3D] border border-[#C6FF3D]/30'
-                  : stopwatchSeconds > 0
-                  ? 'bg-amber-950/40 text-amber-400 border border-amber-800/40'
-                  : 'bg-[#24242E] text-[#A1A1AA]'
-              }`}
-            >
-              {isStopwatchRunning ? 'Running' : stopwatchSeconds > 0 ? 'Paused' : 'Ready'}
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 my-1">
-            <div className="font-mono text-4xl sm:text-5xl font-black tracking-tight text-[#F4F4F6] tabular-nums">
-              {formatTime(stopwatchSeconds)}
-            </div>
-
-            {/* Stopwatch Controls: Start, Pause, Reset */}
-            <div className="flex items-center gap-2">
-              {isStopwatchRunning ? (
-                <button
-                  type="button"
-                  onClick={handlePauseStopwatch}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0B0B0F] font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-md shadow-amber-500/10"
-                >
-                  <Pause className="w-4 h-4 fill-current" />
-                  <span>Pause</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleStartStopwatch}
-                  className="px-5 py-2.5 rounded-xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#C6FF3D]/15"
-                >
-                  <Play className="w-4 h-4 fill-current" />
-                  <span>{stopwatchSeconds > 0 ? 'Resume' : 'Start'}</span>
-                </button>
-              )}
-
-              <button
-                type="button"
-                onClick={handleResetStopwatch}
-                title="Reset Stopwatch to 00:00"
-                className="p-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
-                aria-label="Reset Stopwatch"
-              >
-                <RotateCcw className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <div className="text-[11px] text-[#A1A1AA] flex items-center gap-2 border-t border-[#24242E] pt-3">
-            <span>Tip: Checking an exercise starts the rest timer automatically.</span>
-          </div>
-        </div>
-
-        {/* Burned Calories & Finish CTA Card (4 cols) */}
-        <div className="md:col-span-4 p-5 sm:p-6 rounded-3xl bg-[#16161D] border border-[#24242E] shadow-xl flex flex-col justify-between gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
-              <Flame className="w-4 h-4 text-orange-400" />
-              <span className="uppercase tracking-wider">Energy Burned</span>
-            </div>
-            <span className="text-[10px] font-mono text-[#A1A1AA]">
-              {userWeightKg}kg Athlete
-            </span>
-          </div>
-
-          <div>
-            <div className="text-3xl sm:text-4xl font-mono font-bold text-[#F4F4F6] tabular-nums">
-              {displayCalories}{' '}
-              <span className="text-sm font-sans font-medium text-[#A1A1AA]">kcal</span>
-            </div>
-            <div className="text-[11px] font-mono text-[#A1A1AA] mt-1">
-              Calculated via MET {workoutPlan.getMETValue().toFixed(1)} formula
-            </div>
-          </div>
-
-          {/* Primary Finish & Save Button */}
+          {/* Tempo Quick Setting */}
           <button
             type="button"
-            onClick={handleOpenFinishModal}
-            className="w-full py-3 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#C6FF3D]/15"
+            onClick={() => setIsPaceModalOpen(true)}
+            className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono text-[#A1A1AA] transition-colors cursor-pointer"
+            title="Adjust seconds per rep pace"
           >
-            <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
-            <span>Finish and Save</span>
+            <Settings className="w-4 h-4 text-[#C6FF3D]" />
+          </button>
+
+          {/* Quit Workout Button (Requirement 4) */}
+          <button
+            type="button"
+            onClick={() => setIsQuitModalOpen(true)}
+            className="px-3 py-2 rounded-xl border border-rose-900/60 bg-rose-950/20 hover:bg-rose-950/40 text-rose-400 text-xs font-semibold transition-colors cursor-pointer"
+          >
+            Quit
           </button>
         </div>
       </div>
 
-      {/* ================= CIRCULAR REST COUNTDOWN RING ================= */}
-      {isRestActive && (
-        <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#16161D] via-[#1c1c27] to-[#16161D] border border-[#C6FF3D]/40 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            {/* Left: Animated Circular Progress Ring */}
-            <div className="flex items-center gap-6">
-              <div className="relative w-28 h-28 shrink-0 flex items-center justify-center">
-                <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 120 120">
-                  {/* Background Track */}
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r={ringRadius}
-                    className="text-[#24242E]"
-                    strokeWidth="8"
-                    stroke="currentColor"
-                    fill="transparent"
-                  />
-                  {/* Dynamic Neon Lime Progress Ring */}
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r={ringRadius}
-                    className="text-[#C6FF3D] transition-all duration-1000 ease-linear"
-                    strokeWidth="8"
-                    strokeDasharray={ringCircumference}
-                    strokeDashoffset={strokeOffset}
-                    strokeLinecap="round"
-                    stroke="currentColor"
-                    fill="transparent"
-                  />
-                </svg>
-
-                {/* Ring Interior Display */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="font-mono text-2xl font-black text-[#F4F4F6] tabular-nums leading-none">
-                    {restRemaining}s
-                  </span>
-                  <span className="text-[9px] font-mono uppercase tracking-widest text-[#C6FF3D] mt-1 font-bold">
-                    Rest
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-1 text-center sm:text-left">
-                <div className="text-[11px] font-mono uppercase tracking-wider text-[#C6FF3D] font-bold">
-                  Rest Countdown Active
-                </div>
-                <h3 className="text-lg font-bold text-[#F4F4F6] leading-snug">
-                  Catch your breath & hydrate
-                </h3>
-                {restExerciseName && (
-                  <p className="text-xs text-[#A1A1AA]">
-                    Resting after completing <strong className="text-white">{restExerciseName}</strong>
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Right: Rest Controls (Skip Rest + Quick Add) */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => handleAddRestTime(15)}
-                className="px-3 py-2 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono text-[#F4F4F6] transition-colors cursor-pointer"
-                title="Add 15 seconds to rest"
-              >
-                +15s
-              </button>
-              <button
-                type="button"
-                onClick={handleSkipRest}
-                className="px-4 py-2 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
-              >
-                <FastForward className="w-3.5 h-3.5 text-[#C6FF3D]" />
-                <span>Skip Rest</span>
-              </button>
-            </div>
+      {/* ================= METRICS BAR: STOPWATCH & ENERGY ================= */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-[#16161D] border border-[#24242E] font-mono">
+        <div className="space-y-0.5">
+          <div className="flex items-center gap-1.5 text-[10px] uppercase text-[#A1A1AA]">
+            <Clock className="w-3.5 h-3.5 text-[#C6FF3D]" />
+            <span>Stopwatch</span>
           </div>
-        </div>
-      )}
-
-      {/* ================= DYNAMIC PROGRESS BAR ================= */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-[#16161D] border border-[#24242E] space-y-2.5">
-        <div className="flex items-center justify-between text-xs">
-          <div className="font-mono text-[#A1A1AA] flex items-center gap-2">
-            <span>Exercises Completed:</span>
-            <strong className="text-[#F4F4F6] font-bold">
-              {completedCount} / 5
-            </strong>
-          </div>
-          <div className="font-mono text-[#C6FF3D] font-bold tabular-nums">
-            {progressPercent}% Complete
+          <div className="text-xl sm:text-2xl font-black text-[#F4F4F6] tabular-nums">
+            {formatTime(stopwatchSeconds)}
           </div>
         </div>
 
-        {/* Linear Progress Track */}
+        <div className="space-y-0.5">
+          <div className="flex items-center gap-1.5 text-[10px] uppercase text-[#A1A1AA]">
+            <Flame className="w-3.5 h-3.5 text-orange-400" />
+            <span>Energy Burned</span>
+          </div>
+          <div className="text-xl sm:text-2xl font-black text-[#F4F4F6] tabular-nums">
+            {displayCalories} <span className="text-xs text-[#A1A1AA] font-normal">kcal</span>
+          </div>
+        </div>
+
+        <div className="space-y-0.5">
+          <span className="text-[10px] uppercase text-[#A1A1AA] block">Exercises Done</span>
+          <div className="text-xl sm:text-2xl font-black text-[#C6FF3D] tabular-nums">
+            {completedCount} / 5
+          </div>
+        </div>
+
+        <div className="space-y-0.5">
+          <span className="text-[10px] uppercase text-[#A1A1AA] block">Overall Sets</span>
+          <div className="text-xl sm:text-2xl font-black text-[#F4F4F6] tabular-nums">
+            {totalCompletedSets} / {totalWorkoutSets}
+          </div>
+        </div>
+      </div>
+
+      {/* ================= DYNAMIC PROGRESS BAR (Requirement 5) ================= */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between text-xs font-mono">
+          <span className="text-[#A1A1AA]">
+            Workout Progress ({totalCompletedSets} of {totalWorkoutSets} sets completed)
+          </span>
+          <span className="text-[#C6FF3D] font-bold">{progressPercent}%</span>
+        </div>
         <div className="h-2.5 bg-[#0B0B0F] border border-[#24242E] rounded-full overflow-hidden p-0.5">
           <div
             className="h-full bg-[#C6FF3D] rounded-full transition-all duration-500 ease-out shadow-sm shadow-[#C6FF3D]/50"
@@ -806,152 +1184,431 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         </div>
       </div>
 
-      {/* ================= CLICKABLE CHECKLIST OF 5 EXERCISES ================= */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="font-heading text-xl font-bold uppercase tracking-wider text-[#F4F4F6]">
-            Prescribed Routine Checklist ({exercises.length} Exercises)
+      {/* ================= PAUSED NOTICE BANNER (Requirement 4) ================= */}
+      {isPaused && (
+        <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-600/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left animate-in fade-in duration-200">
+          <div className="flex items-center gap-2.5">
+            <Pause className="w-5 h-5 text-amber-400 shrink-0" />
+            <div>
+              <h4 className="text-sm font-bold text-amber-300">Workout Session Paused</h4>
+              <p className="text-xs text-amber-200/70">
+                All timers (stopwatch, set countdown, and rest intervals) are frozen.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleTogglePause}
+            className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#0B0B0F] font-bold text-xs uppercase tracking-wider cursor-pointer transition-colors shrink-0"
+          >
+            Resume Workout
+          </button>
+        </div>
+      )}
+
+      {/* ================= GUIDED VIEW: SINGLE ACTIVE EXERCISE (Requirement 2 & 3) ================= */}
+      <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        {/* Ambient Glow */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#C6FF3D]/5 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Top Badges & Exercise Identity */}
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-2.5 py-1 rounded-lg bg-[#0B0B0F] border border-[#24242E] text-xs font-mono text-[#A1A1AA]">
+                Exercise {currentExerciseIndex + 1} of 5
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-[#C6FF3D]/10 text-[#C6FF3D] text-xs font-mono font-bold uppercase">
+                {currentExercise.targetMuscle}
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-[#0B0B0F] border border-[#24242E] text-xs font-mono text-[#A1A1AA]">
+                {currentExercise.equipment}
+              </span>
+            </div>
+
+            {/* Set Indicator Pill */}
+            <div className="px-3 py-1 rounded-xl bg-[#C6FF3D]/15 border border-[#C6FF3D]/30 text-xs font-mono font-bold text-[#C6FF3D]">
+              Set {currentSetIndex} of {currentExTotalSets}
+            </div>
+          </div>
+
+          <h2 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+            {currentExercise.name}
           </h2>
-          <span className="text-xs font-mono text-[#A1A1AA]">
-            Click to complete
-          </span>
+
+          <div className="flex items-center gap-3 font-mono text-sm text-[#A1A1AA]">
+            <span>Target: <strong className="text-[#F4F4F6]">{currentExReps} reps</strong></span>
+            <span>·</span>
+            <span>Rest interval: <strong className="text-[#F4F4F6]">{currentExercise.restSeconds || 60}s</strong></span>
+          </div>
         </div>
 
-        <div className="space-y-3">
-          {exercises.map((exercise, index) => {
-            const isCompleted = completedExercises[index];
-            const sets = exercise.sets || exercise.defaultSets || 3;
-            const reps = exercise.reps || exercise.defaultReps || 10;
-            const rest = exercise.restSeconds || exercise.suggestedRestSeconds || 60;
+        {/* Form Tip Card */}
+        {currentExercise.formTip && (
+          <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex items-start gap-3">
+            <Sparkles className="w-5 h-5 text-[#C6FF3D] shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-[#C6FF3D] font-bold block">
+                Form & Execution Cue
+              </span>
+              <p className="text-xs sm:text-sm text-[#F4F4F6] leading-relaxed">
+                {currentExercise.formTip}
+              </p>
+            </div>
+          </div>
+        )}
 
-            return (
-              <div
-                key={exercise.id || index}
-                onClick={() => handleToggleExercise(index)}
-                className={`p-4 sm:p-5 rounded-3xl border transition-all duration-200 cursor-pointer select-none group flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                  isCompleted
-                    ? 'bg-[#16161D]/60 border-[#C6FF3D]/40 shadow-sm shadow-[#C6FF3D]/5'
-                    : 'bg-[#16161D] hover:bg-[#1a1a24] border-[#24242E] hover:border-[#383848]'
-                }`}
-              >
-                {/* Left: Number + Checkbox + Details */}
-                <div className="flex items-start sm:items-center gap-4">
-                  {/* Interactive Checkbox Circle */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleExercise(index);
-                    }}
-                    className={`w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 border transition-all cursor-pointer ${
-                      isCompleted
-                        ? 'bg-[#C6FF3D] border-[#C6FF3D] text-[#0B0B0F] shadow-md shadow-[#C6FF3D]/20'
-                        : 'bg-[#0B0B0F] border-[#24242E] text-transparent group-hover:border-[#C6FF3D]/50'
+        {/* ================= DYNAMIC WORK / REST / GET READY PHASE ================= */}
+        {phase === 'work' && (
+          <div className="p-6 rounded-3xl bg-gradient-to-b from-[#1c1c27] to-[#16161D] border border-[#24242E] space-y-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+              {/* Circular Set Countdown Ring */}
+              <div className="relative w-36 h-36 shrink-0 flex items-center justify-center">
+                <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 140 140">
+                  <circle
+                    cx="70"
+                    cy="70"
+                    r={ringRadius}
+                    className="text-[#24242E]"
+                    strokeWidth="10"
+                    stroke="currentColor"
+                    fill="transparent"
+                  />
+                  <circle
+                    cx="70"
+                    cy="70"
+                    r={ringRadius}
+                    className={`transition-all duration-1000 ease-linear ${
+                      workRemaining === 0 ? 'text-emerald-400' : 'text-[#C6FF3D]'
                     }`}
-                    aria-label={`Mark ${exercise.name} as ${isCompleted ? 'incomplete' : 'complete'}`}
-                  >
-                    <Check className={`w-5 h-5 stroke-[3] ${isCompleted ? 'text-[#0B0B0F]' : 'opacity-0'}`} />
-                  </button>
+                    strokeWidth="10"
+                    strokeDasharray={ringCircumference}
+                    strokeDashoffset={workStrokeOffset}
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="transparent"
+                  />
+                </svg>
 
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-[#0B0B0F] border border-[#24242E] text-[#A1A1AA]">
-                        Exercise {index + 1} of 5
-                      </span>
-                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-[#C6FF3D]/10 text-[#C6FF3D]">
-                        {exercise.targetMuscle}
-                      </span>
-                      <span className="text-[10px] font-mono text-[#A1A1AA] hidden sm:inline">
-                        · {exercise.equipment}
-                      </span>
-                    </div>
-
-                    <h3
-                      className={`text-base font-bold transition-colors ${
-                        isCompleted
-                          ? 'text-[#A1A1AA] line-through decoration-[#C6FF3D]/50'
-                          : 'text-[#F4F4F6] group-hover:text-white'
-                      }`}
-                    >
-                      {exercise.name}
-                    </h3>
-
-                    {exercise.formTip && (
-                      <p className="text-xs text-[#A1A1AA] line-clamp-1 italic">
-                        Tip: {exercise.formTip}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Right: Prescribed Sets, Reps & Rest Pill */}
-                <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#24242E]/50">
-                  <div className="text-left sm:text-right font-mono">
-                    <div className="text-xs font-bold text-[#F4F4F6]">
-                      {sets} sets × {reps} reps
-                    </div>
-                    <div className="text-[10px] text-[#A1A1AA]">
-                      Rest: {rest}s
-                    </div>
-                  </div>
-
-                  <span
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors ${
-                      isCompleted
-                        ? 'bg-[#C6FF3D]/15 text-[#C6FF3D] border border-[#C6FF3D]/30'
-                        : 'bg-[#0B0B0F] text-[#A1A1AA] border border-[#24242E]'
-                    }`}
-                  >
-                    {isCompleted ? (
-                      <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>Completed</span>
-                      </>
-                    ) : (
-                      <span>Pending</span>
-                    )}
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <span className="font-mono text-3xl font-black text-[#F4F4F6] tabular-nums leading-none">
+                    {workRemaining > 0 ? `${workRemaining}s` : '0s'}
+                  </span>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#C6FF3D] mt-1 font-bold">
+                    {workRemaining > 0 ? 'Work Phase' : 'Set Complete'}
                   </span>
                 </div>
               </div>
-            );
-          })}
+
+              {/* Work Instructions & "I'm Done" Action */}
+              <div className="flex-1 space-y-4 text-center sm:text-left">
+                <div>
+                  <div className="text-xs font-mono uppercase tracking-wider text-[#C6FF3D] font-bold">
+                    Suggested Pace: {currentExReps} reps × {secondsPerRep}s = {workTotalDuration}s
+                  </div>
+                  <h3 className="text-lg font-bold text-[#F4F4F6] mt-0.5">
+                    Execute Set {currentSetIndex} with controlled tempo
+                  </h3>
+                  <p className="text-xs text-[#A1A1AA] mt-1">
+                    {workRemaining > 0
+                      ? 'Press "I\'m done" at any time when finished. Countdown will wait for you when zero is reached.'
+                      : 'Countdown finished! Take a breath, log your reps, and press "I\'m done" to begin your rest period.'}
+                  </p>
+                </div>
+
+                {/* Primary "I'm Done" Button (Requirement 3) */}
+                <button
+                  type="button"
+                  onClick={handleSetDone}
+                  disabled={isPaused}
+                  className={`w-full sm:w-auto px-8 py-4 rounded-2xl font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl ${
+                    workRemaining === 0
+                      ? 'bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] shadow-[#C6FF3D]/25 ring-4 ring-[#C6FF3D]/30 animate-pulse'
+                      : 'bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] shadow-[#C6FF3D]/15'
+                  } disabled:opacity-50`}
+                >
+                  <Check className="w-5 h-5 stroke-[3]" />
+                  <span>I'm Done (Set {currentSetIndex})</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* REST PHASE (Requirement 3) */}
+        {phase === 'rest' && (
+          <div className="p-6 rounded-3xl bg-gradient-to-r from-[#16161D] via-[#1e1e2d] to-[#16161D] border border-[#C6FF3D]/40 space-y-6 animate-in fade-in duration-300">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+              {/* Circular Rest Ring */}
+              <div className="relative w-36 h-36 shrink-0 flex items-center justify-center">
+                <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 140 140">
+                  <circle
+                    cx="70"
+                    cy="70"
+                    r={ringRadius}
+                    className="text-[#24242E]"
+                    strokeWidth="10"
+                    stroke="currentColor"
+                    fill="transparent"
+                  />
+                  <circle
+                    cx="70"
+                    cy="70"
+                    r={ringRadius}
+                    className="text-[#C6FF3D] transition-all duration-1000 ease-linear"
+                    strokeWidth="10"
+                    strokeDasharray={ringCircumference}
+                    strokeDashoffset={restStrokeOffset}
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="transparent"
+                  />
+                </svg>
+
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <span className="font-mono text-3xl font-black text-[#F4F4F6] tabular-nums leading-none">
+                    {restRemaining}s
+                  </span>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#C6FF3D] mt-1 font-bold">
+                    Rest
+                  </span>
+                </div>
+              </div>
+
+              {/* Rest Details & Controls */}
+              <div className="flex-1 space-y-4 text-center sm:text-left">
+                <div>
+                  <div className="text-xs font-mono uppercase tracking-wider text-[#C6FF3D] font-bold">
+                    Active Recovery Interval
+                  </div>
+                  <h3 className="text-lg font-bold text-[#F4F4F6] mt-0.5">
+                    Hydrate & prepare for the next effort
+                  </h3>
+                  <p className="text-xs text-[#A1A1AA] mt-1">
+                    Resting after Set {currentSetIndex}. Next set starts automatically with a 3-second ready cue.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => handleAddRestTime(15)}
+                    className="px-4 py-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono text-[#F4F4F6] transition-colors cursor-pointer"
+                  >
+                    +15s Rest
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSkipRest}
+                    className="px-5 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <FastForward className="w-4 h-4 text-[#C6FF3D]" />
+                    <span>Skip Rest</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* GET READY 3-2-1 PHASE (Requirement 3) */}
+        {phase === 'get_ready' && (
+          <div className="p-8 rounded-3xl bg-[#0B0B0F] border border-[#C6FF3D] text-center space-y-4 animate-in zoom-in-95 duration-200">
+            <span className="text-xs font-mono uppercase tracking-widest text-[#C6FF3D] font-bold">
+              Next Set Starting
+            </span>
+            <div className="font-mono text-6xl font-black text-[#F4F4F6] animate-pulse">
+              {getReadyRemaining}
+            </div>
+            <p className="text-xs text-[#A1A1AA]">
+              Get in position and grip the bar.
+            </p>
+          </div>
+        )}
+
+        {/* Next Up Preview (Requirement 2) */}
+        {nextUpPreview && (
+          <div className="p-3.5 rounded-xl bg-[#0B0B0F] border border-[#24242E] text-xs font-mono text-[#A1A1AA] flex items-center justify-between">
+            <span className="text-[#C6FF3D] font-bold uppercase tracking-wider text-[11px]">
+              {nextUpPreview}
+            </span>
+            <span className="text-[10px] text-zinc-500">Upcoming</span>
+          </div>
+        )}
+
+        {/* Guided Navigation Buttons: Previous Set & Skip Exercise (Requirement 4) */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#24242E]">
+          <button
+            type="button"
+            onClick={handlePreviousSet}
+            disabled={currentExerciseIndex === 0 && currentSetIndex === 1}
+            className="px-4 py-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-xs font-semibold text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Previous Set</span>
+          </button>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleSkipExercise}
+              className="px-4 py-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-xs font-semibold text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Skip Exercise</span>
+              <SkipForward className="w-4 h-4 text-[#C6FF3D]" />
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCompleteWorkout}
+              className="px-4 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-xs font-bold text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <CheckCircle2 className="w-4 h-4 text-[#C6FF3D]" />
+              <span>Finish Early</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* ================= FINISH AND SAVE MODAL ================= */}
-      {isFinishModalOpen && (
+      {/* ================= COLLAPSIBLE OVERVIEW LIST (Requirement 7) ================= */}
+      <div className="bg-[#16161D] rounded-3xl border border-[#24242E] overflow-hidden transition-all duration-300">
+        <button
+          type="button"
+          onClick={() => setIsOverviewExpanded(!isOverviewExpanded)}
+          className="w-full p-4 sm:p-5 flex items-center justify-between text-left cursor-pointer hover:bg-[#1a1a24] transition-colors"
+          aria-expanded={isOverviewExpanded}
+        >
+          <div className="flex items-center gap-3">
+            <Dumbbell className="w-5 h-5 text-[#C6FF3D]" />
+            <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+              Routine Overview ({exercises.length} Exercises)
+            </h3>
+            <span className="text-xs font-mono text-[#A1A1AA]">
+              · {completedCount} / 5 completed
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
+            <span>{isOverviewExpanded ? 'Hide' : 'Show'}</span>
+            {isOverviewExpanded ? (
+              <ChevronUp className="w-4 h-4 text-[#C6FF3D]" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-[#C6FF3D]" />
+            )}
+          </div>
+        </button>
+
+        {isOverviewExpanded && (
+          <div className="p-4 sm:p-5 pt-0 space-y-2.5 border-t border-[#24242E]/60 animate-in fade-in duration-200">
+            {exercises.map((exercise, idx) => {
+              const setsRequired = exercise.sets || exercise.defaultSets || 3;
+              const setsDone = completedSetsByExercise[idx] || 0;
+              const isExComplete = setsDone >= setsRequired;
+              const isCurrent = idx === currentExerciseIndex;
+
+              return (
+                <div
+                  key={exercise.id || idx}
+                  className={`p-3.5 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                    isCurrent
+                      ? 'bg-[#1c1c27] border-[#C6FF3D]/50 shadow-md shadow-[#C6FF3D]/5'
+                      : isExComplete
+                      ? 'bg-[#0B0B0F]/60 border-emerald-900/40 text-[#A1A1AA]'
+                      : 'bg-[#0B0B0F] border-[#24242E]'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-7 h-7 rounded-xl flex items-center justify-center font-mono text-xs font-bold shrink-0 ${
+                        isExComplete
+                          ? 'bg-[#C6FF3D] text-[#0B0B0F]'
+                          : isCurrent
+                          ? 'bg-[#C6FF3D]/10 text-[#C6FF3D] border border-[#C6FF3D]/40'
+                          : 'bg-[#16161D] text-[#A1A1AA] border border-[#24242E]'
+                      }`}
+                    >
+                      {isExComplete ? <Check className="w-4 h-4 stroke-[3]" /> : idx + 1}
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`text-sm font-bold ${
+                            isExComplete
+                              ? 'line-through text-[#A1A1AA]'
+                              : isCurrent
+                              ? 'text-[#F4F4F6]'
+                              : 'text-[#F4F4F6]'
+                          }`}
+                        >
+                          {exercise.name}
+                        </span>
+                        {isCurrent && (
+                          <span className="flex items-center gap-1 text-[10px] font-mono text-[#C6FF3D]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF3D] animate-ping" />
+                            Active
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[11px] font-mono text-[#A1A1AA]">
+                        {exercise.targetMuscle} · {setsRequired} sets × {exercise.reps || 10} reps
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono">
+                    <span className="text-[#A1A1AA]">
+                      {setsDone} / {setsRequired} sets
+                    </span>
+                    <span
+                      className={`px-2.5 py-0.5 rounded-md text-[10px] font-mono uppercase font-bold ${
+                        isExComplete
+                          ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/40'
+                          : isCurrent
+                          ? 'bg-[#C6FF3D]/10 text-[#C6FF3D] border border-[#C6FF3D]/30'
+                          : 'bg-[#16161D] text-[#A1A1AA] border border-[#24242E]'
+                      }`}
+                    >
+                      {isExComplete
+                        ? 'Completed'
+                        : isCurrent
+                        ? `Set ${currentSetIndex}/${setsRequired}`
+                        : 'Pending'}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ================= FINISH AND SAVE SCREEN (Requirement 6) ================= */}
+      {sessionState === 'finished' && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
         >
-          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden space-y-5 p-6 sm:p-7">
-            {/* Modal Header */}
+          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden space-y-5 p-6 sm:p-8">
             <div className="flex items-start justify-between border-b border-[#24242E] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
-                  <CheckCircle2 className="w-6 h-6 stroke-[2.5]" />
+                <div className="w-12 h-12 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
+                  <Trophy className="w-6 h-6 stroke-[2.5]" />
                 </div>
                 <div>
-                  <h3 className="font-heading text-2xl font-bold uppercase tracking-wider text-[#F4F4F6]">
-                    Finish Workout Session
+                  <h3 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-[#F4F4F6]">
+                    Workout Complete!
                   </h3>
                   <p className="text-xs text-[#A1A1AA] mt-0.5">
-                    Save session performance metrics to your workout history.
+                    Save performance metrics to your workout history log.
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsFinishModalOpen(false)}
-                className="p-1 rounded-lg text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
-                aria-label="Close dialog"
-              >
-                <X className="w-5 h-5" />
-              </button>
             </div>
 
-            {/* Session Summary Statistics */}
+            {/* Performance Metrics Summary */}
             <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-center font-mono">
               <div className="space-y-0.5">
                 <span className="text-[10px] uppercase text-[#A1A1AA] block">Duration</span>
@@ -970,17 +1627,17 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                 <span className="text-[10px] text-[#A1A1AA] block">kcal burned</span>
               </div>
               <div className="space-y-0.5">
-                <span className="text-[10px] uppercase text-[#A1A1AA] block">Exercises</span>
+                <span className="text-[10px] uppercase text-[#A1A1AA] block">Sets Done</span>
                 <span className="text-base font-black text-[#F4F4F6] tabular-nums">
-                  {completedCount} / 5
+                  {totalCompletedSets} / {totalWorkoutSets}
                 </span>
                 <span className="text-[10px] text-[#C6FF3D] font-bold block">
-                  {progressPercent}%
+                  {completedCount} of 5 done
                 </span>
               </div>
             </div>
 
-            {/* Notes Form Field */}
+            {/* Session Notes */}
             <div className="space-y-1.5">
               <label
                 htmlFor="session-notes-input"
@@ -993,7 +1650,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                 rows={3}
                 value={sessionNotes}
                 onChange={(e) => setSessionNotes(e.target.value)}
-                placeholder="Felt strong on compound lifts, improved endurance, notes for next session..."
+                placeholder="Felt strong on compound sets, sustained cadence, notes for next session..."
                 className="w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] focus:border-[#C6FF3D] text-xs text-[#F4F4F6] outline-none transition-colors resize-none placeholder:text-zinc-600"
               />
             </div>
@@ -1002,15 +1659,15 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             <div className="pt-2 flex items-center justify-end gap-3 border-t border-[#24242E]">
               <button
                 type="button"
-                onClick={() => setIsFinishModalOpen(false)}
+                onClick={() => setSessionState('guided')}
                 className="px-4 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-semibold cursor-pointer transition-colors"
               >
-                Resume Session
+                Resume
               </button>
               <button
                 type="button"
                 onClick={handleSaveWorkout}
-                className="px-5 py-2.5 rounded-xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer shadow-lg shadow-[#C6FF3D]/15"
+                className="px-6 py-2.5 rounded-xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] text-xs font-bold font-heading uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 cursor-pointer shadow-lg shadow-[#C6FF3D]/15"
               >
                 <Save className="w-4 h-4" />
                 <span>Save to History</span>
@@ -1020,16 +1677,55 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         </div>
       )}
 
-      {/* ================= ABANDON ACTIVE SESSION CONFIRMATION ================= */}
+      {/* ================= QUIT CONFIRMATION MODAL (Requirement 4 & 9) ================= */}
       <ConfirmModal
-        isOpen={isAbandonModalOpen}
-        onClose={() => setIsAbandonModalOpen(false)}
-        onConfirm={handleConfirmAbandon}
-        title="Leave Active Workout Session?"
-        description="You have an active workout session with running timers and checked exercises. If you switch plans or leave now without saving, your session progress will be lost."
-        confirmLabel="Discard & Leave"
+        isOpen={isQuitModalOpen}
+        onClose={() => setIsQuitModalOpen(false)}
+        onConfirm={handleConfirmQuit}
+        title="Quit Workout Session?"
+        description="Are you sure you want to quit? Your active session progress, timer, and completed sets will be discarded."
+        confirmLabel="Quit & Discard"
         isDestructive={true}
       />
+
+      {/* Pace Settings Modal */}
+      {isPaceModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/80 backdrop-blur-sm">
+          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#24242E] pb-3">
+              <h3 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase">
+                Workout Pace Tempo
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsPaceModalOpen(false)}
+                className="text-[#A1A1AA] hover:text-[#F4F4F6]"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-xs text-[#A1A1AA]">
+              Set the suggested time per repetition for work countdown rings (default is 4 seconds).
+            </p>
+            <div className="grid grid-cols-5 gap-2">
+              {[2, 3, 4, 5, 6].map((sec) => (
+                <button
+                  key={sec}
+                  type="button"
+                  onClick={() => handleUpdateSecondsPerRep(sec)}
+                  className={`py-2 rounded-xl text-xs font-bold font-mono transition-all border ${
+                    secondsPerRep === sec
+                      ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D]'
+                      : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E]'
+                  }`}
+                >
+                  {sec}s
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

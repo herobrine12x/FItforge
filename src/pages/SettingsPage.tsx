@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import {
   AlertOctagon,
   AlertTriangle,
+  Bell,
+  BellOff,
   CheckCircle2,
+  Clock,
   Database,
   Download,
   Eye,
@@ -211,6 +214,83 @@ export function SettingsPage() {
       success('Rest-timer audio enabled.');
     } else {
       info('Rest-timer audio muted.');
+    }
+  };
+
+  // Workout Pace (Seconds per Rep)
+  const [secondsPerRep, setSecondsPerRep] = useState<number>(() => {
+    try {
+      const stored = localStorage.getItem('fitforge_seconds_per_rep');
+      if (stored) return Number(stored);
+    } catch {
+      // safe
+    }
+    return userPreferences.secondsPerRep || 4;
+  });
+
+  const handleSecondsPerRepChange = (sec: number) => {
+    setSecondsPerRep(sec);
+    try {
+      localStorage.setItem('fitforge_seconds_per_rep', String(sec));
+    } catch {
+      // safe
+    }
+    updatePreferences({ secondsPerRep: sec });
+    success(`Workout pace updated to ${sec} seconds per repetition.`);
+  };
+
+  // ================= WORKOUT REMINDERS & NOTIFICATIONS (Requirement 6) =================
+  const [reminderEnabled, setReminderEnabled] = useState<boolean>(() => {
+    return userPreferences.reminderEnabled ?? false;
+  });
+  const [reminderTime, setReminderTime] = useState<string>(() => {
+    return userPreferences.reminderTime || '08:00';
+  });
+  const [notificationPermission, setNotificationPermission] = useState<string>(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      return Notification.permission;
+    }
+    return 'unsupported';
+  });
+
+  const handleReminderToggle = () => {
+    const nextVal = !reminderEnabled;
+    setReminderEnabled(nextVal);
+    updatePreferences({ reminderEnabled: nextVal });
+    if (nextVal) {
+      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission !== 'granted') {
+        info('Workout reminder enabled! If browser notifications are not allowed, reminders appear on the Dashboard banner.');
+      } else {
+        success('Daily workout reminder enabled.');
+      }
+    } else {
+      info('Workout reminders turned off.');
+    }
+  };
+
+  const handleReminderTimeChange = (newTime: string) => {
+    setReminderTime(newTime);
+    updatePreferences({ reminderTime: newTime });
+    success(`Reminder time updated to ${newTime}.`);
+  };
+
+  const handleRequestNotificationPermission = async () => {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      info('Browser notifications are not supported in this environment. Reminders will show on the Dashboard banner.');
+      return;
+    }
+    try {
+      const result = await Notification.requestPermission();
+      setNotificationPermission(result);
+      if (result === 'granted') {
+        success('Browser notifications allowed! You will receive daily workout reminders.');
+        setReminderEnabled(true);
+        updatePreferences({ reminderEnabled: true });
+      } else if (result === 'denied') {
+        info('Notifications were blocked. Workout reminders will appear on your Dashboard banner.');
+      }
+    } catch {
+      info('FitForge will use the Dashboard banner for workout reminders.');
     }
   };
 
@@ -716,6 +796,128 @@ export function SettingsPage() {
                   );
                 })}
               </div>
+            </div>
+
+            {/* Workout Pace: Seconds Per Rep */}
+            <div className="space-y-2.5 pt-2 border-t border-[#24242E]">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-[#F4F4F6]">Workout Pace (Seconds per Rep)</span>
+                  <span className="text-xs font-mono font-bold text-[#C6FF3D]">
+                    {secondsPerRep}s / rep
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#A1A1AA]">
+                  Suggested execution tempo for work phase countdowns (e.g. 10 reps × {secondsPerRep}s = {10 * secondsPerRep}s).
+                </p>
+              </div>
+
+              <div className="grid grid-cols-5 gap-2">
+                {[2, 3, 4, 5, 6].map((sec) => {
+                  const isSelected = secondsPerRep === sec;
+                  return (
+                    <button
+                      key={sec}
+                      type="button"
+                      onClick={() => handleSecondsPerRepChange(sec)}
+                      className={`py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                        isSelected
+                          ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D] shadow-sm'
+                          : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E] hover:text-[#F4F4F6] hover:bg-[#24242E]'
+                      }`}
+                    >
+                      {sec}s
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Daily Workout Reminders (Requirement 6) */}
+            <div className="space-y-3 pt-2 border-t border-[#24242E]">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-[#F4F4F6]">Daily Workout Reminder</span>
+                    <span
+                      className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded ${
+                        reminderEnabled
+                          ? 'bg-[#C6FF3D]/15 text-[#C6FF3D]'
+                          : 'bg-[#24242E] text-[#A1A1AA]'
+                      }`}
+                    >
+                      {reminderEnabled ? 'Active' : 'Off'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#A1A1AA]">
+                    Alerts you when a planned workout has not been completed today.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleReminderToggle}
+                  className={`p-3 rounded-2xl border transition-all cursor-pointer ${
+                    reminderEnabled
+                      ? 'bg-[#C6FF3D]/15 border-[#C6FF3D]/50 text-[#C6FF3D]'
+                      : 'bg-[#0B0B0F] border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6]'
+                  }`}
+                  aria-label={reminderEnabled ? 'Disable workout reminder' : 'Enable workout reminder'}
+                >
+                  {reminderEnabled ? (
+                    <Bell className="w-5 h-5 stroke-[2.5]" />
+                  ) : (
+                    <BellOff className="w-5 h-5 stroke-[2]" />
+                  )}
+                </button>
+              </div>
+
+              {reminderEnabled && (
+                <div className="p-3.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] space-y-3 animate-in fade-in">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-[#C6FF3D]" />
+                      <label htmlFor="settings-reminder-time" className="text-xs font-semibold text-[#F4F4F6]">
+                        Preferred Reminder Time
+                      </label>
+                    </div>
+                    <input
+                      id="settings-reminder-time"
+                      type="time"
+                      value={reminderTime}
+                      onChange={(e) => handleReminderTimeChange(e.target.value)}
+                      className="px-3 py-1.5 rounded-xl bg-[#16161D] border border-[#24242E] focus:border-[#C6FF3D] text-xs font-mono text-[#F4F4F6] outline-none cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Browser notification permission status and fallback indicator */}
+                  <div className="pt-2 border-t border-[#24242E]/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                    <div className="text-[11px] text-[#A1A1AA]">
+                      {notificationPermission === 'granted' ? (
+                        <span className="text-emerald-400 flex items-center gap-1 font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Browser push notifications enabled
+                        </span>
+                      ) : notificationPermission === 'denied' ? (
+                        <span className="text-amber-400">
+                          Browser alerts blocked · Falling back to Dashboard banner
+                        </span>
+                      ) : (
+                        <span>Allow browser notifications for push alerts</span>
+                      )}
+                    </div>
+
+                    {notificationPermission !== 'granted' && notificationPermission !== 'unsupported' && (
+                      <button
+                        type="button"
+                        onClick={handleRequestNotificationPermission}
+                        className="px-2.5 py-1 rounded-lg bg-[#24242E] hover:bg-[#323240] text-[#C6FF3D] text-[11px] font-semibold transition-colors cursor-pointer self-start sm:self-auto"
+                      >
+                        Request Permission
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

@@ -9,6 +9,9 @@ import { User } from '../models/User';
 export interface UserPreferences {
   units: 'metric' | 'imperial';
   soundEnabled: boolean;
+  secondsPerRep?: number;
+  reminderEnabled?: boolean;
+  reminderTime?: string;
 }
 
 interface AuthContextValue {

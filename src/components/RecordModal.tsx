@@ -148,6 +148,7 @@ export const RecordModal: React.FC<RecordModalProps> = ({
                 <option value="pull">Pull</option>
                 <option value="legs_core">Legs & Core</option>
                 <option value="full_body">Full Body</option>
+                <option value="walk">Walk / Cardio Stroll</option>
               </select>
             </div>
 

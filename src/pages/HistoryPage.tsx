@@ -39,6 +39,7 @@ const SPLIT_OPTIONS = [
   { id: 'Upper Body', label: 'Upper Body (Torso Hypertrophy)' },
   { id: 'Home Bodyweight', label: 'Home Bodyweight (Zero Equipment)' },
   { id: 'Cardio HIIT', label: 'Cardio HIIT (Conditioning Intervals)' },
+  { id: 'Walk', label: 'Walk (Active Recovery / Cardio)' },
 ];
 
 export function HistoryPage() {

@@ -9,6 +9,7 @@ export class WorkoutRecord {
   private _id: string;
   private _userId: string;
   private _splitName: string;
+  private _splitType: string;
   private _date: string;
   private _durationMinutes: number;
   private _caloriesBurned: number;
@@ -32,6 +33,7 @@ export class WorkoutRecord {
     this._id = data.id || `rec_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     this._userId = userId.trim();
     this._splitName = splitName.trim();
+    this._splitType = (data.splitType || splitName).trim();
     this._date = data.date || new Date().toISOString();
     this._durationMinutes = Math.max(1, Math.round(data.durationMinutes || 30));
     this._caloriesBurned = Math.max(0, Math.round(data.caloriesBurned || 0));
@@ -148,11 +150,12 @@ export class WorkoutRecord {
   }
 
   public get splitType(): any {
-    return this._splitName;
+    return this._splitType || this._splitName;
   }
 
   public set splitType(val: any) {
-    this.splitName = String(val);
+    this._splitType = String(val);
+    this.touch();
   }
 
   public get rating(): number {
@@ -181,7 +184,7 @@ export class WorkoutRecord {
       userId: this._userId,
       splitName: this._splitName,
       title: `${this._splitName} Session`,
-      splitType: this._splitName,
+      splitType: this._splitType || this._splitName,
       date: this._date,
       durationMinutes: this._durationMinutes,
       caloriesBurned: this._caloriesBurned,

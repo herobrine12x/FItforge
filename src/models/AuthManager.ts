@@ -511,9 +511,9 @@ export class AuthManager {
   }
 
   /**
-   * Retrieves user preferences (units, rest-timer sound)
+   * Retrieves user preferences (units, rest-timer sound, seconds per rep)
    */
-  public getUserPreferences(userId: string): { units: 'metric' | 'imperial'; soundEnabled: boolean } {
+  public getUserPreferences(userId: string): { units: 'metric' | 'imperial'; soundEnabled: boolean; secondsPerRep?: number } {
     try {
       const key = `fitforge_prefs_${userId}`;
       if (typeof localStorage !== 'undefined') {
@@ -523,16 +523,16 @@ export class AuthManager {
     } catch {
       // Fallback
     }
-    return { units: 'metric', soundEnabled: true };
+    return { units: 'metric', soundEnabled: true, secondsPerRep: 4 };
   }
 
   /**
-   * Saves user preferences (units, rest-timer sound)
+   * Saves user preferences (units, rest-timer sound, seconds per rep)
    */
   public saveUserPreferences(
     userId: string,
-    prefs: Partial<{ units: 'metric' | 'imperial'; soundEnabled: boolean }>
-  ): { units: 'metric' | 'imperial'; soundEnabled: boolean } {
+    prefs: Partial<{ units: 'metric' | 'imperial'; soundEnabled: boolean; secondsPerRep?: number }>
+  ): { units: 'metric' | 'imperial'; soundEnabled: boolean; secondsPerRep?: number } {
     const current = this.getUserPreferences(userId);
     const updated = { ...current, ...prefs };
     try {

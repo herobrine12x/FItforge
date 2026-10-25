@@ -229,3 +229,52 @@ export interface IWeeklySummaryMetrics {
   whatToAimForNextWeek: string;
 }
 
+export interface ISetLogData {
+  id: string;
+  userId: string;
+  recordId: string;
+  exerciseName: string;
+  setNumber: number;
+  weightKg: number;
+  reps: number;
+  targetReps?: number;
+  targetWeightKg?: number;
+  date?: string;
+  createdAt?: string;
+}
+
+export interface IBodyWeightEntry {
+  id: string;
+  userId: string;
+  date: string;
+  weightKg: number;
+  notes?: string;
+  createdAt?: string;
+}
+
+export interface IPersonalRecordData {
+  exerciseName: string;
+  bestWeightKg: number;
+  bestWeightReps: number;
+  bestWeightDate: string;
+  bestEstimatedOneRepMaxKg: number;
+  bestEstimated1RMReps: number;
+  bestEstimated1RMWeightKg: number;
+  bestEstimated1RMDate: string;
+  totalSetsCompleted?: number;
+  lastLoggedDate?: string;
+}
+
+export interface IProgressiveOverloadHint {
+  exerciseName: string;
+  hasHistory: boolean;
+  lastWeightKg?: number;
+  lastReps?: number;
+  lastTargetReps?: number;
+  allTargetRepsHit?: boolean;
+  suggestedWeightKg?: number;
+  suggestedReps?: number;
+  message: string;
+  badgeText?: string;
+}
+

@@ -10,6 +10,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { OnboardingPage } from './pages/OnboardingPage';
 import { RecommenderPage } from './pages/RecommenderPage';
+import { RecordsPage } from './pages/RecordsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { Stage1TestPage } from './pages/Stage1TestPage';
@@ -54,6 +55,7 @@ export default function App() {
               <Route path="/recommender" element={<RecommenderPage />} />
               <Route path="/schedule" element={<WeeklyGuideView />} />
               <Route path="/workout" element={<WorkoutPage />} />
+              <Route path="/records" element={<RecordsPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/settings" element={<SettingsPage />} />

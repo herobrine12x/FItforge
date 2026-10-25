@@ -69,6 +69,12 @@ export class RecordManager {
     return this.create(data);
   }
 
+  public createRecord(
+    data: Omit<IWorkoutRecordData, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }
+  ): WorkoutRecord {
+    return this.create(data);
+  }
+
   /**
    * READ ALL: Retrieves all records associated with a specific userId
    */

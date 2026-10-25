@@ -19,6 +19,8 @@ export const STORAGE_KEYS = {
   WEEKLY_SCHEDULE: 'weekly_schedule',
   CUSTOM_ROUTINES: 'custom_routines',
   BADGES: 'badges',
+  SET_LOGS: 'set_logs',
+  BODY_WEIGHT: 'body_weight',
 } as const;
 
 // In-memory backing store for SSR/Node test execution
@@ -103,12 +105,26 @@ export class StorageLayer {
     }
   }
 
+  public static getItem(key: string): string | null {
+    return getRawItem(key);
+  }
+
+  public static setItem(key: string, value: string): void {
+    setRawItem(key, value);
+  }
+
+  public static removeItem(key: string): void {
+    removeRawItem(key);
+  }
+
   public static clearAll(): void {
     try {
       removeRawItem(STORAGE_KEYS.USERS);
       removeRawItem(STORAGE_KEYS.PROFILES);
       removeRawItem(STORAGE_KEYS.WORKOUT_RECORDS);
       removeRawItem(STORAGE_KEYS.SETTINGS);
+      removeRawItem(STORAGE_KEYS.SET_LOGS);
+      removeRawItem(STORAGE_KEYS.BODY_WEIGHT);
       memoryStore.clear();
     } catch (error) {
       console.warn(`[StorageLayer] Failed to clear storage:`, error);

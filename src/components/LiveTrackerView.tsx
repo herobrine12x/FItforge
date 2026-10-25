@@ -25,12 +25,16 @@ import {
   Volume2,
   VolumeX,
   X,
+  Zap,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { DeloadManager } from '../models/DeloadManager';
 import { Exercise } from '../models/Exercise';
 import { MemberProfile } from '../models/MemberProfile';
+import { PersonalRecord, PersonalRecordManager } from '../models/PersonalRecord';
 import { RecordManager } from '../models/RecordManager';
+import { SetLogManager } from '../models/SetLogManager';
 import { ExperienceLevel, ExtendedSplitType, SplitType } from '../models/types';
 import { User } from '../models/User';
 import { WorkoutPlan } from '../models/WorkoutPlan';
@@ -94,7 +98,11 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
       return initialExercises.map((data) => Exercise.fromJSON(data));
     }
     if (!workoutPlan) return [];
-    return workoutPlan.getExercises(experienceLevel, currentProfile?.availableEquipment);
+    const base = workoutPlan.getExercises(experienceLevel, currentProfile?.availableEquipment);
+    if (DeloadManager.isDeloadModeActive()) {
+      return base.map((ex) => ex.prescribe(2, ex.reps, ex.restSeconds));
+    }
+    return base;
   }, [workoutPlan, experienceLevel, currentProfile?.availableEquipment, initialExercises]);
 
   // ================= SECONDS PER REP SETTING =================
@@ -251,6 +259,104 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     };
   }, [isStopwatchRunning, isPaused, sessionState]);
 
+  // ================= PER-SET LOGGING & PROGRESS TRACKING =================
+  const [setLogManager] = useState(() => new SetLogManager());
+  const [personalRecordManager] = useState(() => new PersonalRecordManager());
+
+  // Completed set logs for the active guided session
+  const [sessionSetLogs, setSessionSetLogs] = useState<
+    Array<{
+      exerciseName: string;
+      setNumber: number;
+      weightKg: number;
+      reps: number;
+      targetReps: number;
+    }>
+  >([]);
+
+  // Current active set input values
+  const [currentSetWeight, setCurrentSetWeight] = useState<number>(0);
+  const [currentSetReps, setCurrentSetReps] = useState<number>(10);
+  const [weightError, setWeightError] = useState<string | null>(null);
+  const [repsError, setRepsError] = useState<string | null>(null);
+
+  // Active PR celebration alert
+  const [activePRAlert, setActivePRAlert] = useState<{
+    exerciseName: string;
+    weightKg: number;
+    reps: number;
+    est1RM: number;
+    isWeightPR: boolean;
+    is1RMPR: boolean;
+  } | null>(null);
+
+  // Helper to prefill weight and reps from previous set, exercise history, or plan default
+  const prefillForSet = (exIndex: number, setNum: number) => {
+    const ex = exercises[exIndex];
+    if (!ex) return;
+
+    const exReps =
+      typeof ex.reps === 'number'
+        ? ex.reps
+        : parseInt(String(ex.reps || '10'), 10) || 10;
+
+    // 1. Previous set in this exact session
+    const prevInSession = sessionSetLogs.find(
+      (s) => s.exerciseName === ex.name && s.setNumber === setNum - 1
+    );
+
+    if (prevInSession) {
+      setCurrentSetWeight(prevInSession.weightKg);
+      setCurrentSetReps(prevInSession.reps);
+      setWeightError(null);
+      setRepsError(null);
+      return;
+    }
+
+    // 2. Query last set from history for this exercise & user
+    if (currentUser) {
+      const lastHistory = setLogManager.getLastSetForExercise(currentUser.id, ex.name);
+      if (lastHistory) {
+        setCurrentSetWeight(lastHistory.weightKg);
+        setCurrentSetReps(lastHistory.reps || exReps);
+        setWeightError(null);
+        setRepsError(null);
+        return;
+      }
+    }
+
+    // 3. Plan default fallback
+    const isBodyweight =
+      ex.equipment.toLowerCase().includes('bodyweight') ||
+      ex.name.toLowerCase().includes('push-up') ||
+      ex.name.toLowerCase().includes('plank') ||
+      ex.name.toLowerCase().includes('pull-up');
+
+    const defaultWeight = isBodyweight
+      ? 0
+      : ex.equipment.toLowerCase().includes('dumbbell')
+      ? 12
+      : ex.equipment.toLowerCase().includes('barbell')
+      ? 30
+      : 20;
+
+    setCurrentSetWeight(defaultWeight);
+    setCurrentSetReps(exReps);
+    setWeightError(null);
+    setRepsError(null);
+  };
+
+  // Progressive overload hint for active exercise
+  const overloadHint = useMemo(() => {
+    if (!currentUser || !currentExercise) return null;
+    return setLogManager.generateProgressiveOverloadHint(
+      currentUser.id,
+      currentExercise.name,
+      currentExReps,
+      currentSetWeight
+    );
+  }, [currentUser, currentExercise, currentExReps, currentSetWeight, setLogManager]);
+
   // ================= 2. WORK PHASE TIMER =================
   // Initializes work timer when entering work phase or changing exercise/set
   const startWorkPhase = (exIndex: number, setNum: number) => {
@@ -263,6 +369,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     setWorkTotalDuration(duration);
     setWorkRemaining(duration);
     setPhase('work');
+    prefillForSet(exIndex, setNum);
   };
 
   useEffect(() => {
@@ -446,10 +553,74 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
       sounds.playTick();
     }
 
+    // Validate current working set inputs (weight 0 to 500, reps 1 to 100)
+    const validation = SetLogManager.validate(currentSetWeight, currentSetReps);
+    if (!validation.isValid) {
+      if (validation.weightError) setWeightError(validation.weightError);
+      if (validation.repsError) setRepsError(validation.repsError);
+      return;
+    }
+
+    setWeightError(null);
+    setRepsError(null);
+
     // Stop work interval
     if (workIntervalRef.current) {
       clearInterval(workIntervalRef.current);
       workIntervalRef.current = null;
+    }
+
+    // Append/update set in this session's logs
+    setSessionSetLogs((prev) => {
+      const filtered = prev.filter(
+        (s) => !(s.exerciseName === currentExercise.name && s.setNumber === currentSetIndex)
+      );
+      return [
+        ...filtered,
+        {
+          exerciseName: currentExercise.name,
+          setNumber: currentSetIndex,
+          weightKg: validation.sanitizedWeight,
+          reps: validation.sanitizedReps,
+          targetReps: currentExReps,
+        },
+      ];
+    });
+
+    // Check for Personal Record
+    if (currentUser) {
+      const prTest = personalRecordManager.testCandidateSet(
+        currentUser.id,
+        currentExercise.name,
+        validation.sanitizedWeight,
+        validation.sanitizedReps
+      );
+
+      if (prTest.isWeightPR || prTest.is1RMPR) {
+        setActivePRAlert({
+          exerciseName: currentExercise.name,
+          weightKg: validation.sanitizedWeight,
+          reps: validation.sanitizedReps,
+          est1RM: prTest.est1RM,
+          isWeightPR: prTest.isWeightPR,
+          is1RMPR: prTest.is1RMPR,
+        });
+
+        try {
+          confetti({
+            particleCount: 85,
+            spread: 65,
+            origin: { y: 0.65 },
+            colors: ['#C6FF3D', '#FFFFFF', '#FFD700'],
+          });
+        } catch {}
+
+        showToastSuccess(
+          `🔥 NEW PERSONAL RECORD! ${currentExercise.name}: ${validation.sanitizedWeight} kg × ${validation.sanitizedReps} reps · Est. 1RM: ${prTest.est1RM} kg!`
+        );
+      } else {
+        setActivePRAlert(null);
+      }
     }
 
     // Record set completion
@@ -589,7 +760,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     const planName = workoutPlan.name;
 
     try {
-      recordManager.addRecord({
+      const savedRecord = recordManager.addRecord({
         userId: currentUser.id,
         date: new Date().toISOString(),
         title: `${planName} Guided Session`,
@@ -601,6 +772,22 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         totalExercises: 5,
         notes: sessionNotes.trim() || `Completed ${totalCompletedSets} of ${totalWorkoutSets} sets across ${completedCount} exercises in ${finalMinutes}m.`,
       });
+
+      // Save each set to set_logs table (id, userId, recordId, exerciseName, setNumber, weightKg, reps)
+      if (sessionSetLogs.length > 0) {
+        setLogManager.createBatch(
+          sessionSetLogs.map((s) => ({
+            userId: currentUser.id,
+            recordId: savedRecord.id,
+            exerciseName: s.exerciseName,
+            setNumber: s.setNumber,
+            weightKg: s.weightKg,
+            reps: s.reps,
+            targetReps: s.targetReps,
+            date: new Date().toISOString(),
+          }))
+        );
+      }
 
       // Clear active stored split
       try {
@@ -1243,6 +1430,52 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           </div>
         </div>
 
+        {/* Progressive Overload Suggestion (Requirement 4) */}
+        {overloadHint && (
+          <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex items-start gap-3">
+            <div className="p-2 rounded-xl bg-[#C6FF3D]/10 text-[#C6FF3D] border border-[#C6FF3D]/20 shrink-0 mt-0.5">
+              <Zap className="w-4 h-4" />
+            </div>
+            <div className="space-y-0.5 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#C6FF3D] font-bold">
+                  Progressive Overload Target
+                </span>
+                {overloadHint.badgeText && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#C6FF3D]/15 text-[#C6FF3D] border border-[#C6FF3D]/30">
+                    {overloadHint.badgeText}
+                  </span>
+                )}
+              </div>
+              <p className="text-xs sm:text-sm text-[#F4F4F6] leading-relaxed">
+                {overloadHint.message}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Active Personal Record Celebration Alert (Requirement 2) */}
+        {activePRAlert && (
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-[#C6FF3D]/20 via-amber-500/15 to-[#16161D] border border-[#C6FF3D] flex items-center justify-between gap-3 animate-in fade-in duration-300">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-[#C6FF3D]/20 text-[#C6FF3D] border border-[#C6FF3D]/40">
+                <Trophy className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="font-heading text-sm font-black uppercase text-[#C6FF3D] tracking-wider block">
+                  New Personal Record!
+                </span>
+                <p className="text-xs text-[#F4F4F6]">
+                  {activePRAlert.exerciseName}: <strong className="text-white">{activePRAlert.weightKg} kg</strong> × {activePRAlert.reps} reps · Estimated 1RM: <strong className="text-[#C6FF3D]">{activePRAlert.est1RM} kg</strong>
+                </p>
+              </div>
+            </div>
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-black bg-[#C6FF3D] text-[#0B0B0F] uppercase">
+              PR Set
+            </span>
+          </div>
+        )}
+
         {/* Form Tip Card */}
         {currentExercise.formTip && (
           <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex items-start gap-3">
@@ -1307,28 +1540,151 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     Suggested Pace: {currentExReps} reps × {secondsPerRep}s = {workTotalDuration}s
                   </div>
                   <h3 className="text-lg font-bold text-[#F4F4F6] mt-0.5">
-                    Execute Set {currentSetIndex} with controlled tempo
+                    Execute Set {currentSetIndex} of {currentExTotalSets} with controlled tempo
                   </h3>
                   <p className="text-xs text-[#A1A1AA] mt-1">
                     {workRemaining > 0
-                      ? 'Press "I\'m done" at any time when finished. Countdown will wait for you when zero is reached.'
-                      : 'Countdown finished! Take a breath, log your reps, and press "I\'m done" to begin your rest period.'}
+                      ? 'Confirm your weight and reps below, then press "I\'m done" when complete.'
+                      : 'Countdown finished! Confirm your weight and reps, then press "I\'m done" to rest.'}
                   </p>
+                </div>
+
+                {/* Requirement 1 & 6: Per-Set Logging Inputs with Inline Validation */}
+                <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] space-y-3">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-[#A1A1AA] uppercase tracking-wider font-semibold">
+                      Set {currentSetIndex} Data:
+                    </span>
+                    <span className="text-[#C6FF3D]">
+                      Est. 1RM: {PersonalRecord.calculate1RM(currentSetWeight, currentSetReps)} kg
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                    {/* Weight (kg) */}
+                    <div>
+                      <label className="block text-[11px] font-mono uppercase text-[#A1A1AA] mb-1">
+                        Weight (kg) <span className="text-[10px] text-[#71717A]">(0-500)</span>
+                      </label>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = Math.max(0, currentSetWeight - 2.5);
+                            setCurrentSetWeight(next);
+                            const val = SetLogManager.validate(next, currentSetReps);
+                            setWeightError(val.weightError || null);
+                          }}
+                          className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] text-xs font-mono font-bold text-[#F4F4F6] cursor-pointer"
+                        >
+                          -2.5
+                        </button>
+                        <input
+                          type="number"
+                          step="0.5"
+                          min="0"
+                          max="500"
+                          value={currentSetWeight}
+                          onChange={(e) => {
+                            const val = Number(e.target.value);
+                            setCurrentSetWeight(val);
+                            const res = SetLogManager.validate(val, currentSetReps);
+                            setWeightError(res.weightError || null);
+                          }}
+                          className={`w-full px-2 py-2 bg-[#16161D] border rounded-xl font-mono text-sm font-bold text-center text-[#F4F4F6] focus:outline-none ${
+                            weightError ? 'border-red-500' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                          }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = Math.min(500, currentSetWeight + 2.5);
+                            setCurrentSetWeight(next);
+                            const val = SetLogManager.validate(next, currentSetReps);
+                            setWeightError(val.weightError || null);
+                          }}
+                          className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] text-xs font-mono font-bold text-[#F4F4F6] cursor-pointer"
+                        >
+                          +2.5
+                        </button>
+                      </div>
+                      {weightError && (
+                        <span className="text-[10px] text-red-400 font-medium block mt-1">
+                          {weightError}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Reps */}
+                    <div>
+                      <label className="block text-[11px] font-mono uppercase text-[#A1A1AA] mb-1">
+                        Reps Done <span className="text-[10px] text-[#71717A]">(1-100)</span>
+                      </label>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = Math.max(1, currentSetReps - 1);
+                            setCurrentSetReps(next);
+                            const val = SetLogManager.validate(currentSetWeight, next);
+                            setRepsError(val.repsError || null);
+                          }}
+                          className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] text-xs font-mono font-bold text-[#F4F4F6] cursor-pointer"
+                        >
+                          -1
+                        </button>
+                        <input
+                          type="number"
+                          min="1"
+                          max="100"
+                          value={currentSetReps}
+                          onChange={(e) => {
+                            const val = Number(e.target.value);
+                            setCurrentSetReps(val);
+                            const res = SetLogManager.validate(currentSetWeight, val);
+                            setRepsError(res.repsError || null);
+                          }}
+                          className={`w-full px-2 py-2 bg-[#16161D] border rounded-xl font-mono text-sm font-bold text-center text-[#F4F4F6] focus:outline-none ${
+                            repsError ? 'border-red-500' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                          }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = Math.min(100, currentSetReps + 1);
+                            setCurrentSetReps(next);
+                            const val = SetLogManager.validate(currentSetWeight, next);
+                            setRepsError(val.repsError || null);
+                          }}
+                          className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] text-xs font-mono font-bold text-[#F4F4F6] cursor-pointer"
+                        >
+                          +1
+                        </button>
+                      </div>
+                      {repsError && (
+                        <span className="text-[10px] text-red-400 font-medium block mt-1">
+                          {repsError}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Primary "I'm Done" Button (Requirement 3) */}
                 <button
                   type="button"
                   onClick={handleSetDone}
-                  disabled={isPaused}
+                  disabled={isPaused || !!weightError || !!repsError}
                   className={`w-full sm:w-auto px-8 py-4 rounded-2xl font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl ${
-                    workRemaining === 0
+                    weightError || repsError
+                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                      : workRemaining === 0
                       ? 'bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] shadow-[#C6FF3D]/25 ring-4 ring-[#C6FF3D]/30 animate-pulse'
                       : 'bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] shadow-[#C6FF3D]/15'
                   } disabled:opacity-50`}
                 >
                   <Check className="w-5 h-5 stroke-[3]" />
-                  <span>I'm Done (Set {currentSetIndex})</span>
+                  <span>I'm Done (Log Set {currentSetIndex})</span>
                 </button>
               </div>
             </div>
@@ -1387,6 +1743,22 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <p className="text-xs text-[#A1A1AA] mt-1">
                     Resting after Set {currentSetIndex}. Next set starts automatically with a 3-second ready cue.
                   </p>
+                </div>
+
+                {/* Logged Set Confirmation Card */}
+                <div className="p-3.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex items-center justify-between text-xs font-mono">
+                  <div>
+                    <span className="text-[#A1A1AA] uppercase block text-[10px]">Set {currentSetIndex} Logged</span>
+                    <span className="text-sm font-bold text-[#F4F4F6]">
+                      {currentSetWeight} kg × {currentSetReps} reps
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[#A1A1AA] uppercase block text-[10px]">Est. 1RM</span>
+                    <span className="text-sm font-bold text-[#C6FF3D]">
+                      {PersonalRecord.calculate1RM(currentSetWeight, currentSetReps)} kg
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">

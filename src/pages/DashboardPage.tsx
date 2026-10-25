@@ -28,10 +28,14 @@ import {
   Zap,
 } from 'lucide-react';
 import { BmiGauge } from '../components/BmiGauge';
+import { BodyWeightChart } from '../components/BodyWeightChart';
+import { BodyWeightModal } from '../components/BodyWeightModal';
 import { CalorieBarChart } from '../components/CalorieBarChart';
+import { DeloadBanner } from '../components/DeloadBanner';
 import { WeeklyGoalRing } from '../components/WeeklyGoalRing';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { DeloadManager } from '../models/DeloadManager';
 import {
   Achievement,
   AchievementManager,
@@ -54,7 +58,7 @@ import { WorkoutRecord } from '../models/WorkoutRecord';
 import { formatDisplayDate, formatWeight, getWeekDates } from '../utils/units';
 
 export function DashboardPage() {
-  const { currentUser, currentProfile, userPreferences } = useAuth();
+  const { currentUser, currentProfile, userPreferences, updateProfile } = useAuth();
   const { success: showToastSuccess, error: showToastError } = useToast();
   const navigate = useNavigate();
   const [recordManager] = useState(() => new RecordManager());
@@ -84,6 +88,14 @@ export function DashboardPage() {
   const { currentStreak, bestStreak } = useMemo(() => {
     return calculateStreak(userRecords);
   }, [userRecords]);
+
+  // Deload Week Detection (triggers after 4 consecutive weeks of training)
+  const deloadStatus = useMemo(() => {
+    return DeloadManager.calculateConsecutiveTrainingWeeks(userRecords);
+  }, [userRecords]);
+
+  // Body Weight Modal state
+  const [isLogWeightModalOpen, setIsLogWeightModalOpen] = useState(false);
 
   // Quick Walk Modal state
   const [isLogWalkModalOpen, setIsLogWalkModalOpen] = useState(false);
@@ -312,6 +324,14 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
+      {/* ================= DELOAD WEEK RECOMMENDATION BANNER (Requirement 5) ================= */}
+      {deloadStatus.isDeloadRecommended && (
+        <DeloadBanner
+          consecutiveWeeks={deloadStatus.consecutiveWeeks}
+          onDeloadModeToggled={() => setRefreshKey((k) => k + 1)}
+        />
+      )}
+
       {/* ================= REQUIREMENT 6: REMINDER BANNER IF TODAY'S WORKOUT NOT DONE ================= */}
       {todayPlannedWorkout && todayPlannedWorkout.status !== 'done' && (
         <section
@@ -388,6 +408,23 @@ export function DashboardPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => setIsLogWeightModalOpen(true)}
+              className="px-4 py-3 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#F4F4F6] text-xs font-heading font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Scale className="w-4 h-4 text-[#C6FF3D]" />
+              <span>Log Weight</span>
+            </button>
+
+            <Link
+              to="/records"
+              className="px-4 py-3 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#F4F4F6] text-xs font-heading font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Trophy className="w-4 h-4 text-[#C6FF3D]" />
+              <span>Records</span>
+            </Link>
+
             <Link
               to="/summary"
               className="px-4 py-3 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#F4F4F6] text-xs font-heading font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
@@ -547,17 +584,28 @@ export function DashboardPage() {
         <div className="p-5 rounded-3xl bg-[#16161D] border border-[#24242E] flex flex-col justify-between hover:border-[#C6FF3D]/30 transition-colors">
           <div className="flex items-center justify-between text-[#A1A1AA] mb-2">
             <span className="text-xs font-mono uppercase tracking-wider">Current Weight</span>
-            <div className="w-8 h-8 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+            <button
+              type="button"
+              onClick={() => setIsLogWeightModalOpen(true)}
+              className="w-8 h-8 rounded-xl bg-[#24242E] hover:bg-[#2e2e3a] flex items-center justify-center text-[#C6FF3D] transition-colors cursor-pointer"
+              title="Log new weight"
+            >
               <Scale className="w-4 h-4" />
-            </div>
+            </button>
           </div>
           <div>
             <div className="font-heading text-2xl sm:text-3xl font-black text-[#F4F4F6]">
               {formatWeight(weightKg, userPreferences.units)}
             </div>
-            <div className="text-[11px] text-[#A1A1AA] mt-1 flex items-center gap-1">
-              <span className="text-emerald-400 font-mono text-[10px]">Active</span>
-              <span>· Profile biometrics</span>
+            <div className="text-[11px] text-[#A1A1AA] mt-1 flex items-center justify-between">
+              <span className="text-emerald-400 font-mono text-[10px]">Active Profile</span>
+              <button
+                type="button"
+                onClick={() => setIsLogWeightModalOpen(true)}
+                className="text-[10px] font-mono text-[#C6FF3D] hover:underline cursor-pointer"
+              >
+                + Log Weight
+              </button>
             </div>
           </div>
         </div>
@@ -643,6 +691,20 @@ export function DashboardPage() {
         <div className="md:col-span-2 lg:col-span-1">
           <CalorieBarChart records={userRecords} />
         </div>
+      </section>
+
+      {/* ================= BODY WEIGHT TRAJECTORY CHART (Requirement 3) ================= */}
+      <section aria-label="Body Weight Trajectory and Progression">
+        <BodyWeightChart
+          userId={userId}
+          currentWeightKg={weightKg}
+          onOpenLogModal={() => setIsLogWeightModalOpen(true)}
+          onWeightChanged={(newW) => {
+            updateProfile({ weightKg: newW });
+            setRefreshKey((k) => k + 1);
+          }}
+          refreshKey={refreshKey}
+        />
       </section>
 
       {/* ================= REQUIREMENT 3: BADGES SECTION ================= */}
@@ -915,6 +977,20 @@ export function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* ================= BODY WEIGHT LOGGING MODAL (Requirement 3) ================= */}
+      <BodyWeightModal
+        isOpen={isLogWeightModalOpen}
+        onClose={() => setIsLogWeightModalOpen(false)}
+        userId={userId}
+        currentWeightKg={weightKg}
+        heightCm={heightCm}
+        onWeightLogged={(newW) => {
+          updateProfile({ weightKg: newW });
+          setRefreshKey((k) => k + 1);
+          showToastSuccess(`Weight logged: ${newW} kg. Profile and BMI updated!`);
+        }}
+      />
     </div>
   );
 }

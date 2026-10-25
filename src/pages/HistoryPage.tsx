@@ -16,9 +16,11 @@ import {
   Search,
   Sparkles,
   Trash2,
+  Trophy,
   X,
 } from 'lucide-react';
 import { ConfirmModal } from '../components/ConfirmModal';
+import { PersonalRecordsView } from '../components/PersonalRecordsView';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { RecordManager } from '../models/RecordManager';
@@ -51,6 +53,7 @@ export function HistoryPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Filter & Sort State
+  const [activeTab, setActiveTab] = useState<'sessions' | 'records'>('sessions');
   const [searchQuery, setSearchQuery] = useState('');
   const [splitFilter, setSplitFilter] = useState('all');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
@@ -312,8 +315,42 @@ export function HistoryPage() {
         </button>
       </div>
 
-      {/* ================= STATS SUMMARY CARDS ================= */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {/* ================= SUB-TABS: WORKOUT SESSIONS VS PERSONAL RECORDS ================= */}
+      <div className="flex items-center gap-2 border-b border-[#24242E] pb-3">
+        <button
+          type="button"
+          onClick={() => setActiveTab('sessions')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading text-sm uppercase tracking-wider font-bold transition-all cursor-pointer ${
+            activeTab === 'sessions'
+              ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-md shadow-[#C6FF3D]/15'
+              : 'text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#16161D]'
+          }`}
+        >
+          <HistoryIcon className="w-4 h-4" />
+          <span>Workout Sessions</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('records')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading text-sm uppercase tracking-wider font-bold transition-all cursor-pointer ${
+            activeTab === 'records'
+              ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-md shadow-[#C6FF3D]/15'
+              : 'text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#16161D]'
+          }`}
+        >
+          <Trophy className="w-4 h-4" />
+          <span>Personal Records & 1RM</span>
+        </button>
+      </div>
+
+      {/* Conditional View */}
+      {activeTab === 'records' ? (
+        <PersonalRecordsView userId={currentUser?.id || 'demo_user'} />
+      ) : (
+        <>
+          {/* ================= STATS SUMMARY CARDS ================= */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="p-4 sm:p-5 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-1">
           <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
             <Dumbbell className="w-4 h-4 text-[#C6FF3D]" />
@@ -648,6 +685,8 @@ export function HistoryPage() {
             })}
           </div>
         </>
+      )}
+      </>
       )}
 
       {/* ================= ADD / EDIT RECORD MODAL ================= */}

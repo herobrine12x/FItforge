@@ -46,6 +46,12 @@ import { WorkoutPlan } from '../models/WorkoutPlan';
 import { WorkoutPlanFactory } from '../models/WorkoutPlanFactory';
 import { sounds } from '../utils/audio';
 import { ConfirmModal } from './ConfirmModal';
+import {
+  getWarmUpRoutine,
+  isWarmUpSkippedForSession,
+  setWarmUpSkippedForSession,
+  WarmUpRoutine,
+} from '../models/warmups';
 
 const SPLIT_DESCRIPTIONS: Record<string, string> = {
   push: 'Targeting chest, anterior deltoids, and triceps with pressing compounds.',
@@ -67,7 +73,7 @@ interface LiveTrackerViewProps {
   onActiveStateChange?: (isActive: boolean) => void;
 }
 
-type SessionState = 'ready' | 'guided' | 'finished';
+type SessionState = 'ready' | 'warmup' | 'guided' | 'finished';
 type GuidedPhase = 'work' | 'rest' | 'get_ready';
 
 export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
@@ -144,6 +150,18 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
   // Sets actually completed per exercise (5 exercises)
   const [completedSetsByExercise, setCompletedSetsByExercise] = useState<number[]>([0, 0, 0, 0, 0]);
+
+  // ================= WARM-UP FLOW STATES =================
+  const [warmupSecondsRemaining, setWarmupSecondsRemaining] = useState<number>(300); // 5 minutes
+  const [isWarmupTimerRunning, setIsWarmupTimerRunning] = useState<boolean>(false);
+  const [currentWarmupMoveIndex, setCurrentWarmupMoveIndex] = useState<number>(0);
+  const [completedWarmupMoves, setCompletedWarmupMoves] = useState<Record<string, boolean>>({});
+  const [skipWarmupForSession, setSkipWarmupForSession] = useState<boolean>(() => isWarmUpSkippedForSession());
+  const warmupIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const warmUpRoutine: WarmUpRoutine = useMemo(() => {
+    return getWarmUpRoutine(selectedSplit, exercises);
+  }, [selectedSplit, exercises]);
 
   // ================= STOPWATCH TIMER =================
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
@@ -239,8 +257,41 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
       if (workIntervalRef.current) clearInterval(workIntervalRef.current);
       if (restIntervalRef.current) clearInterval(restIntervalRef.current);
       if (getReadyIntervalRef.current) clearInterval(getReadyIntervalRef.current);
+      if (warmupIntervalRef.current) clearInterval(warmupIntervalRef.current);
     };
   }, []);
+
+  // Warm-up 5-minute countdown interval
+  useEffect(() => {
+    if (sessionState === 'warmup' && isWarmupTimerRunning && !isPaused) {
+      warmupIntervalRef.current = setInterval(() => {
+        setWarmupSecondsRemaining((prev) => {
+          if (prev <= 1) {
+            if (userPreferences.soundEnabled && !sounds.muted) {
+              sounds.playCountdownBeep(true);
+            }
+            setIsWarmupTimerRunning(false);
+            return 0;
+          }
+          if (prev <= 4 && prev > 1 && userPreferences.soundEnabled && !sounds.muted) {
+            sounds.playCountdownBeep(false);
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (warmupIntervalRef.current) {
+        clearInterval(warmupIntervalRef.current);
+        warmupIntervalRef.current = null;
+      }
+    }
+    return () => {
+      if (warmupIntervalRef.current) {
+        clearInterval(warmupIntervalRef.current);
+        warmupIntervalRef.current = null;
+      }
+    };
+  }, [sessionState, isWarmupTimerRunning, isPaused, userPreferences.soundEnabled]);
 
   // Reset exercise sets tracker when split changes
   useEffect(() => {
@@ -550,18 +601,93 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     }
   };
 
-  // ================= WORKOUT ACTIONS =================
-  // 1. Start Workout from Ready screen
-  const handleStartWorkout = () => {
+  // ================= WORKOUT & WARM-UP ACTIONS =================
+  const beginGuidedWorkout = () => {
     if (userPreferences.soundEnabled && !sounds.muted) {
       sounds.playTick();
     }
+    if (warmupIntervalRef.current) {
+      clearInterval(warmupIntervalRef.current);
+      warmupIntervalRef.current = null;
+    }
+    setIsWarmupTimerRunning(false);
     setSessionState('guided');
     setIsStopwatchRunning(true);
     setIsPaused(false);
     setCurrentExerciseIndex(0);
     setCurrentSetIndex(1);
     startWorkPhase(0, 1);
+  };
+
+  // 1. Start Workout from Ready screen (triggers Warm-up unless skipped for session)
+  const handleStartWorkout = () => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
+    // Check if the user chose to skip warm-up for this session
+    if (isWarmUpSkippedForSession()) {
+      beginGuidedWorkout();
+    } else {
+      setSessionState('warmup');
+      setWarmupSecondsRemaining(300);
+      setIsWarmupTimerRunning(false);
+      setCurrentWarmupMoveIndex(0);
+    }
+  };
+
+  // Warm-up actions
+  const handleStartWarmupTimer = () => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
+    setIsWarmupTimerRunning(true);
+    setIsPaused(false);
+  };
+
+  const handlePauseWarmupTimer = () => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
+    setIsWarmupTimerRunning((prev) => !prev);
+  };
+
+  const handleResetWarmupTimer = () => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
+    setWarmupSecondsRemaining(300);
+    setIsWarmupTimerRunning(false);
+  };
+
+  const handleSkipWarmup = () => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
+    setWarmUpSkippedForSession(true);
+    setSkipWarmupForSession(true);
+    showToastInfo('Warm-up skipped for this session.');
+    beginGuidedWorkout();
+  };
+
+  const handleCompleteWarmup = () => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
+    showToastSuccess('Warm-up complete! Beginning main workout.');
+    beginGuidedWorkout();
+  };
+
+  const handleToggleWarmupMove = (moveId: string) => {
+    setCompletedWarmupMoves((prev) => ({
+      ...prev,
+      [moveId]: !prev[moveId],
+    }));
+  };
+
+  const handleResetSkipChoice = () => {
+    setWarmUpSkippedForSession(false);
+    setSkipWarmupForSession(false);
+    showToastSuccess('Warm-up will show for your next workout.');
   };
 
   // 2. User presses "I'm done" on current set
@@ -1104,7 +1230,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           </div>
 
           {/* Big "Start Workout" CTA Button */}
-          <div className="pt-2">
+          <div className="pt-2 space-y-2.5">
             <button
               type="button"
               onClick={handleStartWorkout}
@@ -1113,9 +1239,55 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               <Play className="w-6 h-6 fill-current stroke-[2.5]" />
               <span>Start Workout</span>
             </button>
-            <p className="text-center text-xs text-[#A1A1AA] mt-2.5 font-mono">
-              Pressing Start starts the session stopwatch and opens Exercise 1, Set 1 in guided mode.
-            </p>
+
+            {skipWarmupForSession ? (
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs">
+                <span className="text-[#A1A1AA] flex items-center gap-1.5 font-mono text-[11px]">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  Warm-up skipped for this session
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSessionState('warmup');
+                      setWarmupSecondsRemaining(300);
+                      setIsWarmupTimerRunning(false);
+                      setCurrentWarmupMoveIndex(0);
+                    }}
+                    className="text-[#C6FF3D] hover:underline font-bold font-mono text-[11px] cursor-pointer"
+                  >
+                    View Warm-up
+                  </button>
+                  <span className="text-[#24242E]">·</span>
+                  <button
+                    type="button"
+                    onClick={handleResetSkipChoice}
+                    className="text-[#A1A1AA] hover:text-[#F4F4F6] font-mono text-[11px] cursor-pointer"
+                  >
+                    Re-enable
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2 text-xs text-[#A1A1AA] font-mono">
+                <Flame className="w-3.5 h-3.5 text-[#C6FF3D]" />
+                <span>Starts with ~5-min warm-up ({warmUpRoutine.moves.length} simple moves)</span>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSessionState('warmup');
+                    setWarmupSecondsRemaining(300);
+                    setIsWarmupTimerRunning(false);
+                    setCurrentWarmupMoveIndex(0);
+                  }}
+                  className="text-[#C6FF3D] hover:underline cursor-pointer"
+                >
+                  Preview
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Ordered 5-Exercise Routine List */}
@@ -1235,6 +1407,267 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             </div>
           </div>
         )}
+      </div>
+    );
+  }
+
+  // ================= SCENARIO B.2: WARM-UP SCREEN =================
+  if (sessionState === 'warmup') {
+    const warmupMinutes = Math.floor(warmupSecondsRemaining / 60);
+    const warmupSeconds = warmupSecondsRemaining % 60;
+    const formattedWarmupTime = `${warmupMinutes}:${String(warmupSeconds).padStart(2, '0')}`;
+    const activeMove = warmUpRoutine.moves[currentWarmupMoveIndex] || warmUpRoutine.moves[0];
+
+    return (
+      <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-300">
+        {/* Header Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#24242E]">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setIsWarmupTimerRunning(false);
+                setSessionState('ready');
+              }}
+              className="p-2.5 rounded-2xl bg-[#16161D] border border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] hover:border-[#383848] transition-colors cursor-pointer"
+              title="Back to workout overview"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
+              <Flame className="w-5 h-5 fill-[#C6FF3D]" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-[#F4F4F6]">
+                  {warmUpRoutine.title}
+                </h1>
+                <span className="px-2.5 py-0.5 rounded-full bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 text-[10px] font-mono font-bold text-[#C6FF3D] uppercase">
+                  ~5 Minutes
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full bg-[#16161D] border border-[#24242E] text-[10px] font-mono text-[#A1A1AA] uppercase">
+                  {warmUpRoutine.moves.length} Moves
+                </span>
+              </div>
+              <p className="text-xs text-[#A1A1AA] mt-0.5">
+                {warmUpRoutine.subtitle} · Loosen joints and prime muscles before lifting
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleSkipWarmup}
+              className="px-4 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono font-bold text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer"
+              title="Skip warm-up and start workout now"
+            >
+              <SkipForward className="w-3.5 h-3.5" />
+              <span>Skip warm-up</span>
+            </button>
+          </div>
+        </div>
+
+        {/* First Exercise Priming Notice Card (Required) */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-[#16161D] border border-amber-500/30 flex items-start gap-3.5 shadow-lg shadow-amber-500/5">
+          <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+            <Dumbbell className="w-5 h-5" />
+          </div>
+          <div className="space-y-1">
+            <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider block">
+              Light Sets on First Exercise
+            </span>
+            <p className="text-xs sm:text-sm text-[#F4F4F6] leading-relaxed">
+              {warmUpRoutine.firstExerciseWarmupNote}
+            </p>
+          </div>
+        </div>
+
+        {/* Warm-up Controls & Timer Box */}
+        <div className="p-5 sm:p-6 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-5 shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA] block">
+                  Warm-up Clock
+                </span>
+                <span className="text-3xl sm:text-4xl font-mono font-black text-[#C6FF3D] tracking-tight">
+                  {formattedWarmupTime}
+                </span>
+              </div>
+              {isWarmupTimerRunning && (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handlePauseWarmupTimer}
+                    className="p-3 rounded-2xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] transition-colors cursor-pointer"
+                    title={isWarmupTimerRunning ? 'Pause timer' : 'Resume timer'}
+                  >
+                    <Pause className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleResetWarmupTimer}
+                    className="p-3 rounded-2xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+                    title="Reset to 5:00"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Main Action Buttons */}
+            <div className="flex items-center gap-3 flex-wrap">
+              {!isWarmupTimerRunning && warmupSecondsRemaining === 300 ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleStartWarmupTimer}
+                    className="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-[#C6FF3D]/15 cursor-pointer active:scale-95"
+                  >
+                    <Flame className="w-5 h-5 fill-current" />
+                    <span>Start warm-up</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSkipWarmup}
+                    className="flex-1 sm:flex-none px-5 py-3.5 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-[#F4F4F6] font-heading font-bold text-base uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <SkipForward className="w-4 h-4 text-[#A1A1AA]" />
+                    <span>Skip warm-up</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleCompleteWarmup}
+                    className="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-[#C6FF3D]/15 cursor-pointer active:scale-95"
+                  >
+                    <Play className="w-5 h-5 fill-current" />
+                    <span>I'm Ready — Start Workout</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSkipWarmup}
+                    className="px-4 py-3.5 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] font-heading font-bold text-sm uppercase tracking-wider transition-all cursor-pointer"
+                  >
+                    Skip warm-up
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Session Skip Preference Info */}
+          <div className="pt-2 border-t border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#A1A1AA]">
+            <p className="flex items-center gap-1.5 font-mono text-[11px]">
+              <Sparkles className="w-3.5 h-3.5 text-[#C6FF3D]" />
+              "Skip warm-up" remembers your choice for this browser session only.
+            </p>
+            <span className="text-[11px] font-mono text-[#71717A]">
+              Focus: {warmUpRoutine.targetArea}
+            </span>
+          </div>
+        </div>
+
+        {/* 4-6 Warm-up Moves List */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="font-heading text-xl font-bold uppercase tracking-wider text-[#F4F4F6]">
+              Warm-up Moves ({warmUpRoutine.moves.length})
+            </h2>
+            <span className="text-xs font-mono text-[#A1A1AA]">
+              Complete in order or at your own pace
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {warmUpRoutine.moves.map((move, index) => {
+              const isChecked = !!completedWarmupMoves[move.id];
+              const isCurrent = isWarmupTimerRunning && index === currentWarmupMoveIndex;
+
+              return (
+                <div
+                  key={move.id}
+                  onClick={() => handleToggleWarmupMove(move.id)}
+                  className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer ${
+                    isChecked
+                      ? 'bg-[#16161D]/60 border-[#C6FF3D]/30 opacity-80'
+                      : isCurrent
+                      ? 'bg-[#16161D] border-[#C6FF3D] shadow-lg shadow-[#C6FF3D]/10'
+                      : 'bg-[#16161D] border-[#24242E] hover:border-[#383848]'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3.5 flex-1">
+                      <div
+                        className={`w-8 h-8 rounded-xl border flex items-center justify-center font-mono font-bold text-xs shrink-0 mt-0.5 transition-colors ${
+                          isChecked
+                            ? 'bg-[#C6FF3D] border-[#C6FF3D] text-[#0B0B0F]'
+                            : 'bg-[#0B0B0F] border-[#24242E] text-[#C6FF3D]'
+                        }`}
+                      >
+                        {isChecked ? <Check className="w-4 h-4 stroke-[3]" /> : `0${index + 1}`}
+                      </div>
+
+                      <div className="space-y-1.5 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-bold text-base text-[#F4F4F6]">{move.name}</h3>
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-[#C6FF3D]/10 text-[#C6FF3D] font-bold">
+                            {move.targetMuscles}
+                          </span>
+                        </div>
+
+                        <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed">
+                          {move.description}
+                        </p>
+
+                        {move.tip && (
+                          <p className="text-xs text-zinc-400 italic flex items-center gap-1.5 pt-0.5">
+                            <span className="text-[#C6FF3D] font-bold not-italic">Tip:</span>{' '}
+                            {move.tip}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="shrink-0 text-right">
+                      <span className="inline-block px-3 py-1 rounded-xl bg-[#0B0B0F] border border-[#24242E] text-xs font-mono font-bold text-[#C6FF3D]">
+                        {move.durationOrReps}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom Actions */}
+        <div className="p-4 rounded-2xl bg-[#16161D] border border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <p className="text-xs text-[#A1A1AA]">
+            Finished your warm-up? Jump straight into your first working set.
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleSkipWarmup}
+              className="px-4 py-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] text-xs font-bold font-mono transition-colors cursor-pointer"
+            >
+              Skip warm-up
+            </button>
+            <button
+              type="button"
+              onClick={handleCompleteWarmup}
+              className="px-6 py-2.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-heading font-black text-sm uppercase tracking-wider transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-lg shadow-[#C6FF3D]/15 active:scale-95"
+            >
+              <Play className="w-4 h-4 fill-current" />
+              <span>Start Workout</span>
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

@@ -188,5 +188,54 @@
     ],
     "startImage": "/exercises/mountain-climbers.jpg",
     "finishImage": "/exercises/mountain-climbers-2.jpg"
+  },
+  "kettlebell-russian-swings": {
+    "steps": [],
+    "startImage": "/exercises/kettlebell-russian-swings.jpg",
+    "finishImage": "/exercises/kettlebell-russian-swings-2.jpg"
+  },
+  "cable-lateral-raises": {
+    "steps": [
+      "Stand in the middle of two low pulleys that are opposite to each other and place a flat bench right behind you (in perpendicular fashion to you; the narrow edge of the bench should be the one behind you). Select the weight to be used on each pulley.",
+      "Now sit at the edge of the flat bench behind you with your feet placed in front of your knees.",
+      "Bend forward while keeping your back flat and rest your torso on the thighs.",
+      "Have someone give you the single handles attached to the pulleys. Grasp the left pulley with the right hand and the right pulley with the left after you select your weight. The pulleys should run under your knees and your arms will be extended with palms facing each other and a slight bend at the elbows. This will be the starting position.",
+      "While keeping the arms stationary, raise the upper arms to the sides until they are parallel to the floor and at shoulder height. Exhale during the execution of this movement and hold the contraction for a second.",
+      "Slowly lower your arms to the starting position as you inhale.",
+      "Repeat for the recommended amount of repetitions. Tip: Maintain upper arms perpendicular to torso and a fixed elbow position (10 degree to 30 degree angle) throughout exercise."
+    ],
+    "startImage": "/exercises/cable-lateral-raises.jpg",
+    "finishImage": "/exercises/cable-lateral-raises-2.jpg"
+  },
+  "bent-over-dumbbell-rear-delt-fly": {
+    "steps": [
+      "Place a couple of dumbbells looking forward in front of a flat bench.",
+      "Sit on the end of the bench with your legs together and the dumbbells behind your calves.",
+      "Bend at the waist while keeping the back straight in order to pick up the dumbbells. The palms of your hands should be facing each other as you pick them. This will be your starting position.",
+      "Keeping your torso forward and stationary, and the arms slightly bent at the elbows, lift the dumbbells straight to the side until both arms are parallel to the floor. Exhale as you lift the weights. (Note: avoid swinging the torso or bringing the arms back as opposed to the side.)",
+      "After a one second contraction at the top, slowly lower the dumbbells back to the starting position.",
+      "Repeat for the recommended amount of repetitions."
+    ],
+    "startImage": "/exercises/bent-over-dumbbell-rear-delt-fly.jpg",
+    "finishImage": "/exercises/bent-over-dumbbell-rear-delt-fly-2.jpg"
+  },
+  "incline-dumbbell-hammer-curl": {
+    "steps": [
+      "Seat yourself on an incline bench with a dumbbell in each hand. You should pressed firmly against he back with your feet together. Allow the dumbbells to hang straight down at your side, holding them with a neutral grip. This will be your starting position.",
+      "Initiate the movement by flexing at the elbow, attempting to keep the upper arm stationary.",
+      "Continue to the top of the movement and pause, then slowly return to the start position."
+    ],
+    "startImage": "/exercises/incline-dumbbell-hammer-curl.jpg",
+    "finishImage": "/exercises/incline-dumbbell-hammer-curl-2.jpg"
+  },
+  "dumbbell-walking-lunges": {
+    "steps": [
+      "Stand with your torso upright holding two dumbbells in your hands by your sides. This will be your starting position.",
+      "Step forward with your right leg around 2 feet or so from the foot being left stationary behind and lower your upper body down, while keeping the torso upright and maintaining balance. Inhale as you go down. Note: As in the other exercises, do not allow your knee to go forward beyond your toes as you come down, as this will put undue stress on the knee joint. Make sure that you keep your front shin perpendicular to the ground.",
+      "Using mainly the heel of your foot, push up and go back to the starting position as you exhale.",
+      "Repeat the movement for the recommended amount of repetitions and then perform with the left leg."
+    ],
+    "startImage": "/exercises/dumbbell-walking-lunges.jpg",
+    "finishImage": "/exercises/dumbbell-walking-lunges-2.jpg"
   }
 }

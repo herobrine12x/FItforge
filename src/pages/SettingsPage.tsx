@@ -416,15 +416,15 @@ export function SettingsPage() {
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center gap-3 pb-4 border-b border-[#24242E]">
-        <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D]">
+      <div className="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-[#24242E]">
+        <div className="w-10 h-10 rounded-2xl bg-lime-500/10 border border-lime-500/30 dark:bg-[#C6FF3D]/10 dark:border-[#C6FF3D]/30 flex items-center justify-center text-lime-700 dark:text-[#C6FF3D]">
           <Settings className="w-5 h-5" />
         </div>
         <div>
-          <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+          <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
             Settings
           </h1>
-          <p className="text-xs text-[#A1A1AA] mt-0.5">
+          <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
             Manage biometrics, training goals, unit system, and account maintenance.
           </p>
         </div>
@@ -432,18 +432,18 @@ export function SettingsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         {/* ================= CARD 1: PROFILE ================= */}
-        <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between">
+        <div className="bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between shadow-sm">
           <div className="space-y-5">
-            <div className="flex items-center justify-between pb-3 border-b border-[#24242E]">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#24242E]">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+                <div className="w-8 h-8 rounded-xl bg-slate-200 dark:bg-[#24242E] flex items-center justify-center text-lime-700 dark:text-[#C6FF3D]">
                   <User className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase tracking-wide">
+                  <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] uppercase tracking-wide">
                     Athlete Profile
                   </h2>
-                  <p className="text-[11px] text-[#A1A1AA]">
+                  <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                     Personal biometrics and training experience.
                   </p>
                 </div>
@@ -451,8 +451,8 @@ export function SettingsPage() {
 
               {/* Real-time BMI live badge */}
               <div className="text-right">
-                <div className="text-[10px] font-mono text-[#A1A1AA] uppercase">Live BMI Preview</div>
-                <div className="text-sm font-bold text-[#C6FF3D] font-mono">
+                <div className="text-[10px] font-mono text-slate-500 dark:text-[#A1A1AA] uppercase">Live BMI Preview</div>
+                <div className="text-sm font-bold text-lime-700 dark:text-[#C6FF3D] font-mono">
                   {candidateBmi.score} · {candidateBmi.category}
                 </div>
               </div>
@@ -461,7 +461,7 @@ export function SettingsPage() {
             <form id="profile-form" onSubmit={handleSaveProfile} className="space-y-4">
               {/* Full Name */}
               <div>
-                <label htmlFor="settings-name" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                <label htmlFor="settings-name" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                   Full Name
                 </label>
                 <input
@@ -472,20 +472,20 @@ export function SettingsPage() {
                     setName(e.target.value);
                     if (profileErrors.name) setProfileErrors((p) => ({ ...p, name: '' }));
                   }}
-                  className={`w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border text-sm text-[#F4F4F6] outline-none transition-colors ${
-                    profileErrors.name ? 'border-rose-500 bg-rose-950/10' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                  className={`w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-sm text-slate-900 dark:text-[#F4F4F6] outline-none transition-colors ${
+                    profileErrors.name ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/10' : 'border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D]'
                   }`}
                   placeholder="e.g. Kent Malo"
                 />
                 {profileErrors.name && (
-                  <p className="text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.name}</p>
+                  <p className="text-rose-600 dark:text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.name}</p>
                 )}
               </div>
 
               {/* Age and Gender Grid */}
               <div className="grid grid-cols-2 gap-3.5">
                 <div>
-                  <label htmlFor="settings-age" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                  <label htmlFor="settings-age" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                     Age (Years)
                   </label>
                   <input
@@ -498,24 +498,24 @@ export function SettingsPage() {
                       setAge(Number(e.target.value));
                       if (profileErrors.age) setProfileErrors((p) => ({ ...p, age: '' }));
                     }}
-                    className={`w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border text-sm text-[#F4F4F6] outline-none transition-colors ${
-                      profileErrors.age ? 'border-rose-500 bg-rose-950/10' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                    className={`w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-sm text-slate-900 dark:text-[#F4F4F6] outline-none transition-colors ${
+                      profileErrors.age ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/10' : 'border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D]'
                     }`}
                   />
                   {profileErrors.age && (
-                    <p className="text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.age}</p>
+                    <p className="text-rose-600 dark:text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.age}</p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="settings-gender" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                  <label htmlFor="settings-gender" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                     Gender
                   </label>
                   <select
                     id="settings-gender"
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] focus:border-[#C6FF3D] text-sm text-[#F4F4F6] outline-none transition-colors cursor-pointer"
+                    className="w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D] text-sm text-slate-900 dark:text-[#F4F4F6] outline-none transition-colors cursor-pointer"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -528,7 +528,7 @@ export function SettingsPage() {
               {userPreferences.units === 'metric' ? (
                 <div className="grid grid-cols-2 gap-3.5">
                   <div>
-                    <label htmlFor="settings-height-cm" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                    <label htmlFor="settings-height-cm" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                       Height (cm)
                     </label>
                     <input
@@ -542,17 +542,17 @@ export function SettingsPage() {
                         setHeightCm(Number(e.target.value));
                         if (profileErrors.height) setProfileErrors((p) => ({ ...p, height: '' }));
                       }}
-                      className={`w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border text-sm text-[#F4F4F6] outline-none transition-colors ${
-                        profileErrors.height ? 'border-rose-500 bg-rose-950/10' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                      className={`w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-sm text-slate-900 dark:text-[#F4F4F6] outline-none transition-colors ${
+                        profileErrors.height ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/10' : 'border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D]'
                       }`}
                     />
                     {profileErrors.height && (
-                      <p className="text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.height}</p>
+                      <p className="text-rose-600 dark:text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.height}</p>
                     )}
                   </div>
 
                   <div>
-                    <label htmlFor="settings-weight-kg" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                    <label htmlFor="settings-weight-kg" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                       Weight (kg)
                     </label>
                     <input
@@ -566,19 +566,19 @@ export function SettingsPage() {
                         setWeightKg(Number(e.target.value));
                         if (profileErrors.weight) setProfileErrors((p) => ({ ...p, weight: '' }));
                       }}
-                      className={`w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border text-sm text-[#F4F4F6] outline-none transition-colors ${
-                        profileErrors.weight ? 'border-rose-500 bg-rose-950/10' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                      className={`w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-sm text-slate-900 dark:text-[#F4F4F6] outline-none transition-colors ${
+                        profileErrors.weight ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/10' : 'border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D]'
                       }`}
                     />
                     {profileErrors.weight && (
-                      <p className="text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.weight}</p>
+                      <p className="text-rose-600 dark:text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.weight}</p>
                     )}
                   </div>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                       Height (ft & in)
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -590,7 +590,7 @@ export function SettingsPage() {
                         onChange={(e) => setHeightFeet(Number(e.target.value))}
                         placeholder="ft"
                         aria-label="Height in feet"
-                        className="w-full px-3 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] focus:border-[#C6FF3D] text-sm text-[#F4F4F6] outline-none"
+                        className="w-full px-3 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D] text-sm text-slate-900 dark:text-[#F4F4F6] outline-none"
                       />
                       <input
                         type="number"
@@ -600,16 +600,16 @@ export function SettingsPage() {
                         onChange={(e) => setHeightInches(Number(e.target.value))}
                         placeholder="in"
                         aria-label="Height in inches"
-                        className="w-full px-3 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] focus:border-[#C6FF3D] text-sm text-[#F4F4F6] outline-none"
+                        className="w-full px-3 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D] text-sm text-slate-900 dark:text-[#F4F4F6] outline-none"
                       />
                     </div>
                     {profileErrors.height && (
-                      <p className="text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.height}</p>
+                      <p className="text-rose-600 dark:text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.height}</p>
                     )}
                   </div>
 
                   <div>
-                    <label htmlFor="settings-weight-lb" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                    <label htmlFor="settings-weight-lb" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                       Weight (lb)
                     </label>
                     <input
@@ -620,10 +620,10 @@ export function SettingsPage() {
                       max="660"
                       value={weightLbs || ''}
                       onChange={(e) => setWeightLbs(Number(e.target.value))}
-                      className="w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] focus:border-[#C6FF3D] text-sm text-[#F4F4F6] outline-none"
+                      className="w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D] text-sm text-slate-900 dark:text-[#F4F4F6] outline-none"
                     />
                     {profileErrors.weight && (
-                      <p className="text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.weight}</p>
+                      <p className="text-rose-600 dark:text-rose-400 text-[11px] mt-1 font-medium">{profileErrors.weight}</p>
                     )}
                   </div>
                 </div>
@@ -631,7 +631,7 @@ export function SettingsPage() {
 
               {/* Experience Level Selector */}
               <div>
-                <label className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                   Experience Level
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -645,7 +645,7 @@ export function SettingsPage() {
                         className={`py-2.5 px-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
                           isSelected
                             ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D] shadow-sm'
-                            : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E] hover:text-[#F4F4F6] hover:bg-[#24242E]'
+                            : 'bg-white dark:bg-[#0B0B0F] text-slate-600 dark:text-[#A1A1AA] border-slate-200 dark:border-[#24242E] hover:text-slate-900 dark:hover:text-[#F4F4F6] hover:bg-slate-100 dark:hover:bg-[#24242E]'
                         }`}
                       >
                         {level}
@@ -657,12 +657,12 @@ export function SettingsPage() {
             </form>
           </div>
 
-          <div className="pt-4 border-t border-[#24242E]">
+          <div className="pt-4 border-t border-slate-200 dark:border-[#24242E]">
             <button
               form="profile-form"
               type="submit"
               disabled={isSavingProfile}
-              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-md shadow-[#C6FF3D]/20 cursor-pointer disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-sm dark:shadow-md dark:shadow-[#C6FF3D]/20 cursor-pointer disabled:opacity-50"
             >
               <Save className="w-4 h-4 stroke-[2.5]" />
               <span>{isSavingProfile ? 'Saving...' : 'Save Profile Changes'}</span>
@@ -671,17 +671,17 @@ export function SettingsPage() {
         </div>
 
         {/* ================= CARD 2: PREFERENCES ================= */}
-        <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between">
+        <div className="bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between shadow-sm">
           <div className="space-y-6">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-[#24242E]">
-              <div className="w-8 h-8 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-slate-200 dark:border-[#24242E]">
+              <div className="w-8 h-8 rounded-xl bg-slate-200 dark:bg-[#24242E] flex items-center justify-center text-lime-700 dark:text-[#C6FF3D]">
                 <Sliders className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase tracking-wide">
+                <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] uppercase tracking-wide">
                   App Preferences
                 </h2>
-                <p className="text-[11px] text-[#A1A1AA]">
+                <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                   Units, rest-timer audio cues, and workout frequency targets.
                 </p>
               </div>
@@ -691,19 +691,19 @@ export function SettingsPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-semibold text-[#F4F4F6]">Unit System</span>
-                  <p className="text-[11px] text-[#A1A1AA]">
+                  <span className="text-sm font-semibold text-slate-900 dark:text-[#F4F4F6]">Unit System</span>
+                  <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                     Metric (kg / cm) or Imperial (lb / ft).
                   </p>
                 </div>
-                <div className="inline-flex p-1 rounded-2xl bg-[#0B0B0F] border border-[#24242E]">
+                <div className="inline-flex p-1 rounded-2xl bg-slate-100 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E]">
                   <button
                     type="button"
                     onClick={() => handleUnitChange('metric')}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       userPreferences.units === 'metric'
                         ? 'bg-[#C6FF3D] text-[#0B0B0F]'
-                        : 'text-[#A1A1AA] hover:text-[#F4F4F6]'
+                        : 'text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6]'
                     }`}
                   >
                     kg / cm
@@ -714,7 +714,7 @@ export function SettingsPage() {
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       userPreferences.units === 'imperial'
                         ? 'bg-[#C6FF3D] text-[#0B0B0F]'
-                        : 'text-[#A1A1AA] hover:text-[#F4F4F6]'
+                        : 'text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6]'
                     }`}
                   >
                     lb / ft
@@ -724,22 +724,22 @@ export function SettingsPage() {
             </div>
 
             {/* Rest-Timer Sound Toggle */}
-            <div className="space-y-2 pt-2 border-t border-[#24242E]">
+            <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-[#24242E]">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-[#F4F4F6]">Rest-Timer Sound</span>
+                    <span className="text-sm font-semibold text-slate-900 dark:text-[#F4F4F6]">Rest-Timer Sound</span>
                     <span
                       className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded ${
                         userPreferences.soundEnabled
-                          ? 'bg-[#C6FF3D]/15 text-[#C6FF3D]'
-                          : 'bg-[#24242E] text-[#A1A1AA]'
+                          ? 'bg-lime-500/15 text-lime-800 dark:bg-[#C6FF3D]/15 dark:text-[#C6FF3D]'
+                          : 'bg-slate-200 dark:bg-[#24242E] text-slate-600 dark:text-[#A1A1AA]'
                       }`}
                     >
                       {userPreferences.soundEnabled ? 'Enabled' : 'Muted'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#A1A1AA]">
+                  <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                     Play audio beeps when rest periods reach zero during workouts.
                   </p>
                 </div>
@@ -749,8 +749,8 @@ export function SettingsPage() {
                   onClick={handleSoundToggle}
                   className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                     userPreferences.soundEnabled
-                      ? 'bg-[#C6FF3D]/15 border-[#C6FF3D]/50 text-[#C6FF3D]'
-                      : 'bg-[#0B0B0F] border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6]'
+                      ? 'bg-lime-500/15 border-lime-500/40 text-lime-800 dark:bg-[#C6FF3D]/15 dark:border-[#C6FF3D]/50 dark:text-[#C6FF3D]'
+                      : 'bg-white dark:bg-[#0B0B0F] border-slate-200 dark:border-[#24242E] text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6]'
                   }`}
                   aria-label={userPreferences.soundEnabled ? 'Mute rest timer sound' : 'Enable rest timer sound'}
                 >
@@ -764,15 +764,15 @@ export function SettingsPage() {
             </div>
 
             {/* Weekly Workout Goal Selector */}
-            <div className="space-y-2.5 pt-2 border-t border-[#24242E]">
+            <div className="space-y-2.5 pt-2 border-t border-slate-200 dark:border-[#24242E]">
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-[#F4F4F6]">Weekly Workout Goal</span>
-                  <span className="text-xs font-mono font-bold text-[#C6FF3D]">
+                  <span className="text-sm font-semibold text-slate-900 dark:text-[#F4F4F6]">Weekly Workout Goal</span>
+                  <span className="text-xs font-mono font-bold text-lime-700 dark:text-[#C6FF3D]">
                     {weeklyGoal} days / week
                   </span>
                 </div>
-                <p className="text-[11px] text-[#A1A1AA]">
+                <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                   Your target number of training sessions per calendar week.
                 </p>
               </div>
@@ -788,7 +788,7 @@ export function SettingsPage() {
                       className={`py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                         isSelected
                           ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D] shadow-sm'
-                          : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E] hover:text-[#F4F4F6] hover:bg-[#24242E]'
+                          : 'bg-white dark:bg-[#0B0B0F] text-slate-600 dark:text-[#A1A1AA] border-slate-200 dark:border-[#24242E] hover:text-slate-900 dark:hover:text-[#F4F4F6] hover:bg-slate-100 dark:hover:bg-[#24242E]'
                       }`}
                     >
                       {num}
@@ -799,15 +799,15 @@ export function SettingsPage() {
             </div>
 
             {/* Workout Pace: Seconds Per Rep */}
-            <div className="space-y-2.5 pt-2 border-t border-[#24242E]">
+            <div className="space-y-2.5 pt-2 border-t border-slate-200 dark:border-[#24242E]">
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-[#F4F4F6]">Workout Pace (Seconds per Rep)</span>
-                  <span className="text-xs font-mono font-bold text-[#C6FF3D]">
+                  <span className="text-sm font-semibold text-slate-900 dark:text-[#F4F4F6]">Workout Pace (Seconds per Rep)</span>
+                  <span className="text-xs font-mono font-bold text-lime-700 dark:text-[#C6FF3D]">
                     {secondsPerRep}s / rep
                   </span>
                 </div>
-                <p className="text-[11px] text-[#A1A1AA]">
+                <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                   Suggested execution tempo for work phase countdowns (e.g. 10 reps × {secondsPerRep}s = {10 * secondsPerRep}s).
                 </p>
               </div>
@@ -823,7 +823,7 @@ export function SettingsPage() {
                       className={`py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                         isSelected
                           ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D] shadow-sm'
-                          : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E] hover:text-[#F4F4F6] hover:bg-[#24242E]'
+                          : 'bg-white dark:bg-[#0B0B0F] text-slate-600 dark:text-[#A1A1AA] border-slate-200 dark:border-[#24242E] hover:text-slate-900 dark:hover:text-[#F4F4F6] hover:bg-slate-100 dark:hover:bg-[#24242E]'
                       }`}
                     >
                       {sec}s
@@ -834,22 +834,22 @@ export function SettingsPage() {
             </div>
 
             {/* Daily Workout Reminders (Requirement 6) */}
-            <div className="space-y-3 pt-2 border-t border-[#24242E]">
+            <div className="space-y-3 pt-2 border-t border-slate-200 dark:border-[#24242E]">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-[#F4F4F6]">Daily Workout Reminder</span>
+                    <span className="text-sm font-semibold text-slate-900 dark:text-[#F4F4F6]">Daily Workout Reminder</span>
                     <span
                       className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded ${
                         reminderEnabled
-                          ? 'bg-[#C6FF3D]/15 text-[#C6FF3D]'
-                          : 'bg-[#24242E] text-[#A1A1AA]'
+                          ? 'bg-lime-500/15 text-lime-800 dark:bg-[#C6FF3D]/15 dark:text-[#C6FF3D]'
+                          : 'bg-slate-200 dark:bg-[#24242E] text-slate-600 dark:text-[#A1A1AA]'
                       }`}
                     >
                       {reminderEnabled ? 'Active' : 'Off'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#A1A1AA]">
+                  <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                     Alerts you when a planned workout has not been completed today.
                   </p>
                 </div>
@@ -859,8 +859,8 @@ export function SettingsPage() {
                   onClick={handleReminderToggle}
                   className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                     reminderEnabled
-                      ? 'bg-[#C6FF3D]/15 border-[#C6FF3D]/50 text-[#C6FF3D]'
-                      : 'bg-[#0B0B0F] border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6]'
+                      ? 'bg-lime-500/15 border-lime-500/40 text-lime-800 dark:bg-[#C6FF3D]/15 dark:border-[#C6FF3D]/50 dark:text-[#C6FF3D]'
+                      : 'bg-white dark:bg-[#0B0B0F] border-slate-200 dark:border-[#24242E] text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6]'
                   }`}
                   aria-label={reminderEnabled ? 'Disable workout reminder' : 'Enable workout reminder'}
                 >
@@ -873,11 +873,11 @@ export function SettingsPage() {
               </div>
 
               {reminderEnabled && (
-                <div className="p-3.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] space-y-3 animate-in fade-in">
+                <div className="p-3.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[#C6FF3D]" />
-                      <label htmlFor="settings-reminder-time" className="text-xs font-semibold text-[#F4F4F6]">
+                      <Clock className="w-4 h-4 text-lime-700 dark:text-[#C6FF3D]" />
+                      <label htmlFor="settings-reminder-time" className="text-xs font-semibold text-slate-900 dark:text-[#F4F4F6]">
                         Preferred Reminder Time
                       </label>
                     </div>
@@ -886,19 +886,19 @@ export function SettingsPage() {
                       type="time"
                       value={reminderTime}
                       onChange={(e) => handleReminderTimeChange(e.target.value)}
-                      className="px-3 py-1.5 rounded-xl bg-[#16161D] border border-[#24242E] focus:border-[#C6FF3D] text-xs font-mono text-[#F4F4F6] outline-none cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D] text-xs font-mono text-slate-900 dark:text-[#F4F4F6] outline-none cursor-pointer"
                     />
                   </div>
 
                   {/* Browser notification permission status and fallback indicator */}
-                  <div className="pt-2 border-t border-[#24242E]/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-                    <div className="text-[11px] text-[#A1A1AA]">
+                  <div className="pt-2 border-t border-slate-200 dark:border-[#24242E]/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                    <div className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                       {notificationPermission === 'granted' ? (
-                        <span className="text-emerald-400 flex items-center gap-1 font-medium">
+                        <span className="text-emerald-700 dark:text-emerald-400 flex items-center gap-1 font-medium">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Browser push notifications enabled
                         </span>
                       ) : notificationPermission === 'denied' ? (
-                        <span className="text-amber-400">
+                        <span className="text-amber-700 dark:text-amber-400">
                           Browser alerts blocked · Falling back to Dashboard banner
                         </span>
                       ) : (
@@ -910,7 +910,7 @@ export function SettingsPage() {
                       <button
                         type="button"
                         onClick={handleRequestNotificationPermission}
-                        className="px-2.5 py-1 rounded-lg bg-[#24242E] hover:bg-[#323240] text-[#C6FF3D] text-[11px] font-semibold transition-colors cursor-pointer self-start sm:self-auto"
+                        className="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-[#24242E] hover:bg-slate-300 dark:hover:bg-[#323240] text-slate-900 dark:text-[#C6FF3D] text-[11px] font-semibold transition-colors cursor-pointer self-start sm:self-auto"
                       >
                         Request Permission
                       </button>
@@ -921,24 +921,24 @@ export function SettingsPage() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#24242E] text-[11px] font-mono text-[#A1A1AA] flex items-center justify-between">
+          <div className="pt-4 border-t border-slate-200 dark:border-[#24242E] text-[11px] font-mono text-slate-600 dark:text-[#A1A1AA] flex items-center justify-between">
             <span>Preferences saved automatically</span>
-            <span className="text-[#C6FF3D]">Sync: Local</span>
+            <span className="text-lime-700 dark:text-[#C6FF3D]">Sync: Local</span>
           </div>
         </div>
 
         {/* ================= CARD 3: EQUIPMENT AVAILABILITY ================= */}
-        <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between">
+        <div className="bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between shadow-sm">
           <div className="space-y-5">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-[#24242E]">
-              <div className="w-8 h-8 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-slate-200 dark:border-[#24242E]">
+              <div className="w-8 h-8 rounded-xl bg-slate-200 dark:bg-[#24242E] flex items-center justify-center text-lime-700 dark:text-[#C6FF3D]">
                 <Wrench className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase tracking-wide">
+                <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] uppercase tracking-wide">
                   Equipment Availability
                 </h2>
-                <p className="text-[11px] text-[#A1A1AA]">
+                <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                   Presets and gear filters for workout routine generation.
                 </p>
               </div>
@@ -950,24 +950,24 @@ export function SettingsPage() {
             />
           </div>
 
-          <div className="pt-4 border-t border-[#24242E] text-[11px] font-mono text-[#A1A1AA] flex items-center justify-between flex-wrap gap-2">
+          <div className="pt-4 border-t border-slate-200 dark:border-[#24242E] text-[11px] font-mono text-slate-600 dark:text-[#A1A1AA] flex items-center justify-between flex-wrap gap-2">
             <span>Saved to athlete profile</span>
-            <span className="text-[#C6FF3D] shrink-0 font-medium">{equipment.length} / 5 types active</span>
+            <span className="text-lime-700 dark:text-[#C6FF3D] shrink-0 font-medium">{equipment.length} / 5 types active</span>
           </div>
         </div>
 
         {/* ================= CARD 4: DATA MANAGEMENT ================= */}
-        <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between">
+        <div className="bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between shadow-sm">
           <div className="space-y-5">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-[#24242E]">
-              <div className="w-8 h-8 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-slate-200 dark:border-[#24242E]">
+              <div className="w-8 h-8 rounded-xl bg-slate-200 dark:bg-[#24242E] flex items-center justify-center text-lime-700 dark:text-[#C6FF3D]">
                 <Database className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase tracking-wide">
+                <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] uppercase tracking-wide">
                   Data Management
                 </h2>
-                <p className="text-[11px] text-[#A1A1AA]">
+                <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                   Export training data as CSV or reset workout history.
                 </p>
               </div>
@@ -975,35 +975,35 @@ export function SettingsPage() {
 
             <div className="space-y-3">
               {/* Export CSV Option */}
-              <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="p-4 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
-                  <div className="text-sm font-semibold text-[#F4F4F6]">Export My Data as CSV</div>
-                  <p className="text-xs text-[#A1A1AA]">
+                  <div className="text-sm font-semibold text-slate-900 dark:text-[#F4F4F6]">Export My Data as CSV</div>
+                  <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
                     Download a full spreadsheet containing every recorded session, calories, and duration.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={handleExportCSV}
-                  className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-semibold transition-colors cursor-pointer"
+                  className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6] text-xs font-semibold transition-colors cursor-pointer"
                 >
-                  <Download className="w-4 h-4 text-[#C6FF3D]" />
+                  <Download className="w-4 h-4 text-lime-700 dark:text-[#C6FF3D]" />
                   <span>Export CSV</span>
                 </button>
               </div>
 
               {/* Delete All History Option */}
-              <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="p-4 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="space-y-0.5">
-                  <div className="text-sm font-semibold text-rose-300">Delete All Workout History</div>
-                  <p className="text-xs text-[#A1A1AA]">
+                  <div className="text-sm font-semibold text-rose-600 dark:text-rose-300">Delete All Workout History</div>
+                  <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
                     Permanently delete all workout session logs while preserving your profile and account.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsDeleteHistoryModalOpen(true)}
-                  className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-rose-800/60 bg-rose-950/20 hover:bg-rose-950/40 text-rose-400 text-xs font-semibold transition-colors cursor-pointer"
+                  className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-rose-300 dark:border-rose-800/60 bg-rose-50 dark:bg-rose-950/20 hover:bg-rose-100 dark:hover:bg-rose-950/40 text-rose-700 dark:text-rose-400 text-xs font-semibold transition-colors cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
                   <span>Delete History</span>
@@ -1012,23 +1012,23 @@ export function SettingsPage() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#24242E] text-[11px] text-[#A1A1AA]">
+          <div className="pt-4 border-t border-slate-200 dark:border-[#24242E] text-[11px] text-slate-600 dark:text-[#A1A1AA]">
             Workout history logs conform to FitForge schema specifications.
           </div>
         </div>
 
-        {/* ================= CARD 4: ACCOUNT ================= */}
-        <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between">
+        {/* ================= CARD 5: ACCOUNT ================= */}
+        <div className="bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] p-6 sm:p-7 space-y-6 flex flex-col justify-between shadow-sm">
           <div className="space-y-5">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-[#24242E]">
-              <div className="w-8 h-8 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-slate-200 dark:border-[#24242E]">
+              <div className="w-8 h-8 rounded-xl bg-slate-200 dark:bg-[#24242E] flex items-center justify-center text-lime-700 dark:text-[#C6FF3D]">
                 <Key className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase tracking-wide">
+                <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] uppercase tracking-wide">
                   Account Credentials
                 </h2>
-                <p className="text-[11px] text-[#A1A1AA]">
+                <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                   Update your account password or sign out of your session.
                 </p>
               </div>
@@ -1037,7 +1037,7 @@ export function SettingsPage() {
             <form onSubmit={handleChangePassword} className="space-y-3.5">
               {/* Current Password */}
               <div>
-                <label htmlFor="settings-current-pass" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                <label htmlFor="settings-current-pass" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                   Current Password
                 </label>
                 <div className="relative">
@@ -1050,30 +1050,30 @@ export function SettingsPage() {
                       if (passwordErrors.current) setPasswordErrors((p) => ({ ...p, current: '' }));
                     }}
                     placeholder="Enter current password"
-                    className={`w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border text-sm text-[#F4F4F6] outline-none pr-10 ${
+                    className={`w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-sm text-slate-900 dark:text-[#F4F4F6] outline-none pr-10 ${
                       passwordErrors.current
-                        ? 'border-rose-500 bg-rose-950/10'
-                        : 'border-[#24242E] focus:border-[#C6FF3D]'
+                        ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/10'
+                        : 'border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D]'
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowCurrentPass(!showCurrentPass)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#F4F4F6] cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] cursor-pointer"
                     aria-label={showCurrentPass ? 'Hide password' : 'Show password'}
                   >
                     {showCurrentPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {passwordErrors.current && (
-                  <p className="text-rose-400 text-[11px] mt-1 font-medium">{passwordErrors.current}</p>
+                  <p className="text-rose-600 dark:text-rose-400 text-[11px] mt-1 font-medium">{passwordErrors.current}</p>
                 )}
               </div>
 
               {/* New Password and Confirm */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="settings-new-pass" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                  <label htmlFor="settings-new-pass" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                     New Password
                   </label>
                   <div className="relative">
@@ -1086,28 +1086,28 @@ export function SettingsPage() {
                         if (passwordErrors.new) setPasswordErrors((p) => ({ ...p, new: '' }));
                       }}
                       placeholder="Min 4 characters"
-                      className={`w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border text-sm text-[#F4F4F6] outline-none pr-10 ${
+                      className={`w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-sm text-slate-900 dark:text-[#F4F4F6] outline-none pr-10 ${
                         passwordErrors.new
-                          ? 'border-rose-500 bg-rose-950/10'
-                          : 'border-[#24242E] focus:border-[#C6FF3D]'
+                          ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/10'
+                          : 'border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D]'
                       }`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowNewPass(!showNewPass)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#F4F4F6] cursor-pointer"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] cursor-pointer"
                       aria-label={showNewPass ? 'Hide password' : 'Show password'}
                     >
                       {showNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                   {passwordErrors.new && (
-                    <p className="text-rose-400 text-[11px] mt-1 font-medium">{passwordErrors.new}</p>
+                    <p className="text-rose-600 dark:text-rose-400 text-[11px] mt-1 font-medium">{passwordErrors.new}</p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="settings-confirm-pass" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                  <label htmlFor="settings-confirm-pass" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                     Confirm Password
                   </label>
                   <input
@@ -1119,14 +1119,14 @@ export function SettingsPage() {
                       if (passwordErrors.confirm) setPasswordErrors((p) => ({ ...p, confirm: '' }));
                     }}
                     placeholder="Repeat new password"
-                    className={`w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border text-sm text-[#F4F4F6] outline-none ${
+                    className={`w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-sm text-slate-900 dark:text-[#F4F4F6] outline-none ${
                       passwordErrors.confirm
-                        ? 'border-rose-500 bg-rose-950/10'
-                        : 'border-[#24242E] focus:border-[#C6FF3D]'
+                        ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/10'
+                        : 'border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D]'
                     }`}
                   />
                   {passwordErrors.confirm && (
-                    <p className="text-rose-400 text-[11px] mt-1 font-medium">{passwordErrors.confirm}</p>
+                    <p className="text-rose-600 dark:text-rose-400 text-[11px] mt-1 font-medium">{passwordErrors.confirm}</p>
                   )}
                 </div>
               </div>
@@ -1135,15 +1135,15 @@ export function SettingsPage() {
                 <button
                   type="submit"
                   disabled={isChangingPass}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6] text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
                 >
-                  <Lock className="w-4 h-4 text-[#C6FF3D]" />
+                  <Lock className="w-4 h-4 text-lime-700 dark:text-[#C6FF3D]" />
                   <span>{isChangingPass ? 'Updating...' : 'Change Password'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#24242E] hover:border-rose-500/40 text-[#A1A1AA] hover:text-rose-400 text-xs font-semibold transition-colors cursor-pointer"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-[#24242E] hover:border-rose-500/40 text-slate-700 dark:text-[#A1A1AA] hover:text-rose-600 dark:hover:text-rose-400 bg-white dark:bg-transparent text-xs font-semibold transition-colors cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Log Out</span>
@@ -1152,29 +1152,29 @@ export function SettingsPage() {
             </form>
           </div>
 
-          <div className="pt-4 border-t border-[#24242E] text-[11px] font-mono text-[#A1A1AA] flex items-center justify-between">
+          <div className="pt-4 border-t border-slate-200 dark:border-[#24242E] text-[11px] font-mono text-slate-600 dark:text-[#A1A1AA] flex items-center justify-between">
             <span>Signed in as @{currentUser?.username || 'member'}</span>
-            <span className="text-emerald-400">Session Secure</span>
+            <span className="text-emerald-700 dark:text-emerald-400">Session Secure</span>
           </div>
         </div>
 
-        {/* ================= CARD 5: DANGER ZONE ================= */}
-        <div className="lg:col-span-2 bg-[#16161D] rounded-3xl border border-rose-900/50 p-6 sm:p-7 space-y-4 relative overflow-hidden">
+        {/* ================= CARD 6: DANGER ZONE ================= */}
+        <div className="lg:col-span-2 bg-rose-50/70 dark:bg-[#16161D] rounded-3xl border border-rose-200 dark:border-rose-900/50 p-6 sm:p-7 space-y-4 relative overflow-hidden shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-rose-950/40 border border-rose-800/80 text-rose-400 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-2xl bg-rose-100 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800/80 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
                 <AlertOctagon className="w-5 h-5" />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <h2 className="font-heading text-lg font-bold text-rose-400 uppercase tracking-wide">
+                  <h2 className="font-heading text-lg font-bold text-rose-700 dark:text-rose-400 uppercase tracking-wide">
                     Danger Zone
                   </h2>
-                  <span className="text-[10px] font-mono uppercase bg-rose-950/60 border border-rose-800/60 text-rose-300 px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-mono uppercase bg-rose-100 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 px-2 py-0.5 rounded-md">
                     Destructive
                   </span>
                 </div>
-                <p className="text-xs text-[#A1A1AA] max-w-xl">
+                <p className="text-xs text-slate-700 dark:text-[#A1A1AA] max-w-xl">
                   Permanently delete your FitForge account, profile settings, and all logged workout records. Once confirmed, this action cannot be undone.
                 </p>
               </div>

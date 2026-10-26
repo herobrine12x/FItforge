@@ -290,16 +290,16 @@ export function HistoryPage() {
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
       {/* ================= PAGE HEADER & PRIMARY ACTION ================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#24242E]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-[#24242E]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
+          <div className="w-10 h-10 rounded-2xl bg-[#65a30d]/10 dark:bg-[#C6FF3D]/10 border border-[#65a30d]/30 dark:border-[#C6FF3D]/30 flex items-center justify-center text-[#65a30d] dark:text-[#C6FF3D] shrink-0">
             <HistoryIcon className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
               Workout History
             </h1>
-            <p className="text-xs text-[#A1A1AA] mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
               Comprehensive workout session logs and performance metrics.
             </p>
           </div>
@@ -308,7 +308,7 @@ export function HistoryPage() {
         <button
           type="button"
           onClick={handleOpenAddModal}
-          className="px-5 py-2.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#C6FF3D]/15 shrink-0"
+          className="px-5 py-2.5 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/15 shrink-0"
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>Add Record</span>
@@ -316,14 +316,14 @@ export function HistoryPage() {
       </div>
 
       {/* ================= SUB-TABS: WORKOUT SESSIONS VS PERSONAL RECORDS ================= */}
-      <div className="flex items-center gap-2 border-b border-[#24242E] pb-3">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-[#24242E] pb-3">
         <button
           type="button"
           onClick={() => setActiveTab('sessions')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading text-sm uppercase tracking-wider font-bold transition-all cursor-pointer ${
             activeTab === 'sessions'
-              ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-md shadow-[#C6FF3D]/15'
-              : 'text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#16161D]'
+              ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-sm font-bold'
+              : 'text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] hover:bg-slate-100 dark:hover:bg-[#16161D]'
           }`}
         >
           <HistoryIcon className="w-4 h-4" />
@@ -335,8 +335,8 @@ export function HistoryPage() {
           onClick={() => setActiveTab('records')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading text-sm uppercase tracking-wider font-bold transition-all cursor-pointer ${
             activeTab === 'records'
-              ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-md shadow-[#C6FF3D]/15'
-              : 'text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#16161D]'
+              ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-sm font-bold'
+              : 'text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] hover:bg-slate-100 dark:hover:bg-[#16161D]'
           }`}
         >
           <Trophy className="w-4 h-4" />
@@ -351,76 +351,76 @@ export function HistoryPage() {
         <>
           {/* ================= STATS SUMMARY CARDS ================= */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 sm:p-5 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
-            <Dumbbell className="w-4 h-4 text-[#C6FF3D]" />
+        <div className="p-4 sm:p-5 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] shadow-sm space-y-1">
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
+            <Dumbbell className="w-4 h-4 text-[#65a30d] dark:text-[#C6FF3D]" />
             <span>Workouts</span>
           </div>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#F4F4F6] tabular-nums">
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-slate-900 dark:text-[#F4F4F6] tabular-nums">
             {totalStats.count}
           </div>
-          <div className="text-[11px] text-[#A1A1AA]">Total sessions logged</div>
+          <div className="text-[11px] text-slate-500 dark:text-[#A1A1AA]">Total sessions logged</div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
-            <Clock className="w-4 h-4 text-cyan-400" />
+        <div className="p-4 sm:p-5 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] shadow-sm space-y-1">
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
+            <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
             <span>Total Time</span>
           </div>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#F4F4F6] tabular-nums">
-            {totalStats.minutes} <span className="text-sm font-sans text-[#A1A1AA]">min</span>
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-slate-900 dark:text-[#F4F4F6] tabular-nums">
+            {totalStats.minutes} <span className="text-sm font-sans text-slate-500 dark:text-[#A1A1AA]">min</span>
           </div>
-          <div className="text-[11px] text-[#A1A1AA]">
+          <div className="text-[11px] text-slate-500 dark:text-[#A1A1AA]">
             {Math.round(totalStats.minutes / 60)} hours trained
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
-            <Flame className="w-4 h-4 text-orange-400" />
+        <div className="p-4 sm:p-5 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] shadow-sm space-y-1">
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
+            <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" />
             <span>Calories</span>
           </div>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#F4F4F6] tabular-nums">
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-slate-900 dark:text-[#F4F4F6] tabular-nums">
             {totalStats.calories}{' '}
-            <span className="text-sm font-sans text-[#A1A1AA]">kcal</span>
+            <span className="text-sm font-sans text-slate-500 dark:text-[#A1A1AA]">kcal</span>
           </div>
-          <div className="text-[11px] text-[#A1A1AA]">Total energy burned</div>
+          <div className="text-[11px] text-slate-500 dark:text-[#A1A1AA]">Total energy burned</div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
-            <Activity className="w-4 h-4 text-emerald-400" />
+        <div className="p-4 sm:p-5 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] shadow-sm space-y-1">
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
+            <Activity className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <span>Avg Session</span>
           </div>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#F4F4F6] tabular-nums">
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-slate-900 dark:text-[#F4F4F6] tabular-nums">
             {totalStats.avgDuration}{' '}
-            <span className="text-sm font-sans text-[#A1A1AA]">min</span>
+            <span className="text-sm font-sans text-slate-500 dark:text-[#A1A1AA]">min</span>
           </div>
-          <div className="text-[11px] text-[#A1A1AA]">Average duration</div>
+          <div className="text-[11px] text-slate-500 dark:text-[#A1A1AA]">Average duration</div>
         </div>
       </div>
 
       {/* ================= CONTROLS: FILTER, SORT & SEARCH ================= */}
-      <div className="p-3 sm:p-4 rounded-3xl bg-[#16161D] border border-[#24242E] grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+      <div className="p-3 sm:p-4 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] shadow-sm grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
         {/* Search Input (5 cols) */}
         <div className="md:col-span-5 relative">
-          <Search className="w-4 h-4 text-[#A1A1AA] absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-500 dark:text-[#A1A1AA] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search notes or workout split..."
-            className="w-full pl-10 pr-4 py-2 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs text-[#F4F4F6] placeholder:text-[#A1A1AA] focus:border-[#C6FF3D] outline-none transition-colors"
+            className="w-full pl-10 pr-4 py-2 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs text-slate-900 dark:text-[#F4F4F6] placeholder:text-slate-400 dark:placeholder:text-[#A1A1AA] focus:border-slate-400 dark:focus:border-[#C6FF3D] outline-none transition-colors"
           />
         </div>
 
         {/* Filter by Split (4 cols) */}
         <div className="md:col-span-4 flex items-center gap-2">
-          <Filter className="w-4 h-4 text-[#A1A1AA] shrink-0 hidden sm:block" />
+          <Filter className="w-4 h-4 text-slate-500 dark:text-[#A1A1AA] shrink-0 hidden sm:block" />
           <select
             value={splitFilter}
             onChange={(e) => setSplitFilter(e.target.value)}
-            className="w-full px-3 py-2 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs text-[#F4F4F6] focus:border-[#C6FF3D] outline-none transition-colors cursor-pointer"
+            className="w-full px-3 py-2 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs text-slate-900 dark:text-[#F4F4F6] focus:border-slate-400 dark:focus:border-[#C6FF3D] outline-none transition-colors cursor-pointer"
           >
             <option value="all">All Training Splits</option>
             <option value="Push">Push Split</option>
@@ -435,11 +435,11 @@ export function HistoryPage() {
 
         {/* Sort by Date (3 cols) */}
         <div className="md:col-span-3 flex items-center gap-2">
-          <ArrowUpDown className="w-4 h-4 text-[#A1A1AA] shrink-0 hidden sm:block" />
+          <ArrowUpDown className="w-4 h-4 text-slate-500 dark:text-[#A1A1AA] shrink-0 hidden sm:block" />
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value as 'newest' | 'oldest')}
-            className="w-full px-3 py-2 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs text-[#F4F4F6] focus:border-[#C6FF3D] outline-none transition-colors cursor-pointer"
+            className="w-full px-3 py-2 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs text-slate-900 dark:text-[#F4F4F6] focus:border-slate-400 dark:focus:border-[#C6FF3D] outline-none transition-colors cursor-pointer"
           >
             <option value="newest">Date: Newest First</option>
             <option value="oldest">Date: Oldest First</option>
@@ -450,16 +450,16 @@ export function HistoryPage() {
       {/* ================= CONTENT: RECORDS TABLE / CARDS / EMPTY STATE ================= */}
       {allUserRecords.length === 0 ? (
         /* Empty State: Zero records in database */
-        <div className="p-8 sm:p-12 rounded-3xl bg-[#16161D] border border-[#24242E] text-center space-y-5 shadow-xl">
-          <div className="w-16 h-16 rounded-3xl bg-[#0B0B0F] border border-[#24242E] text-[#C6FF3D] flex items-center justify-center mx-auto shadow-inner">
+        <div className="p-8 sm:p-12 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-center space-y-5 shadow-sm dark:shadow-xl">
+          <div className="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-[#65a30d] dark:text-[#C6FF3D] flex items-center justify-center mx-auto shadow-inner">
             <Dumbbell className="w-8 h-8" />
           </div>
 
           <div className="max-w-md mx-auto space-y-1.5">
-            <h3 className="font-heading text-2xl font-bold uppercase tracking-wider text-[#F4F4F6]">
+            <h3 className="font-heading text-2xl font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
               No Workout Records Found
             </h3>
-            <p className="text-xs text-[#A1A1AA] leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA] leading-relaxed">
               You haven't logged any workouts yet. Start your first workout in the Recommender or manually log a past training session.
             </p>
           </div>
@@ -468,7 +468,7 @@ export function HistoryPage() {
             <button
               type="button"
               onClick={() => navigate('/recommender')}
-              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#C6FF3D]/15"
+              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/15"
             >
               <Sparkles className="w-4 h-4" />
               <span>Start your first workout</span>
@@ -476,7 +476,7 @@ export function HistoryPage() {
             <button
               type="button"
               onClick={handleOpenAddModal}
-              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] font-semibold text-xs transition-colors cursor-pointer"
+              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6] dark:border-transparent font-semibold text-xs transition-colors cursor-pointer shadow-sm"
             >
               + Log Past Session
             </button>
@@ -484,8 +484,8 @@ export function HistoryPage() {
         </div>
       ) : filteredRecords.length === 0 ? (
         /* Empty State: Active filters match 0 records */
-        <div className="p-8 rounded-3xl bg-[#16161D] border border-[#24242E] text-center space-y-4">
-          <p className="text-sm text-[#A1A1AA]">
+        <div className="p-8 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-center space-y-4 shadow-sm">
+          <p className="text-sm text-slate-600 dark:text-[#A1A1AA]">
             No workout records match your current search and filter criteria.
           </p>
           <button
@@ -494,7 +494,7 @@ export function HistoryPage() {
               setSearchQuery('');
               setSplitFilter('all');
             }}
-            className="px-4 py-2 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-semibold cursor-pointer transition-colors"
+            className="px-4 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6] dark:border-transparent text-xs font-semibold cursor-pointer transition-colors shadow-sm"
           >
             Reset Filters
           </button>
@@ -502,9 +502,9 @@ export function HistoryPage() {
       ) : (
         <>
           {/* ================= DESKTOP TABLE VIEW (hidden md:block) ================= */}
-          <div className="hidden md:block rounded-3xl border border-[#24242E] bg-[#16161D] overflow-hidden shadow-xl">
+          <div className="hidden md:block rounded-3xl border border-slate-200 dark:border-[#24242E] bg-[#f8fafc] dark:bg-[#16161D] overflow-hidden shadow-sm dark:shadow-xl">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-[#24242E] bg-[#0B0B0F]/60 text-[#A1A1AA] font-mono text-[11px] uppercase tracking-wider">
+              <thead className="border-b border-slate-200 dark:border-[#24242E] bg-slate-100/70 dark:bg-[#0B0B0F]/60 text-slate-600 dark:text-[#A1A1AA] font-mono text-[11px] uppercase tracking-wider">
                 <tr>
                   <th className="py-3.5 px-5 font-semibold">Date</th>
                   <th className="py-3.5 px-5 font-semibold">Split</th>
@@ -514,7 +514,7 @@ export function HistoryPage() {
                   <th className="py-3.5 px-5 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#24242E]/60 text-[#F4F4F6]">
+              <tbody className="divide-y divide-slate-200/70 dark:divide-[#24242E]/60 text-slate-900 dark:text-[#F4F4F6]">
                 {filteredRecords.map((record) => {
                   const totalEx = record.totalExercises || 5;
                   const completedEx = record.exercisesCompleted ?? 5;
@@ -523,12 +523,12 @@ export function HistoryPage() {
                   return (
                     <tr
                       key={record.id}
-                      className="hover:bg-[#1a1a24] transition-colors group"
+                      className="hover:bg-slate-100/60 dark:hover:bg-[#1a1a24] transition-colors group"
                     >
                       {/* Date */}
-                      <td className="py-4 px-5 font-mono text-[#A1A1AA] whitespace-nowrap">
+                      <td className="py-4 px-5 font-mono text-slate-600 dark:text-[#A1A1AA] whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-3.5 h-3.5 text-[#C6FF3D]" />
+                          <Calendar className="w-3.5 h-3.5 text-[#65a30d] dark:text-[#C6FF3D]" />
                           <span>{formatDateDisplay(record.date)}</span>
                         </div>
                       </td>
@@ -536,9 +536,9 @@ export function HistoryPage() {
                       {/* Split Name & Notes Preview */}
                       <td className="py-4 px-5">
                         <div className="flex flex-col gap-0.5">
-                          <span className="font-bold text-[#F4F4F6]">{record.splitName}</span>
+                          <span className="font-bold text-slate-900 dark:text-[#F4F4F6]">{record.splitName}</span>
                           {record.notes && (
-                            <span className="text-[11px] text-[#A1A1AA] truncate max-w-xs italic">
+                            <span className="text-[11px] text-slate-500 dark:text-[#A1A1AA] truncate max-w-xs italic">
                               "{record.notes}"
                             </span>
                           )}
@@ -547,16 +547,16 @@ export function HistoryPage() {
 
                       {/* Duration */}
                       <td className="py-4 px-5 font-mono tabular-nums whitespace-nowrap">
-                        <div className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                        <div className="flex items-center gap-1.5 text-slate-900 dark:text-[#F4F4F6]">
+                          <Clock className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                           <span>{record.durationMinutes} min</span>
                         </div>
                       </td>
 
                       {/* Calories */}
                       <td className="py-4 px-5 font-mono tabular-nums whitespace-nowrap">
-                        <div className="flex items-center gap-1.5">
-                          <Flame className="w-3.5 h-3.5 text-orange-400" />
+                        <div className="flex items-center gap-1.5 text-slate-900 dark:text-[#F4F4F6]">
+                          <Flame className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" />
                           <span>{record.caloriesBurned} kcal</span>
                         </div>
                       </td>
@@ -564,13 +564,13 @@ export function HistoryPage() {
                       {/* Completion Percent */}
                       <td className="py-4 px-5 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-20 bg-[#0B0B0F] h-2 rounded-full overflow-hidden border border-[#24242E]">
+                          <div className="w-20 bg-slate-200 dark:bg-[#0B0B0F] h-2 rounded-full overflow-hidden border border-slate-200 dark:border-[#24242E]">
                             <div
-                              className="bg-[#C6FF3D] h-full rounded-full transition-all duration-300"
+                              className="bg-[#65a30d] dark:bg-[#C6FF3D] h-full rounded-full transition-all duration-300"
                               style={{ width: `${percent}%` }}
                             />
                           </div>
-                          <span className="font-mono text-[11px] text-[#A1A1AA]">
+                          <span className="font-mono text-[11px] text-slate-500 dark:text-[#A1A1AA]">
                             {percent}% ({completedEx}/{totalEx})
                           </span>
                         </div>
@@ -582,7 +582,7 @@ export function HistoryPage() {
                           <button
                             type="button"
                             onClick={() => handleOpenEditModal(record)}
-                            className="p-1.5 rounded-xl text-[#A1A1AA] hover:text-[#C6FF3D] hover:bg-[#24242E] transition-colors cursor-pointer"
+                            className="p-1.5 rounded-xl text-slate-500 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#C6FF3D] hover:bg-slate-200 dark:hover:bg-[#24242E] transition-colors cursor-pointer"
                             title="Edit Record"
                             aria-label={`Edit ${record.splitName} record`}
                           >
@@ -591,7 +591,7 @@ export function HistoryPage() {
                           <button
                             type="button"
                             onClick={() => setRecordToDelete(record)}
-                            className="p-1.5 rounded-xl text-[#A1A1AA] hover:text-rose-400 hover:bg-rose-950/40 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-xl text-slate-500 dark:text-[#A1A1AA] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                             title="Delete Record"
                             aria-label={`Delete ${record.splitName} record`}
                           >
@@ -616,39 +616,39 @@ export function HistoryPage() {
               return (
                 <div
                   key={record.id}
-                  className="p-4 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-3 shadow-lg"
+                  className="p-4 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] space-y-3 shadow-sm dark:shadow-lg"
                 >
                   {/* Top: Split Pill & Date */}
                   <div className="flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 text-[#C6FF3D] font-mono text-xs font-bold uppercase">
+                    <span className="px-3 py-1 rounded-full bg-[#65a30d]/10 dark:bg-[#C6FF3D]/10 border border-[#65a30d]/30 dark:border-[#C6FF3D]/30 text-[#4d7c0f] dark:text-[#C6FF3D] font-mono text-xs font-bold uppercase">
                       {record.splitName}
                     </span>
-                    <span className="text-xs font-mono text-[#A1A1AA]">
+                    <span className="text-xs font-mono text-slate-500 dark:text-[#A1A1AA]">
                       {formatDateDisplay(record.date)}
                     </span>
                   </div>
 
                   {/* Middle Stats Row */}
-                  <div className="grid grid-cols-2 gap-2 p-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs font-mono">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                  <div className="grid grid-cols-2 gap-2 p-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs font-mono">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-[#F4F4F6]">
+                      <Clock className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                       <span>{record.durationMinutes} minutes</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Flame className="w-3.5 h-3.5 text-orange-400" />
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-[#F4F4F6]">
+                      <Flame className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" />
                       <span>{record.caloriesBurned} kcal</span>
                     </div>
                   </div>
 
                   {/* Completion Progress Bar */}
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-[#A1A1AA]">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-slate-600 dark:text-[#A1A1AA]">
                       <span>Completion: {completedEx} of {totalEx} exercises</span>
-                      <span className="text-[#C6FF3D] font-bold">{percent}%</span>
+                      <span className="text-[#4d7c0f] dark:text-[#C6FF3D] font-bold">{percent}%</span>
                     </div>
-                    <div className="w-full bg-[#0B0B0F] h-2 rounded-full overflow-hidden border border-[#24242E]">
+                    <div className="w-full bg-slate-200 dark:bg-[#0B0B0F] h-2 rounded-full overflow-hidden border border-slate-200 dark:border-[#24242E]">
                       <div
-                        className="bg-[#C6FF3D] h-full rounded-full transition-all duration-300"
+                        className="bg-[#65a30d] dark:bg-[#C6FF3D] h-full rounded-full transition-all duration-300"
                         style={{ width: `${percent}%` }}
                       />
                     </div>
@@ -656,17 +656,17 @@ export function HistoryPage() {
 
                   {/* Notes snippet */}
                   {record.notes && (
-                    <div className="text-xs text-[#A1A1AA] italic bg-[#0B0B0F]/40 p-2 rounded-xl border border-[#24242E]/40">
+                    <div className="text-xs text-slate-600 dark:text-[#A1A1AA] italic bg-white dark:bg-[#0B0B0F]/40 p-2 rounded-xl border border-slate-200 dark:border-[#24242E]/40">
                       "{record.notes}"
                     </div>
                   )}
 
                   {/* Actions Row */}
-                  <div className="pt-2 border-t border-[#24242E] flex items-center justify-end gap-2">
+                  <div className="pt-2 border-t border-slate-200 dark:border-[#24242E] flex items-center justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => handleOpenEditModal(record)}
-                      className="px-3 py-1.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6] dark:border-transparent text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                       <span>Edit</span>
@@ -674,7 +674,7 @@ export function HistoryPage() {
                     <button
                       type="button"
                       onClick={() => setRecordToDelete(record)}
-                      className="px-3 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-400 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/50 dark:text-rose-400 dark:border-transparent text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Delete</span>
@@ -692,22 +692,22 @@ export function HistoryPage() {
       {/* ================= ADD / EDIT RECORD MODAL ================= */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
         >
-          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden space-y-5 p-6 sm:p-7">
+          <div className="bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden space-y-5 p-6 sm:p-7">
             {/* Header */}
-            <div className="flex items-start justify-between border-b border-[#24242E] pb-4">
+            <div className="flex items-start justify-between border-b border-slate-200 dark:border-[#24242E] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-[#65a30d]/10 dark:bg-[#C6FF3D]/10 border border-[#65a30d]/30 dark:border-[#C6FF3D]/30 flex items-center justify-center text-[#65a30d] dark:text-[#C6FF3D] shrink-0">
                   <CheckCircle2 className="w-5 h-5 stroke-[2.5]" />
                 </div>
                 <div>
-                  <h3 className="font-heading text-2xl font-bold uppercase tracking-wider text-[#F4F4F6]">
+                  <h3 className="font-heading text-2xl font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                     {editingRecord ? 'Edit Workout Record' : 'Add Workout Record'}
                   </h3>
-                  <p className="text-xs text-[#A1A1AA] mt-0.5">
+                  <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
                     {editingRecord
                       ? 'Update session details and performance metrics.'
                       : 'Log past workout session with automatic calorie calculation.'}
@@ -718,7 +718,7 @@ export function HistoryPage() {
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-xl text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+                className="p-1 rounded-xl text-slate-500 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] transition-colors cursor-pointer"
                 aria-label="Close dialog"
               >
                 <X className="w-5 h-5" />
@@ -729,13 +729,13 @@ export function HistoryPage() {
             <form onSubmit={handleSaveRecord} className="space-y-4">
               {/* Split Dropdown */}
               <div className="space-y-1">
-                <label className="block text-xs font-mono uppercase text-[#A1A1AA]">
+                <label className="block text-xs font-mono uppercase text-slate-600 dark:text-[#A1A1AA]">
                   Workout Split
                 </label>
                 <select
                   value={formSplit}
                   onChange={(e) => setFormSplit(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs text-[#F4F4F6] focus:border-[#C6FF3D] outline-none transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs text-slate-900 dark:text-[#F4F4F6] focus:border-slate-400 dark:focus:border-[#C6FF3D] outline-none transition-colors cursor-pointer shadow-sm"
                 >
                   {SPLIT_OPTIONS.map((opt) => (
                     <option key={opt.id} value={opt.id}>
@@ -747,7 +747,7 @@ export function HistoryPage() {
 
               {/* Date Input with Inline Error */}
               <div className="space-y-1">
-                <label className="block text-xs font-mono uppercase text-[#A1A1AA]">
+                <label className="block text-xs font-mono uppercase text-slate-600 dark:text-[#A1A1AA]">
                   Workout Date
                 </label>
                 <input
@@ -760,14 +760,14 @@ export function HistoryPage() {
                       setFormErrors((prev) => ({ ...prev, date: undefined }));
                     }
                   }}
-                  className={`w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border text-xs text-[#F4F4F6] font-mono outline-none transition-colors ${
+                  className={`w-full px-3.5 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-xs text-slate-900 dark:text-[#F4F4F6] font-mono outline-none transition-colors shadow-sm ${
                     formErrors.date
                       ? 'border-rose-500 focus:border-rose-400'
-                      : 'border-[#24242E] focus:border-[#C6FF3D]'
+                      : 'border-slate-200 dark:border-[#24242E] focus:border-slate-400 dark:focus:border-[#C6FF3D]'
                   }`}
                 />
                 {formErrors.date && (
-                  <div className="flex items-center gap-1.5 text-xs text-rose-400 mt-1">
+                  <div className="flex items-center gap-1.5 text-xs text-rose-500 mt-1">
                     <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                     <span>{formErrors.date}</span>
                   </div>
@@ -778,7 +778,7 @@ export function HistoryPage() {
               <div className="grid grid-cols-2 gap-3">
                 {/* Duration in Minutes with Inline Error */}
                 <div className="space-y-1">
-                  <label className="block text-xs font-mono uppercase text-[#A1A1AA]">
+                  <label className="block text-xs font-mono uppercase text-slate-600 dark:text-[#A1A1AA]">
                     Duration (Minutes)
                   </label>
                   <input
@@ -793,14 +793,14 @@ export function HistoryPage() {
                       }
                     }}
                     placeholder="e.g. 45"
-                    className={`w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border text-xs text-[#F4F4F6] font-mono outline-none transition-colors ${
+                    className={`w-full px-3.5 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-xs text-slate-900 dark:text-[#F4F4F6] font-mono outline-none transition-colors shadow-sm ${
                       formErrors.duration
                         ? 'border-rose-500 focus:border-rose-400'
-                        : 'border-[#24242E] focus:border-[#C6FF3D]'
+                        : 'border-slate-200 dark:border-[#24242E] focus:border-slate-400 dark:focus:border-[#C6FF3D]'
                     }`}
                   />
                   {formErrors.duration && (
-                    <div className="flex items-center gap-1.5 text-xs text-rose-400 mt-1">
+                    <div className="flex items-center gap-1.5 text-xs text-rose-500 mt-1">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                       <span>{formErrors.duration}</span>
                     </div>
@@ -809,7 +809,7 @@ export function HistoryPage() {
 
                 {/* Exercises Completed with Inline Error */}
                 <div className="space-y-1">
-                  <label className="block text-xs font-mono uppercase text-[#A1A1AA]">
+                  <label className="block text-xs font-mono uppercase text-slate-600 dark:text-[#A1A1AA]">
                     Exercises (0 - 5)
                   </label>
                   <input
@@ -825,14 +825,14 @@ export function HistoryPage() {
                         setFormErrors((prev) => ({ ...prev, exercisesCompleted: undefined }));
                       }
                     }}
-                    className={`w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border text-xs text-[#F4F4F6] font-mono outline-none transition-colors ${
+                    className={`w-full px-3.5 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border text-xs text-slate-900 dark:text-[#F4F4F6] font-mono outline-none transition-colors shadow-sm ${
                       formErrors.exercisesCompleted
                         ? 'border-rose-500 focus:border-rose-400'
-                        : 'border-[#24242E] focus:border-[#C6FF3D]'
+                        : 'border-slate-200 dark:border-[#24242E] focus:border-slate-400 dark:focus:border-[#C6FF3D]'
                     }`}
                   />
                   {formErrors.exercisesCompleted && (
-                    <div className="flex items-center gap-1.5 text-xs text-rose-400 mt-1">
+                    <div className="flex items-center gap-1.5 text-xs text-rose-500 mt-1">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                       <span>{formErrors.exercisesCompleted}</span>
                     </div>
@@ -841,21 +841,21 @@ export function HistoryPage() {
               </div>
 
               {/* Automatic Calorie Preview Card */}
-              <div className="p-3.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex items-center justify-between">
+              <div className="p-3.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-orange-400" />
-                  <span className="text-xs text-[#A1A1AA]">
+                  <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" />
+                  <span className="text-xs text-slate-600 dark:text-[#A1A1AA]">
                     Auto-Calculated Calories ({currentProfile?.weightKg || 70}kg athlete)
                   </span>
                 </div>
-                <span className="text-sm font-mono font-bold text-[#C6FF3D]">
+                <span className="text-sm font-mono font-bold text-slate-900 dark:text-[#C6FF3D]">
                   {autoCalculatedCalories} kcal
                 </span>
               </div>
 
               {/* Notes */}
               <div className="space-y-1">
-                <label className="block text-xs font-mono uppercase text-[#A1A1AA]">
+                <label className="block text-xs font-mono uppercase text-slate-600 dark:text-[#A1A1AA]">
                   Workout Notes (Optional)
                 </label>
                 <textarea
@@ -863,22 +863,22 @@ export function HistoryPage() {
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
                   placeholder="Reflections, weights lifted, physical feedback..."
-                  className="w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs text-[#F4F4F6] focus:border-[#C6FF3D] outline-none transition-colors resize-none placeholder:text-[#A1A1AA]/50"
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs text-slate-900 dark:text-[#F4F4F6] focus:border-slate-400 dark:focus:border-[#C6FF3D] outline-none transition-colors resize-none placeholder:text-slate-400 dark:placeholder:text-[#A1A1AA]/50 shadow-sm"
                 />
               </div>
 
               {/* Submit / Cancel Buttons */}
-              <div className="pt-3 border-t border-[#24242E] flex items-center justify-end gap-2.5">
+              <div className="pt-3 border-t border-slate-200 dark:border-[#24242E] flex items-center justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-semibold cursor-pointer transition-colors"
+                  className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6] dark:border-transparent text-xs font-semibold cursor-pointer transition-colors shadow-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] text-xs font-bold transition-all duration-200 cursor-pointer shadow-lg shadow-[#C6FF3D]/15"
+                  className="px-5 py-2.5 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] text-xs font-bold transition-all duration-200 cursor-pointer shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/15"
                 >
                   {editingRecord ? 'Update Record' : 'Add Record'}
                 </button>

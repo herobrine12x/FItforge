@@ -75,16 +75,16 @@ export function SummaryPage() {
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
       {/* ================= HEADER & ACTIONS ================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#24242E] print:hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-[#24242E] print:hidden">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D]">
+          <div className="w-10 h-10 rounded-2xl bg-[#65a30d]/10 dark:bg-[#C6FF3D]/10 border border-[#65a30d]/30 dark:border-[#C6FF3D]/30 flex items-center justify-center text-[#65a30d] dark:text-[#C6FF3D]">
             <Award className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
               Weekly Summary
             </h1>
-            <p className="text-xs text-[#A1A1AA] mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
               Consolidated training metrics, streak verification, and tailored goals for next week.
             </p>
           </div>
@@ -96,16 +96,16 @@ export function SummaryPage() {
             type="button"
             onClick={handleExportImage}
             disabled={isExportingImage}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/50 text-[#F4F4F6] text-xs font-heading font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white dark:bg-[#16161D] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#C6FF3D]/50 text-slate-800 dark:text-[#F4F4F6] text-xs font-heading font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm disabled:opacity-50"
           >
-            <Image className="w-4 h-4 text-[#C6FF3D]" />
+            <Image className="w-4 h-4 text-[#65a30d] dark:text-[#C6FF3D]" />
             <span>{isExportingImage ? 'Generating...' : 'Export Image'}</span>
           </button>
 
           <button
             type="button"
             onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] text-xs font-heading font-black uppercase tracking-wider transition-all shadow-md shadow-[#C6FF3D]/20 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] text-xs font-heading font-black uppercase tracking-wider transition-all shadow-sm dark:shadow-md dark:shadow-[#C6FF3D]/20 cursor-pointer"
           >
             <Printer className="w-4 h-4 stroke-[2.5]" />
             <span>Print / Save as PDF</span>
@@ -116,23 +116,23 @@ export function SummaryPage() {
       {/* ================= PRINT-FRIENDLY SUMMARY CARD ================= */}
       <div
         id="weekly-summary-printable-card"
-        className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-8 space-y-7 shadow-2xl relative overflow-hidden print:p-0 print:border-none print:shadow-none print:bg-white print:text-black"
+        className="bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] p-6 sm:p-8 space-y-7 shadow-sm dark:shadow-2xl relative overflow-hidden print:p-0 print:border-none print:shadow-none print:bg-white print:text-black"
       >
         {/* Top Lime Accent line for web view */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-[#C6FF3D] print:hidden" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-[#65a30d] dark:bg-[#C6FF3D] print:hidden" />
 
         {/* Card Header & Week Selector */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[#24242E] print:border-gray-300">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-[#24242E] print:border-gray-300">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#C6FF3D]/10 text-[#C6FF3D] font-bold border border-[#C6FF3D]/20 print:border-black print:text-black">
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#65a30d]/10 dark:bg-[#C6FF3D]/10 text-[#65a30d] dark:text-[#C6FF3D] font-bold border border-[#65a30d]/20 dark:border-[#C6FF3D]/20 print:border-black print:text-black">
                 Performance Report
               </span>
-              <span className="text-xs text-[#A1A1AA] print:text-gray-600 font-mono">
-                Athlete: <strong className="text-white print:text-black">{athleteName}</strong>
+              <span className="text-xs text-slate-600 dark:text-[#A1A1AA] print:text-gray-600 font-mono">
+                Athlete: <strong className="text-slate-900 dark:text-white print:text-black">{athleteName}</strong>
               </span>
             </div>
-            <h2 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wide text-[#F4F4F6] print:text-black">
+            <h2 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wide text-slate-900 dark:text-[#F4F4F6] print:text-black">
               Week of {summary.weekStart} – {summary.weekEnd}
             </h2>
           </div>
@@ -142,14 +142,14 @@ export function SummaryPage() {
             <button
               type="button"
               onClick={() => setWeekOffset((prev) => prev - 1)}
-              className="p-2 rounded-xl bg-[#0B0B0F] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+              className="p-2 rounded-xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#C6FF3D]/40 text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
               title="Previous Week"
               aria-label="Previous Week"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
 
-            <span className="text-xs font-mono px-3 py-1.5 rounded-xl bg-[#0B0B0F] border border-[#24242E] text-[#F4F4F6]">
+            <span className="text-xs font-mono px-3 py-1.5 rounded-xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-slate-900 dark:text-[#F4F4F6]">
               {weekOffset === 0 ? 'Current Week' : weekOffset === -1 ? 'Last Week' : `${Math.abs(weekOffset)} Weeks Ago`}
             </span>
 
@@ -157,7 +157,7 @@ export function SummaryPage() {
               type="button"
               onClick={() => setWeekOffset((prev) => Math.min(0, prev + 1))}
               disabled={weekOffset === 0}
-              className="p-2 rounded-xl bg-[#0B0B0F] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#A1A1AA] hover:text-white transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-2 rounded-xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#C6FF3D]/40 text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
               title="Next Week"
               aria-label="Next Week"
             >
@@ -169,15 +169,15 @@ export function SummaryPage() {
         {/* ================= 4 CORE TILES GRID ================= */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Tile 1: Workouts Done & Goal Progress */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] print:border-gray-300 print:bg-gray-50 flex flex-col justify-between space-y-2">
-            <div className="flex items-center justify-between text-[#A1A1AA] print:text-gray-600">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] shadow-sm dark:shadow-none print:border-gray-300 print:bg-gray-50 flex flex-col justify-between space-y-2">
+            <div className="flex items-center justify-between text-slate-600 dark:text-[#A1A1AA] print:text-gray-600">
               <span className="text-[11px] font-mono uppercase">Workouts Done</span>
-              <Target className="w-4 h-4 text-[#C6FF3D] print:text-black" />
+              <Target className="w-4 h-4 text-[#65a30d] dark:text-[#C6FF3D] print:text-black" />
             </div>
             <div>
-              <div className="font-heading text-3xl sm:text-4xl font-black text-[#F4F4F6] print:text-black">
+              <div className="font-heading text-3xl sm:text-4xl font-black text-slate-900 dark:text-[#F4F4F6] print:text-black">
                 {summary.workoutsDone}
-                <span className="text-base text-[#A1A1AA] font-normal"> / {summary.weeklyGoal}</span>
+                <span className="text-base text-slate-500 dark:text-[#A1A1AA] font-normal"> / {summary.weeklyGoal}</span>
               </div>
               <div className="text-[11px] text-[#C6FF3D] font-mono mt-1 print:text-black font-semibold">
                 {summary.goalProgressPercent}% of Weekly Goal
@@ -186,51 +186,51 @@ export function SummaryPage() {
           </div>
 
           {/* Tile 2: Total Active Minutes */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] print:border-gray-300 print:bg-gray-50 flex flex-col justify-between space-y-2">
-            <div className="flex items-center justify-between text-[#A1A1AA] print:text-gray-600">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] shadow-sm dark:shadow-none print:border-gray-300 print:bg-gray-50 flex flex-col justify-between space-y-2">
+            <div className="flex items-center justify-between text-slate-600 dark:text-[#A1A1AA] print:text-gray-600">
               <span className="text-[11px] font-mono uppercase">Total Minutes</span>
-              <Clock className="w-4 h-4 text-[#C6FF3D] print:text-black" />
+              <Clock className="w-4 h-4 text-cyan-600 dark:text-[#C6FF3D] print:text-black" />
             </div>
             <div>
-              <div className="font-heading text-3xl sm:text-4xl font-black text-[#F4F4F6] print:text-black">
+              <div className="font-heading text-3xl sm:text-4xl font-black text-slate-900 dark:text-[#F4F4F6] print:text-black">
                 {summary.totalMinutes}
-                <span className="text-sm text-[#A1A1AA] font-normal"> mins</span>
+                <span className="text-sm text-slate-500 dark:text-[#A1A1AA] font-normal"> mins</span>
               </div>
-              <div className="text-[11px] text-[#A1A1AA] font-mono mt-1 print:text-gray-600">
+              <div className="text-[11px] text-slate-500 dark:text-[#A1A1AA] font-mono mt-1 print:text-gray-600">
                 {summary.workoutsDone > 0 ? `~${Math.round(summary.totalMinutes / summary.workoutsDone)} min / session` : 'No sessions logged'}
               </div>
             </div>
           </div>
 
           {/* Tile 3: Total Calories Burned */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] print:border-gray-300 print:bg-gray-50 flex flex-col justify-between space-y-2">
-            <div className="flex items-center justify-between text-[#A1A1AA] print:text-gray-600">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] shadow-sm dark:shadow-none print:border-gray-300 print:bg-gray-50 flex flex-col justify-between space-y-2">
+            <div className="flex items-center justify-between text-slate-600 dark:text-[#A1A1AA] print:text-gray-600">
               <span className="text-[11px] font-mono uppercase">Total Calories</span>
-              <Flame className="w-4 h-4 text-[#C6FF3D] print:text-black" />
+              <Flame className="w-4 h-4 text-orange-500 dark:text-[#C6FF3D] print:text-black" />
             </div>
             <div>
-              <div className="font-heading text-3xl sm:text-4xl font-black text-[#F4F4F6] print:text-black">
+              <div className="font-heading text-3xl sm:text-4xl font-black text-slate-900 dark:text-[#F4F4F6] print:text-black">
                 {summary.totalCalories.toLocaleString()}
-                <span className="text-sm text-[#A1A1AA] font-normal"> kcal</span>
+                <span className="text-sm text-slate-500 dark:text-[#A1A1AA] font-normal"> kcal</span>
               </div>
-              <div className="text-[11px] text-[#A1A1AA] font-mono mt-1 print:text-gray-600">
+              <div className="text-[11px] text-slate-500 dark:text-[#A1A1AA] font-mono mt-1 print:text-gray-600">
                 Estimated Energy Output
               </div>
             </div>
           </div>
 
           {/* Tile 4: Active Streak Counter */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] print:border-gray-300 print:bg-gray-50 flex flex-col justify-between space-y-2">
-            <div className="flex items-center justify-between text-[#A1A1AA] print:text-gray-600">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] shadow-sm dark:shadow-none print:border-gray-300 print:bg-gray-50 flex flex-col justify-between space-y-2">
+            <div className="flex items-center justify-between text-slate-600 dark:text-[#A1A1AA] print:text-gray-600">
               <span className="text-[11px] font-mono uppercase">Active Streak</span>
-              <Zap className="w-4 h-4 text-[#C6FF3D] print:text-black" />
+              <Zap className="w-4 h-4 text-amber-500 dark:text-[#C6FF3D] print:text-black" />
             </div>
             <div>
-              <div className="font-heading text-3xl sm:text-4xl font-black text-[#C6FF3D] print:text-black flex items-center gap-1">
-                <Flame className="w-6 h-6 fill-current" />
+              <div className="font-heading text-3xl sm:text-4xl font-black text-slate-900 dark:text-[#C6FF3D] print:text-black flex items-center gap-1">
+                <Flame className="w-6 h-6 fill-current text-orange-500 dark:text-[#C6FF3D]" />
                 <span>{summary.currentStreak} {summary.currentStreak === 1 ? 'day' : 'days'}</span>
               </div>
-              <div className="text-[11px] text-[#A1A1AA] font-mono mt-1 print:text-gray-600">
+              <div className="text-[11px] text-slate-500 dark:text-[#A1A1AA] font-mono mt-1 print:text-gray-600">
                 Best Ever: <strong>{summary.bestStreak} days</strong> (1-day grace)
               </div>
             </div>
@@ -238,58 +238,58 @@ export function SummaryPage() {
         </div>
 
         {/* ================= BEST DAY CARD ================= */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-[#0B0B0F] border border-[#24242E] print:border-gray-300 print:bg-gray-50 space-y-3">
+        <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] shadow-sm dark:shadow-none print:border-gray-300 print:bg-gray-50 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Trophy className="w-4 h-4 text-[#C6FF3D] print:text-black" />
-              <span className="font-heading text-sm font-bold uppercase tracking-wider text-[#F4F4F6] print:text-black">
+              <Trophy className="w-4 h-4 text-amber-500 dark:text-[#C6FF3D] print:text-black" />
+              <span className="font-heading text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6] print:text-black">
                 Best Training Day of the Week
               </span>
             </div>
             {summary.bestDay && (
-              <span className="text-[11px] font-mono text-[#C6FF3D] print:text-black font-bold">
+              <span className="text-[11px] font-mono text-[#65a30d] dark:text-[#C6FF3D] print:text-black font-bold">
                 Top Energy Peak
               </span>
             )}
           </div>
 
           {summary.bestDay ? (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#16161D] border border-[#24242E] print:border-gray-300 print:bg-white">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-slate-50 dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] print:border-gray-300 print:bg-white">
               <div className="space-y-1">
-                <div className="font-heading text-lg font-bold text-[#F4F4F6] print:text-black">
+                <div className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] print:text-black">
                   {summary.bestDay.dayName} · {summary.bestDay.splitName}
                 </div>
-                <div className="text-xs text-[#A1A1AA] print:text-gray-600 font-mono">
+                <div className="text-xs text-slate-500 dark:text-[#A1A1AA] print:text-gray-600 font-mono">
                   Recorded on {summary.bestDay.date}
                 </div>
               </div>
 
               <div className="flex items-center gap-4 text-xs font-mono">
-                <div className="flex items-center gap-1.5 text-[#C6FF3D] print:text-black font-bold">
-                  <Flame className="w-4 h-4" />
+                <div className="flex items-center gap-1.5 text-slate-900 dark:text-[#C6FF3D] print:text-black font-bold">
+                  <Flame className="w-4 h-4 text-orange-500 dark:text-[#C6FF3D]" />
                   <span>{summary.bestDay.caloriesBurned} kcal</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[#A1A1AA] print:text-gray-600">
+                <div className="flex items-center gap-1.5 text-slate-500 dark:text-[#A1A1AA] print:text-gray-600">
                   <Clock className="w-4 h-4" />
                   <span>{summary.bestDay.durationMinutes} mins</span>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="text-xs text-[#A1A1AA] italic p-3">
+            <div className="text-xs text-slate-500 dark:text-[#A1A1AA] italic p-3">
               No workouts or walks recorded for this calendar week.
             </div>
           )}
         </div>
 
         {/* ================= WHAT TO AIM FOR NEXT WEEK ================= */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#16161D] via-[#16161D] to-[#24242E] border border-[#C6FF3D]/40 shadow-lg shadow-[#C6FF3D]/5 print:border-black print:bg-gray-100 space-y-2.5">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#C6FF3D] text-[#0B0B0F] text-[10px] font-heading font-black uppercase tracking-wider">
+        <div className="p-5 sm:p-6 rounded-2xl bg-slate-100 dark:bg-gradient-to-r dark:from-[#16161D] dark:via-[#16161D] dark:to-[#24242E] border border-slate-300 dark:border-[#C6FF3D]/40 shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/5 print:border-black print:bg-gray-100 space-y-2.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#cbd5e1] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:text-[#0B0B0F] text-[10px] font-heading font-black uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>What to Aim for Next Week</span>
           </div>
 
-          <p className="text-sm sm:text-base text-[#F4F4F6] print:text-black leading-relaxed font-medium">
+          <p className="text-sm sm:text-base text-slate-900 dark:text-[#F4F4F6] print:text-black leading-relaxed font-medium">
             "{summary.whatToAimForNextWeek}"
           </p>
         </div>
@@ -298,15 +298,15 @@ export function SummaryPage() {
         {weekRecords.length > 0 && (
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <span className="font-heading text-xs uppercase tracking-wider text-[#A1A1AA] print:text-gray-700">
+              <span className="font-heading text-xs uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA] print:text-gray-700">
                 Sessions Logged This Week ({weekRecords.length})
               </span>
-              <span className="text-[11px] font-mono text-[#A1A1AA] print:text-gray-600">
+              <span className="text-[11px] font-mono text-slate-500 dark:text-[#A1A1AA] print:text-gray-600">
                 Mon to Sun
               </span>
             </div>
 
-            <div className="divide-y divide-[#24242E] print:divide-gray-300 border border-[#24242E] print:border-gray-300 rounded-2xl overflow-hidden bg-[#0B0B0F] print:bg-white">
+            <div className="divide-y divide-slate-200 dark:divide-[#24242E] print:divide-gray-300 border border-slate-200 dark:border-[#24242E] print:border-gray-300 rounded-2xl overflow-hidden bg-white dark:bg-[#0B0B0F]">
               {weekRecords.map((rec) => {
                 const recDate = new Date(rec.date);
                 const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][recDate.getDay()];
@@ -318,25 +318,25 @@ export function SummaryPage() {
                     className="p-3.5 flex items-center justify-between gap-3 text-xs"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-[#16161D] print:bg-gray-100 flex items-center justify-center text-[#C6FF3D] print:text-black shrink-0 font-mono font-bold text-[11px]">
+                      <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-[#16161D] print:bg-gray-100 flex items-center justify-center text-slate-900 dark:text-[#C6FF3D] print:text-black shrink-0 font-mono font-bold text-[11px]">
                         {dayName}
                       </div>
                       <div>
-                        <div className="font-semibold text-[#F4F4F6] print:text-black flex items-center gap-1.5">
-                          {isWalk ? <Footprints className="w-3.5 h-3.5 text-[#C6FF3D] print:text-black" /> : <Dumbbell className="w-3.5 h-3.5 text-[#C6FF3D] print:text-black" />}
+                        <div className="font-semibold text-slate-900 dark:text-[#F4F4F6] print:text-black flex items-center gap-1.5">
+                          {isWalk ? <Footprints className="w-3.5 h-3.5 text-[#65a30d] dark:text-[#C6FF3D] print:text-black" /> : <Dumbbell className="w-3.5 h-3.5 text-[#65a30d] dark:text-[#C6FF3D] print:text-black" />}
                           <span>{rec.splitName}</span>
                         </div>
-                        <div className="text-[11px] font-mono text-[#A1A1AA] print:text-gray-600">
+                        <div className="text-[11px] font-mono text-slate-500 dark:text-[#A1A1AA] print:text-gray-600">
                           {rec.date.split('T')[0]}
                         </div>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3 font-mono text-[11px]">
-                      <span className="text-[#C6FF3D] print:text-black font-semibold">
+                      <span className="text-slate-900 dark:text-[#C6FF3D] print:text-black font-semibold">
                         {rec.caloriesBurned} kcal
                       </span>
-                      <span className="text-[#A1A1AA] print:text-gray-600">
+                      <span className="text-slate-500 dark:text-[#A1A1AA] print:text-gray-600">
                         {rec.durationMinutes}m
                       </span>
                     </div>
@@ -348,7 +348,7 @@ export function SummaryPage() {
         )}
 
         {/* Footer info */}
-        <div className="pt-3 border-t border-[#24242E] print:border-gray-300 text-[11px] font-mono text-[#71717A] print:text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="pt-3 border-t border-slate-200 dark:border-[#24242E] print:border-gray-300 text-[11px] font-mono text-slate-500 dark:text-[#71717A] print:text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>FitForge Motivation & Accountability Engine</span>
           <span>Week Cycle: Monday 00:00 → Sunday 23:59</span>
         </div>

@@ -12,11 +12,13 @@ import {
   Maximize2,
   Menu,
   Minimize2,
+  Moon,
   PanelLeftClose,
   PanelLeftOpen,
   PlayCircle,
   Settings,
   ShieldAlert,
+  Sun,
   Trophy,
   User as UserIcon,
   X,
@@ -51,6 +53,24 @@ export function AppLayout() {
   const { info } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Dark/Light theme state
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    if (typeof document !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
+
+  const toggleTheme = () => {
+    const isDarkNow = document.documentElement.classList.toggle('dark');
+    try {
+      localStorage.setItem('fitforge_theme', isDarkNow ? 'dark' : 'light');
+    } catch {
+      // safe
+    }
+    setIsDarkMode(isDarkNow);
+  };
 
   // Collapsed sidebar state with localStorage persistence (default: expanded / false)
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
@@ -147,14 +167,14 @@ export function AppLayout() {
     : 'md:ml-64 lg:ml-72';
 
   return (
-    <div className="min-h-screen bg-[#0B0B0F] text-[#F4F4F6] flex flex-col md:flex-row antialiased selection:bg-[#C6FF3D] selection:text-[#0B0B0F]">
+    <div className="min-h-screen bg-[#eef1f5] text-slate-900 dark:bg-[#0B0B0F] dark:text-[#F4F4F6] flex flex-col md:flex-row antialiased selection:bg-[#C6FF3D] selection:text-[#0B0B0F]">
       {/* ================= DESKTOP SIDEBAR ================= */}
       <aside
-        className={`hidden md:flex flex-col bg-[#16161D] border-r border-[#24242E] fixed top-0 bottom-0 left-0 z-30 select-none transition-all duration-200 ease-in-out ${desktopSidebarWidthClass}`}
+        className={`hidden md:flex flex-col bg-[#f8fafc] dark:bg-[#16161D] border-r border-slate-200 dark:border-[#24242E] fixed top-0 bottom-0 left-0 z-30 select-none transition-all duration-200 ease-in-out ${desktopSidebarWidthClass}`}
         aria-label="Desktop Sidebar"
       >
         {/* Brand / Toggle Header */}
-        <div className={`border-b border-[#24242E] ${isCollapsed ? 'p-3.5' : 'p-5'}`}>
+        <div className={`border-b border-slate-200 dark:border-[#24242E] ${isCollapsed ? 'p-3.5' : 'p-5'}`}>
           {!isCollapsed ? (
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col gap-1 min-w-0">
@@ -163,44 +183,66 @@ export function AppLayout() {
                   alt="FitForge"
                   className="h-9 w-auto object-contain object-left"
                 />
-                <div className="text-[9px] font-mono uppercase tracking-widest text-[#A1A1AA] leading-tight truncate">
+                <div className="text-[9px] font-mono uppercase tracking-widest text-slate-500 dark:text-[#A1A1AA] leading-tight truncate">
                   Recommender & Tracker
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={toggleCollapse}
-                title="Collapse sidebar (Ctrl+B)"
-                aria-label="Collapse sidebar"
-                aria-expanded="true"
-                className="p-2 rounded-xl text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#24242E] border border-[#24242E] transition-colors cursor-pointer shrink-0"
-              >
-                <PanelLeftClose className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
-                <Dumbbell className="w-5 h-5 text-[#C6FF3D]" />
-              </div>
-              <div className="relative group flex items-center justify-center">
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  title={isDarkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+                  aria-label="Toggle Theme"
+                  className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] transition-colors cursor-pointer"
+                >
+                  {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+                </button>
                 <button
                   type="button"
                   onClick={toggleCollapse}
-                  title="Expand sidebar (Ctrl+B)"
-                  aria-label="Expand sidebar"
-                  aria-expanded="false"
-                  className="p-2 rounded-xl text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#24242E] border border-[#24242E] transition-colors cursor-pointer"
+                  title="Collapse sidebar (Ctrl+B)"
+                  aria-label="Collapse sidebar"
+                  aria-expanded="true"
+                  className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] transition-colors cursor-pointer"
                 >
-                  <PanelLeftOpen className="w-4 h-4" />
+                  <PanelLeftClose className="w-4 h-4" />
                 </button>
-                {/* Tooltip for Collapse/Expand toggle */}
-                <div
-                  role="tooltip"
-                  className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-[#16161D] border border-[#24242E] text-xs font-semibold text-[#F4F4F6] rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-150 z-50 pointer-events-none"
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-[#C6FF3D]/10 border border-slate-300 dark:border-[#C6FF3D]/30 flex items-center justify-center text-slate-800 dark:text-[#C6FF3D] shrink-0">
+                <Dumbbell className="w-5 h-5" />
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  title={isDarkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+                  aria-label="Toggle Theme"
+                  className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] transition-colors cursor-pointer"
                 >
-                  Expand sidebar (Ctrl+B)
-                  <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#16161D] border-l border-b border-[#24242E] rotate-45" />
+                  {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+                </button>
+                <div className="relative group flex items-center justify-center">
+                  <button
+                    type="button"
+                    onClick={toggleCollapse}
+                    title="Expand sidebar (Ctrl+B)"
+                    aria-label="Expand sidebar"
+                    aria-expanded="false"
+                    className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] transition-colors cursor-pointer"
+                  >
+                    <PanelLeftOpen className="w-4 h-4" />
+                  </button>
+                  {/* Tooltip for Collapse/Expand toggle */}
+                  <div
+                    role="tooltip"
+                    className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-xs font-semibold text-slate-800 dark:text-[#F4F4F6] rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-150 z-50"
+                  >
+                    Expand sidebar (Ctrl+B)
+                    <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-white dark:bg-[#16161D] border-l border-b border-slate-200 dark:border-[#24242E] rotate-45" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -215,7 +257,7 @@ export function AppLayout() {
           aria-label="Main Navigation"
         >
           {!isCollapsed && (
-            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
+            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-[#A1A1AA]">
               Navigation
             </div>
           )}
@@ -233,8 +275,8 @@ export function AppLayout() {
                         : 'w-full gap-3 px-3.5 py-2.5'
                     } ${
                       isActive
-                        ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-md shadow-[#C6FF3D]/15'
-                        : 'text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#24242E]/50'
+                        ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-md shadow-[#C6FF3D]/15 font-bold'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E]/50'
                     }`
                   }
                 >
@@ -244,7 +286,7 @@ export function AppLayout() {
                         className={`w-5 h-5 shrink-0 transition-transform group-hover:scale-105 ${
                           isActive
                             ? 'text-[#0B0B0F] stroke-[2.5]'
-                            : 'text-[#A1A1AA] group-hover:text-[#F4F4F6]'
+                            : 'text-slate-500 group-hover:text-slate-900 dark:text-[#A1A1AA] dark:group-hover:text-[#F4F4F6]'
                         }`}
                       />
                       {!isCollapsed && (
@@ -263,10 +305,10 @@ export function AppLayout() {
                 {isCollapsed && (
                   <div
                     role="tooltip"
-                    className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-[#16161D] border border-[#24242E] text-xs font-semibold text-[#F4F4F6] rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-150 z-50 pointer-events-none"
+                    className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-xs font-semibold text-slate-800 dark:text-[#F4F4F6] rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-150 z-50"
                   >
                     {item.name}
-                    <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#16161D] border-l border-b border-[#24242E] rotate-45" />
+                    <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-white dark:bg-[#16161D] border-l border-b border-slate-200 dark:border-[#24242E] rotate-45" />
                   </div>
                 )}
               </div>
@@ -275,12 +317,12 @@ export function AppLayout() {
 
           {/* Guided Workout Focus Mode Button (Requirement 7) */}
           {isWorkoutRoute && (
-            <div className={`pt-3 border-t border-[#24242E] ${isCollapsed ? 'px-0' : 'px-1'}`}>
+            <div className={`pt-3 border-t border-slate-200 dark:border-[#24242E] ${isCollapsed ? 'px-0' : 'px-1'}`}>
               <div className="relative group flex items-center justify-center">
                 <button
                   type="button"
                   onClick={() => setIsFocusMode(true)}
-                  className={`flex items-center gap-2.5 rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer border border-[#C6FF3D]/30 text-[#C6FF3D] bg-[#C6FF3D]/10 hover:bg-[#C6FF3D]/20 ${
+                  className={`flex items-center gap-2.5 rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer border border-emerald-500/30 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:border-[#C6FF3D]/30 dark:text-[#C6FF3D] dark:bg-[#C6FF3D]/10 dark:hover:bg-[#C6FF3D]/20 ${
                     isCollapsed
                       ? 'w-11 h-11 justify-center'
                       : 'w-full px-3.5 py-2.5'
@@ -294,10 +336,10 @@ export function AppLayout() {
                 {isCollapsed && (
                   <div
                     role="tooltip"
-                    className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-[#16161D] border border-[#24242E] text-xs font-semibold text-[#C6FF3D] rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-150 z-50 pointer-events-none"
+                    className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-xs font-semibold text-emerald-600 dark:text-[#C6FF3D] rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-150 z-50"
                   >
                     Focus Mode (Hide Sidebar)
-                    <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#16161D] border-l border-b border-[#24242E] rotate-45" />
+                    <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-white dark:bg-[#16161D] border-l border-b border-slate-200 dark:border-[#24242E] rotate-45" />
                   </div>
                 )}
               </div>
@@ -306,22 +348,22 @@ export function AppLayout() {
         </nav>
 
         {/* User Card & Log Out */}
-        <div className={`border-t border-[#24242E] bg-[#16161D] ${isCollapsed ? 'p-2.5' : 'p-4'}`}>
+        <div className={`border-t border-slate-200 dark:border-[#24242E] bg-[#f8fafc] dark:bg-[#16161D] ${isCollapsed ? 'p-2.5' : 'p-4'}`}>
           {!isCollapsed ? (
             <>
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#0B0B0F] border border-[#24242E] mb-3">
-                <div className="w-10 h-10 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D] font-bold font-heading text-lg shrink-0">
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-100 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] mb-3 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-[#24242E] flex items-center justify-center text-slate-800 dark:text-[#C6FF3D] font-bold font-heading text-lg shrink-0 border border-slate-300 dark:border-transparent">
                   {username.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold text-[#F4F4F6] truncate">
+                  <div className="text-sm font-bold text-slate-900 dark:text-[#F4F4F6] truncate">
                     {displayName}
                   </div>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="text-[10px] font-mono uppercase text-[#C6FF3D] bg-[#C6FF3D]/10 px-1.5 py-0.5 rounded-md">
+                    <span className="text-[10px] font-mono uppercase text-emerald-700 bg-emerald-100 dark:text-[#C6FF3D] dark:bg-[#C6FF3D]/10 px-1.5 py-0.5 rounded-md font-bold">
                       {level}
                     </span>
-                    <span className="text-[11px] text-[#A1A1AA] truncate">@{username}</span>
+                    <span className="text-[11px] text-slate-500 dark:text-[#A1A1AA] truncate">@{username}</span>
                   </div>
                 </div>
               </div>
@@ -329,7 +371,7 @@ export function AppLayout() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-[#24242E] text-rose-400 hover:text-white hover:bg-rose-950/40 hover:border-rose-500/40 transition-colors text-xs font-semibold cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-[#24242E] text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:text-white dark:hover:bg-rose-950/40 dark:hover:border-rose-500/40 transition-colors text-xs font-semibold cursor-pointer shadow-xs"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Log out</span>
@@ -339,16 +381,16 @@ export function AppLayout() {
             <div className="flex flex-col items-center gap-2">
               {/* User Avatar Initial with Tooltip */}
               <div className="relative group flex items-center justify-center">
-                <div className="w-10 h-10 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D] font-bold font-heading text-base shrink-0 border border-[#24242E]">
+                <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-[#24242E] flex items-center justify-center text-slate-800 dark:text-[#C6FF3D] font-bold font-heading text-base shrink-0 border border-slate-300 dark:border-[#24242E]">
                   {username.charAt(0).toUpperCase()}
                 </div>
                 <div
                   role="tooltip"
-                  className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-[#16161D] border border-[#24242E] text-xs font-semibold text-[#F4F4F6] rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 z-50 pointer-events-none"
+                  className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-xs font-semibold text-slate-800 dark:text-[#F4F4F6] rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 z-50"
                 >
-                  <div className="font-bold text-[#F4F4F6]">{displayName}</div>
-                  <div className="text-[10px] text-[#A1A1AA]">@{username} · {level}</div>
-                  <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#16161D] border-l border-b border-[#24242E] rotate-45" />
+                  <div className="font-bold text-slate-900 dark:text-[#F4F4F6]">{displayName}</div>
+                  <div className="text-[10px] text-slate-500 dark:text-[#A1A1AA]">@{username} · {level}</div>
+                  <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-white dark:bg-[#16161D] border-l border-b border-slate-200 dark:border-[#24242E] rotate-45" />
                 </div>
               </div>
 
@@ -359,16 +401,16 @@ export function AppLayout() {
                   onClick={handleLogout}
                   title="Log out"
                   aria-label="Log out"
-                  className="w-10 h-10 rounded-xl border border-[#24242E] text-rose-400 hover:text-white hover:bg-rose-950/40 hover:border-rose-500/40 transition-colors flex items-center justify-center cursor-pointer"
+                  className="w-10 h-10 rounded-xl border border-slate-200 dark:border-[#24242E] text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:text-white dark:hover:bg-rose-950/40 dark:hover:border-rose-500/40 transition-colors flex items-center justify-center cursor-pointer shadow-xs"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
                 <div
                   role="tooltip"
-                  className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-[#16161D] border border-[#24242E] text-xs font-semibold text-rose-400 rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-150 z-50 pointer-events-none"
+                  className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-xs font-semibold text-rose-600 dark:text-rose-400 rounded-xl shadow-xl whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 transition-all duration-150 z-50"
                 >
                   Log out
-                  <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#16161D] border-l border-b border-[#24242E] rotate-45" />
+                  <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-white dark:bg-[#16161D] border-l border-b border-slate-200 dark:border-[#24242E] rotate-45" />
                 </div>
               </div>
             </div>

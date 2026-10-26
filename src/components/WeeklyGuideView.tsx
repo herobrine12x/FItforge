@@ -418,16 +418,16 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
       {/* ================= HEADER & VIEW TOGGLES ================= */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#24242E]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-[#24242E]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
             <CalendarIcon className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
               Weekly Guide & Schedule
             </h1>
-            <p className="text-xs text-[#A1A1AA] mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
               Customize your weekly training rhythm, swap routines, and schedule specific calendar dates.
             </p>
           </div>
@@ -436,14 +436,14 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
         {/* Action Controls: View Switcher & "Schedule a workout" button */}
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Week vs Month View Toggle (Requirement 3) */}
-          <div className="inline-flex p-1 rounded-2xl bg-[#16161D] border border-[#24242E]">
+          <div className="inline-flex p-1 rounded-2xl bg-slate-200/80 dark:bg-[#16161D] border border-slate-300 dark:border-[#24242E]">
             <button
               type="button"
               onClick={() => setActiveView('week')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeView === 'week'
                   ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-sm'
-                  : 'text-[#A1A1AA] hover:text-[#F4F4F6]'
+                  : 'text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6]'
               }`}
             >
               Week View
@@ -454,18 +454,18 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeView === 'month'
                   ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-sm'
-                  : 'text-[#A1A1AA] hover:text-[#F4F4F6]'
+                  : 'text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6]'
               }`}
             >
               Month Calendar
             </button>
           </div>
 
-          {/* Schedule a Workout Button (Requirement 3) */}
+          {/* Schedule a Workout Button (Requirement 3 - Ash grey in light mode) */}
           <button
             type="button"
             onClick={() => handleOpenScheduleModal()}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-md shadow-[#C6FF3D]/20 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-sm cursor-pointer"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
             <span>Schedule a Workout</span>
@@ -476,15 +476,15 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
       {/* ================= BACK-TO-BACK WARNING BANNER (Requirement 1) ================= */}
       {backToBackInfo.hasWarning && (
         <div
-          className="p-4 sm:p-5 rounded-3xl bg-amber-950/30 border border-amber-500/50 text-amber-200 flex items-start gap-3.5 shadow-lg shadow-amber-950/20 animate-in fade-in"
+          className="p-4 sm:p-5 rounded-3xl bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-500/50 text-slate-900 dark:text-amber-200 flex items-start gap-3.5 shadow-sm dark:shadow-lg dark:shadow-amber-950/20 animate-in fade-in"
           role="alert"
         >
-          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <h4 className="font-heading text-sm font-bold uppercase tracking-wider text-amber-300">
+            <h4 className="font-heading text-sm font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
               Rest Day Recommendation
             </h4>
-            <p className="text-xs text-amber-200/90 leading-relaxed">
+            <p className="text-xs text-slate-700 dark:text-amber-200/90 leading-relaxed">
               {backToBackInfo.warningMessage}
             </p>
           </div>
@@ -495,17 +495,17 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
       {activeView === 'week' && (
         <div className="space-y-6">
           {/* Weekday Toggle Chips (Mon to Sun) */}
-          <div className="p-6 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-4 shadow-xl">
+          <div className="p-6 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] space-y-4 shadow-sm dark:shadow-xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+                <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                   Training Days ({weeklySchedule.selectedDays.length} Days / Week)
                 </h2>
-                <p className="text-xs text-[#A1A1AA]">
+                <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
                   Select the weekdays you intend to train. Focus splits automatically adjust across chosen days.
                 </p>
               </div>
-              <span className="text-xs font-mono text-[#C6FF3D] font-bold">
+              <span className="text-xs font-mono text-emerald-600 dark:text-[#C6FF3D] font-bold">
                 {weeklySchedule.selectedDays.length} of 7 Days Active
               </span>
             </div>
@@ -522,7 +522,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     className={`py-3 rounded-2xl text-xs font-heading font-black uppercase tracking-wider transition-all cursor-pointer border flex flex-col items-center justify-center gap-1 ${
                       isSelected
                         ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D] shadow-md shadow-[#C6FF3D]/15 scale-[1.02]'
-                        : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E] hover:text-[#F4F4F6] hover:bg-[#24242E]/50'
+                        : 'bg-white dark:bg-[#0B0B0F] text-slate-600 dark:text-[#A1A1AA] border-slate-200 dark:border-[#24242E] hover:text-slate-900 dark:hover:text-[#F4F4F6] hover:bg-slate-100 dark:hover:bg-[#24242E]/50'
                     }`}
                   >
                     <span className="text-sm">{WEEKDAY_LABELS[day]}</span>
@@ -538,10 +538,10 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
           {/* 7 Per-Day Cards Grid (Requirement 2) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
-              <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+              <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                 Weekly Routine Breakdown
               </h3>
-              <span className="text-xs font-mono text-[#A1A1AA]">
+              <span className="text-xs font-mono text-slate-500 dark:text-[#A1A1AA]">
                 Swap or move routines to customize your schedule
               </span>
             </div>
@@ -557,21 +557,23 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     key={day}
                     className={`p-5 rounded-3xl border transition-all flex flex-col justify-between space-y-4 ${
                       isRest
-                        ? 'bg-[#16161D]/50 border-[#24242E]/60 text-[#A1A1AA]'
-                        : 'bg-[#16161D] border-[#24242E] hover:border-[#C6FF3D]/30 shadow-lg'
+                        ? 'bg-slate-100/90 border-slate-200 text-slate-700 shadow-sm dark:bg-[#16161D]/50 dark:border-[#24242E]/60 dark:text-[#A1A1AA]'
+                        : 'bg-[#f8fafc] dark:bg-[#16161D] border-slate-200/90 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#C6FF3D]/30 shadow-sm dark:shadow-lg text-slate-900 dark:text-[#F4F4F6]'
                     }`}
                   >
                     <div className="space-y-3">
                       {/* Card Header: Weekday Name & Badge */}
                       <div className="flex items-center justify-between">
-                        <span className="font-heading text-lg font-black uppercase text-[#F4F4F6]">
+                        <span className={`font-heading text-lg font-black uppercase ${
+                          isRest ? 'text-slate-800 dark:text-[#F4F4F6]' : 'text-slate-900 dark:text-[#F4F4F6]'
+                        }`}>
                           {WEEKDAY_FULL_NAMES[day]}
                         </span>
                         <span
                           className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-md font-bold ${
                             isRest
-                              ? 'bg-[#24242E] text-[#A1A1AA]'
-                              : 'bg-[#C6FF3D]/15 text-[#C6FF3D] border border-[#C6FF3D]/30'
+                              ? 'bg-slate-200/80 text-slate-700 border border-slate-300/60 dark:bg-[#24242E] dark:text-[#A1A1AA] dark:border-transparent'
+                              : 'bg-[#C6FF3D]/20 text-slate-900 dark:text-[#C6FF3D] border border-[#C6FF3D]/40'
                           }`}
                         >
                           {isRest ? 'Rest Day' : 'Training Day'}
@@ -582,18 +584,20 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                       <div className="space-y-1">
                         <h4
                           className={`text-base font-bold transition-colors ${
-                            isRest ? 'text-[#A1A1AA]' : 'text-[#F4F4F6]'
+                            isRest ? 'text-slate-700 dark:text-[#A1A1AA]' : 'text-slate-900 dark:text-[#F4F4F6]'
                           }`}
                         >
                           {daySched?.routineName || 'Rest & Recovery Day'}
                         </h4>
-                        <p className="text-xs text-[#A1A1AA] line-clamp-1">
+                        <p className={`text-xs line-clamp-1 ${
+                          isRest ? 'text-slate-500 dark:text-[#A1A1AA]' : 'text-slate-600 dark:text-[#A1A1AA]'
+                        }`}>
                           {daySched?.targetMuscle || 'Active recovery & mobility'}
                         </p>
                       </div>
 
                       {!isRest && (
-                        <div className="flex items-center gap-3 text-[11px] font-mono text-[#A1A1AA] pt-1">
+                        <div className="flex items-center gap-3 text-[11px] font-mono text-slate-600 dark:text-[#A1A1AA] pt-1">
                           <span className="flex items-center gap-1">
                             <Clock className="w-3.5 h-3.5 text-[#C6FF3D]" />
                             ~45 min
@@ -608,13 +612,13 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     </div>
 
                     {/* Per-Day Actions: Change, Move, Start (Requirement 2) */}
-                    <div className="pt-3 border-t border-[#24242E] flex items-center justify-between gap-2">
+                    <div className="pt-3 border-t border-slate-200 dark:border-[#24242E] flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5">
                         {/* Change Button */}
                         <button
                           type="button"
                           onClick={() => handleOpenChangeRoutine(day)}
-                          className="px-2.5 py-1.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#A1A1AA] hover:text-[#F4F4F6] text-xs font-mono transition-colors cursor-pointer"
+                          className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#C6FF3D]/40 text-slate-700 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] text-xs font-mono transition-colors cursor-pointer"
                           title="Change routine for this day"
                         >
                           Change
@@ -624,7 +628,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                         <button
                           type="button"
                           onClick={() => handleOpenMoveRoutine(day)}
-                          className="px-2.5 py-1.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#A1A1AA] hover:text-[#F4F4F6] text-xs font-mono transition-colors cursor-pointer flex items-center gap-1"
+                          className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#C6FF3D]/40 text-slate-700 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] text-xs font-mono transition-colors cursor-pointer flex items-center gap-1"
                           title="Move or swap this workout to another day"
                         >
                           <ArrowLeftRight className="w-3 h-3 text-[#C6FF3D]" />
@@ -632,12 +636,12 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                         </button>
                       </div>
 
-                      {/* Start Workout Button */}
+                      {/* Start Workout Button - Ash grey in light mode, lime in dark mode */}
                       {!isRest && (
                         <button
                           type="button"
                           onClick={() => handleLaunchWorkout(daySched.routineId)}
-                          className="p-2 rounded-xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] transition-all cursor-pointer shadow-md shadow-[#C6FF3D]/15"
+                          className="p-2 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] transition-all cursor-pointer shadow-sm"
                           title="Launch this workout in Live Session"
                         >
                           <Play className="w-3.5 h-3.5 fill-current" />

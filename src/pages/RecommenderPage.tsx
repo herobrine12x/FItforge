@@ -228,16 +228,16 @@ export function RecommenderPage() {
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
       {/* ================= PAGE HEADER & PRIMARY CTA ================= */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#24242E]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-[#24242E]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D]">
             <Dumbbell className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
               Workout Recommender
             </h1>
-            <p className="text-xs text-[#A1A1AA] mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
               Polymorphic 5-exercise resistance splits dynamically tailored to equipment and tier.
             </p>
           </div>
@@ -247,7 +247,7 @@ export function RecommenderPage() {
           <button
             type="button"
             onClick={() => navigate('/schedule')}
-            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#F4F4F6] font-heading font-black uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 cursor-pointer shrink-0"
+            className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white hover:bg-slate-100 dark:bg-[#16161D] dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] hover:border-[#C6FF3D]/40 text-slate-800 dark:text-[#F4F4F6] font-heading font-black uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 cursor-pointer shrink-0 shadow-sm"
           >
             <Calendar className="w-4 h-4 text-[#C6FF3D]" />
             <span>Customize Weekly Schedule</span>
@@ -257,9 +257,9 @@ export function RecommenderPage() {
             type="button"
             onClick={handleStartWorkout}
             disabled={exercises.length === 0}
-            className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d5ff6a] disabled:opacity-40 disabled:cursor-not-allowed text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 shadow-lg shadow-[#C6FF3D]/20 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shrink-0"
+            className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] disabled:opacity-40 disabled:cursor-not-allowed font-heading font-black uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 shadow-md hover:scale-[1.02] active:scale-[0.98] cursor-pointer shrink-0"
           >
-            <Play className="w-4 h-4 fill-[#0B0B0F]" />
+            <Play className="w-4 h-4 fill-current" />
             <span>Start This Workout</span>
             <ArrowRight className="w-4 h-4" />
           </button>
@@ -295,25 +295,25 @@ export function RecommenderPage() {
       )}
 
       {/* ================= SECTION 1: EQUIPMENT AVAILABILITY & PRESETS ================= */}
-      <section className="p-6 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-4 shadow-xl">
-        <div className="flex items-center justify-between pb-3 border-b border-[#24242E]">
+      <section className="p-6 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] space-y-4 shadow-sm dark:shadow-xl">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#24242E]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+            <div className="w-8 h-8 rounded-xl bg-slate-200/80 dark:bg-[#24242E] flex items-center justify-center text-slate-800 dark:text-[#C6FF3D]">
               <Wrench className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase tracking-wide">
+              <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] uppercase tracking-wide">
                 Equipment Availability
               </h2>
-              <p className="text-[11px] text-[#A1A1AA]">
+              <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
                 Filter routines by what you have. Bodyweight is always included.
               </p>
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-[#A1A1AA]">
+          <div className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
             <span>Active:</span>
-            <span className="text-[#C6FF3D] font-bold">
+            <span className="text-slate-900 dark:text-[#C6FF3D] font-bold">
               {availableEquipment.length} / 5 types
             </span>
           </div>
@@ -330,12 +330,12 @@ export function RecommenderPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Layers className="w-4 h-4 text-[#C6FF3D]" />
-            <h2 className="text-xs font-mono uppercase tracking-wider text-[#A1A1AA]">
+            <h2 className="text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA]">
               Select Training Split
             </h2>
           </div>
-          <span className="text-[11px] font-mono text-[#A1A1AA]">
-            Active Split: <strong className="text-[#C6FF3D]">{workoutPlan.name}</strong>
+          <span className="text-[11px] font-mono text-slate-600 dark:text-[#A1A1AA]">
+            Active Split: <strong className="text-slate-900 dark:text-[#C6FF3D]">{workoutPlan.name}</strong>
           </span>
         </div>
 
@@ -349,10 +349,10 @@ export function RecommenderPage() {
                 key={split.key}
                 type="button"
                 onClick={() => handleSplitChange(split.key)}
-                className={`relative p-5 rounded-3xl text-left border transition-all duration-200 cursor-pointer flex flex-col justify-between group ${
+                className={`relative p-5 rounded-3xl text-left border transition-all duration-200 cursor-pointer flex flex-col justify-between group shadow-sm ${
                   isSelected
-                    ? 'bg-[#16161D] border-[#C6FF3D] shadow-lg shadow-[#C6FF3D]/10 ring-1 ring-[#C6FF3D]/40'
-                    : 'bg-[#16161D] border-[#24242E] hover:border-[#383846] hover:bg-[#1A1A22]'
+                    ? 'bg-white dark:bg-[#16161D] border-[#C6FF3D] shadow-md shadow-[#C6FF3D]/10 ring-2 ring-[#C6FF3D]/50'
+                    : 'bg-[#f8fafc] dark:bg-[#16161D] border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#383846] hover:bg-white dark:hover:bg-[#1A1A22]'
                 }`}
                 aria-pressed={isSelected}
               >
@@ -368,32 +368,32 @@ export function RecommenderPage() {
                   <div className="flex items-center justify-between">
                     <h3
                       className={`font-heading text-xl font-black uppercase tracking-wide transition-colors ${
-                        isSelected ? 'text-[#C6FF3D]' : 'text-[#F4F4F6] group-hover:text-[#C6FF3D]'
+                        isSelected ? 'text-slate-900 dark:text-[#C6FF3D]' : 'text-slate-900 dark:text-[#F4F4F6] group-hover:text-slate-950 dark:group-hover:text-[#C6FF3D]'
                       }`}
                     >
                       {split.name}
                     </h3>
                     <div
                       className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                        isSelected ? 'bg-[#C6FF3D] text-[#0B0B0F]' : 'border border-[#24242E] text-transparent'
+                        isSelected ? 'bg-[#C6FF3D] text-[#0B0B0F]' : 'border border-slate-300 dark:border-[#24242E] text-transparent'
                       }`}
                     >
                       {isSelected && <CheckCircle2 className="w-4 h-4 stroke-[3]" />}
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#F4F4F6] font-medium leading-snug">
+                  <p className="text-xs text-slate-800 dark:text-[#F4F4F6] font-medium leading-snug">
                     {split.tagline}
                   </p>
 
-                  <p className="text-[11px] text-[#A1A1AA] line-clamp-2 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA] line-clamp-2 leading-relaxed">
                     {split.muscles}
                   </p>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-[#24242E]/70 flex items-center justify-between text-[10px] font-mono text-[#A1A1AA]">
+                <div className="pt-4 mt-4 border-t border-slate-200 dark:border-[#24242E]/70 flex items-center justify-between text-[10px] font-mono text-slate-600 dark:text-[#A1A1AA]">
                   <span>MET: {split.metValue.toFixed(1)}</span>
-                  <span className="text-[#C6FF3D]">5 Exercises</span>
+                  <span className="text-slate-900 dark:text-[#C6FF3D] font-bold">5 Exercises</span>
                 </div>
               </button>
             );
@@ -402,15 +402,15 @@ export function RecommenderPage() {
       </section>
 
       {/* ================= SECTION 3: EXPERIENCE LEVEL SELECTOR ================= */}
-      <section className="p-6 rounded-3xl bg-[#16161D] border border-[#24242E] flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <section className="p-6 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm dark:shadow-none">
         <div className="space-y-1">
-          <div className="text-xs font-mono uppercase tracking-wider text-[#A1A1AA]">
+          <div className="text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA]">
             Experience Tier
           </div>
-          <div className="text-sm font-semibold text-[#F4F4F6]">
+          <div className="text-sm font-semibold text-slate-900 dark:text-[#F4F4F6]">
             Prescribe volume, reps, and rest intervals tailored to conditioning
           </div>
-          <p className="text-[11px] text-[#A1A1AA]">
+          <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
             Defaulted to your saved athlete profile ({currentProfile?.experienceLevel || 'Intermediate'}).
           </p>
         </div>
@@ -425,8 +425,8 @@ export function RecommenderPage() {
                 onClick={() => handleLevelChange(level)}
                 className={`px-4 py-2.5 rounded-2xl text-xs font-bold font-heading uppercase tracking-wider transition-all cursor-pointer border ${
                   isSelected
-                    ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D] shadow-md shadow-[#C6FF3D]/15'
-                    : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E] hover:text-[#F4F4F6] hover:bg-[#24242E]'
+                    ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D] shadow-sm'
+                    : 'bg-white dark:bg-[#0B0B0F] text-slate-600 dark:text-[#A1A1AA] border-slate-200 dark:border-[#24242E] hover:text-slate-900 dark:hover:text-[#F4F4F6] hover:bg-slate-100 dark:hover:bg-[#24242E]'
                 }`}
               >
                 {level}
@@ -525,8 +525,8 @@ export function RecommenderPage() {
             </div>
           </div>
 
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Cards Grid - items-start ensures each card sizes to its own content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
             {exercises.map((exercise: Exercise, index: number) => {
               const isBeginner = experienceLevel.toLowerCase() === 'beginner';
               const guide = getExerciseGuide(exercise.name, exercise.equipment, exercise.targetMuscle);
@@ -535,7 +535,7 @@ export function RecommenderPage() {
               return (
                 <div
                   key={`${exercise.id}-${index}`}
-                  className="p-5 rounded-3xl bg-[#16161D] border border-[#24242E] hover:border-[#383846] transition-all flex flex-col justify-between space-y-4 group overflow-hidden"
+                  className="p-5 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#383846] transition-all flex flex-col justify-between space-y-4 group overflow-hidden self-start shadow-sm"
                 >
                   <div className="space-y-3">
                     {/* Top of prescribed exercise card: image with order pill and muscle badge overlay */}
@@ -547,10 +547,10 @@ export function RecommenderPage() {
                         className="w-full aspect-[16/9] rounded-2xl"
                       />
                       <div className="absolute top-2.5 left-2.5 flex items-center gap-2">
-                        <span className="w-7 h-7 rounded-xl bg-[#0B0B0F]/85 backdrop-blur-sm border border-[#24242E] flex items-center justify-center font-mono font-bold text-xs text-[#F4F4F6]">
+                        <span className="w-7 h-7 rounded-xl bg-black/75 backdrop-blur-sm border border-black/40 flex items-center justify-center font-mono font-bold text-xs text-[#F4F4F6]">
                           0{index + 1}
                         </span>
-                        <span className="text-[10px] font-mono uppercase bg-[#0B0B0F]/85 backdrop-blur-sm px-2.5 py-1 rounded-xl border border-[#24242E] text-[#C6FF3D] font-bold">
+                        <span className="text-[10px] font-mono uppercase bg-black/75 backdrop-blur-sm px-2.5 py-1 rounded-xl border border-black/40 text-[#C6FF3D] font-bold">
                           {exercise.targetMuscle}
                         </span>
                       </div>
@@ -558,7 +558,7 @@ export function RecommenderPage() {
                         type="button"
                         onClick={() => handleSwapExercise(index)}
                         title={`Swap ${exercise.name} for another ${exercise.targetMuscle} exercise`}
-                        className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#0B0B0F]/85 backdrop-blur-sm hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#A1A1AA] hover:text-[#C6FF3D] text-[11px] font-mono transition-all cursor-pointer"
+                        className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2.5 py-1 rounded-xl bg-black/75 backdrop-blur-sm hover:bg-black/90 border border-black/40 text-slate-200 hover:text-[#C6FF3D] text-[11px] font-mono transition-all cursor-pointer"
                       >
                         <RefreshCw className="w-3 h-3 group-hover:rotate-180 transition-transform duration-300" />
                         <span>Swap</span>
@@ -567,30 +567,30 @@ export function RecommenderPage() {
 
                     {/* Exercise Title */}
                     <div>
-                      <h3 className="font-heading text-lg font-bold text-[#F4F4F6] group-hover:text-[#C6FF3D] transition-colors">
+                      <h3 className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] group-hover:text-emerald-600 dark:group-hover:text-[#C6FF3D] transition-colors">
                         {exercise.name}
                       </h3>
-                      <p className="text-[11px] font-mono text-[#A1A1AA] mt-0.5">
-                        Equipment: <span className="text-zinc-300">{exercise.equipment}</span>
+                      <p className="text-[11px] font-mono text-slate-500 dark:text-[#A1A1AA] mt-0.5">
+                        Equipment: <span className="text-slate-700 dark:text-zinc-300 font-medium">{exercise.equipment}</span>
                       </p>
                     </div>
 
                     {/* Beginner Tip Line (shown without opening the guide when Beginner level is selected) */}
                     {isBeginner ? (
-                      <div className="p-3 rounded-2xl bg-[#0B0B0F] border border-[#C6FF3D]/30 flex items-start gap-2 text-xs">
+                      <div className="p-3 rounded-2xl bg-slate-100 dark:bg-[#0B0B0F] border border-[#C6FF3D]/40 flex items-start gap-2 text-xs">
                         <Sparkles className="w-3.5 h-3.5 text-[#C6FF3D] shrink-0 mt-0.5" />
                         <div className="space-y-0.5 flex-1">
-                          <span className="text-[10px] font-mono uppercase text-[#C6FF3D] font-bold block">
+                          <span className="text-[10px] font-mono uppercase text-emerald-600 dark:text-[#C6FF3D] font-bold block">
                             Beginner Tip
                           </span>
-                          <p className="text-[11px] text-zinc-300 leading-relaxed">
+                          <p className="text-[11px] text-slate-700 dark:text-zinc-300 leading-relaxed">
                             {guide.safetyTips[0] || guide.setup[0] || exercise.formTip}
                           </p>
                         </div>
                       </div>
                     ) : (
                       exercise.formTip && (
-                        <div className="p-3 rounded-2xl bg-[#0B0B0F] border border-[#24242E]/70 text-[11px] text-[#A1A1AA] italic leading-relaxed">
+                        <div className="p-3 rounded-2xl bg-slate-100 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E]/70 text-[11px] text-slate-600 dark:text-[#A1A1AA] italic leading-relaxed">
                           "{exercise.formTip}"
                         </div>
                       )
@@ -602,8 +602,8 @@ export function RecommenderPage() {
                       onClick={() => setOpenGuideIndex(isGuideOpen ? null : index)}
                       className={`w-full py-2 px-3 rounded-2xl border text-xs font-mono font-bold flex items-center justify-between transition-colors cursor-pointer ${
                         isGuideOpen
-                          ? 'bg-[#C6FF3D]/10 border-[#C6FF3D] text-[#C6FF3D]'
-                          : 'bg-[#0B0B0F] border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] hover:border-[#383848]'
+                          ? 'bg-[#C6FF3D]/15 border-[#C6FF3D] text-slate-900 dark:text-[#C6FF3D]'
+                          : 'bg-white dark:bg-[#0B0B0F] border-slate-200 dark:border-[#24242E] text-slate-700 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] hover:border-slate-300 dark:hover:border-[#383848]'
                       }`}
                       aria-expanded={isGuideOpen}
                     >
@@ -613,7 +613,7 @@ export function RecommenderPage() {
                       </span>
                       <ChevronDown
                         className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                          isGuideOpen ? 'rotate-180 text-[#C6FF3D]' : ''
+                          isGuideOpen ? 'rotate-180 text-slate-900 dark:text-[#C6FF3D]' : ''
                         }`}
                       />
                     </button>
@@ -632,13 +632,13 @@ export function RecommenderPage() {
                   </div>
 
                   {/* Bottom Stats: Sets x Reps & Rest Time */}
-                  <div className="pt-3 border-t border-[#24242E] flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 font-heading font-black text-xs text-[#F4F4F6]">
-                      <span className="text-[#C6FF3D]">{exercise.sets}</span> sets ×{' '}
-                      <span className="text-[#C6FF3D]">{exercise.reps}</span> reps
+                  <div className="pt-3 border-t border-slate-200 dark:border-[#24242E] flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 font-heading font-black text-xs text-slate-900 dark:text-[#F4F4F6]">
+                      <span className="text-emerald-600 dark:text-[#C6FF3D] font-bold">{exercise.sets}</span> sets ×{' '}
+                      <span className="text-emerald-600 dark:text-[#C6FF3D] font-bold">{exercise.reps}</span> reps
                     </div>
 
-                    <div className="flex items-center gap-1 text-[11px] font-mono text-[#A1A1AA] bg-[#24242E]/50 px-2 py-0.5 rounded-lg">
+                    <div className="flex items-center gap-1 text-[11px] font-mono text-slate-600 dark:text-[#A1A1AA] bg-slate-100 dark:bg-[#24242E]/50 px-2 py-0.5 rounded-lg border border-slate-200 dark:border-transparent">
                       <Clock className="w-3 h-3 text-[#C6FF3D]" />
                       <span>{exercise.restSeconds}s rest</span>
                     </div>
@@ -652,12 +652,12 @@ export function RecommenderPage() {
 
       {/* ================= BOTTOM LAUNCH CTA ================= */}
       {exercises.length > 0 && (
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#16161D] via-[#16161D] to-[#24242E] border border-[#24242E] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+        <div className="p-6 sm:p-8 rounded-3xl bg-[#f8fafc] dark:bg-gradient-to-r dark:from-[#16161D] dark:via-[#16161D] dark:to-[#24242E] border border-slate-200 dark:border-[#24242E] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm dark:shadow-xl">
           <div className="space-y-1 text-center sm:text-left">
-            <h3 className="font-heading text-xl font-black uppercase text-[#F4F4F6]">
+            <h3 className="font-heading text-xl font-black uppercase text-slate-900 dark:text-[#F4F4F6]">
               Ready to Forge Your Routine?
             </h3>
-            <p className="text-xs text-[#A1A1AA]">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
               Launch the live session tracker to log your weights, complete sets, and time rest countdowns.
             </p>
           </div>
@@ -665,9 +665,9 @@ export function RecommenderPage() {
           <button
             type="button"
             onClick={handleStartWorkout}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 shadow-xl shadow-[#C6FF3D]/25 hover:scale-[1.03] active:scale-[0.98] cursor-pointer shrink-0"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 shadow-md hover:scale-[1.03] active:scale-[0.98] cursor-pointer shrink-0"
           >
-            <Play className="w-4 h-4 fill-[#0B0B0F]" />
+            <Play className="w-4 h-4 fill-current" />
             <span>Start This Workout Now</span>
             <ArrowRight className="w-4 h-4" />
           </button>

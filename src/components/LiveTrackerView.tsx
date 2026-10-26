@@ -1075,32 +1075,32 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
     return (
       <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-300">
-        <div className="flex items-center gap-3 pb-4 border-b border-[#24242E]">
-          <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D]">
+        <div className="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-[#24242E]">
+          <div className="w-10 h-10 rounded-2xl bg-lime-500/10 border border-lime-500/30 dark:bg-[#C6FF3D]/10 dark:border-[#C6FF3D]/30 flex items-center justify-center text-lime-700 dark:text-[#C6FF3D]">
             <Dumbbell className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+            <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
               Live Workout Session
             </h1>
-            <p className="text-xs text-[#A1A1AA] mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
               Guided workout mode with set countdowns, automatic rest intervals, and live progress.
             </p>
           </div>
         </div>
 
-        <div className="p-8 sm:p-10 rounded-3xl bg-[#16161D] border border-[#24242E] text-center space-y-6 shadow-2xl relative overflow-hidden">
+        <div className="p-8 sm:p-10 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-center space-y-6 shadow-sm dark:shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#C6FF3D]/5 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="w-16 h-16 rounded-3xl bg-[#0B0B0F] border border-[#24242E] text-[#C6FF3D] flex items-center justify-center mx-auto shadow-inner">
+          <div className="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-lime-700 dark:text-[#C6FF3D] flex items-center justify-center mx-auto shadow-inner">
             <Compass className="w-8 h-8" />
           </div>
 
           <div className="max-w-md mx-auto space-y-2">
-            <h2 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-[#F4F4F6]">
+            <h2 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
               No Workout Plan Selected
             </h2>
-            <p className="text-sm text-[#A1A1AA] leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-[#A1A1AA] leading-relaxed">
               Select a routine to enter Guided Workout Mode. You will receive a structured 5-exercise regimen with custom set tempos and recovery periods.
             </p>
           </div>
@@ -1109,7 +1109,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             <button
               type="button"
               onClick={() => navigate('/recommender')}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-bold text-sm transition-all duration-200 shadow-lg shadow-[#C6FF3D]/15 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] font-bold text-sm transition-all duration-200 shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/15 flex items-center justify-center gap-2 cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
               <span>Pick a Plan in Recommender</span>
@@ -1117,8 +1117,8 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             </button>
           </div>
 
-          <div className="pt-6 border-t border-[#24242E] space-y-3">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-[#A1A1AA]">
+          <div className="pt-6 border-t border-slate-200 dark:border-[#24242E] space-y-3">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA]">
               Or Quick-Start a Workout Split
             </div>
             <div className="flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto">
@@ -1134,10 +1134,10 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                       // safe
                     }
                   }}
-                  className="px-3.5 py-2 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-xs font-semibold text-[#F4F4F6] transition-all flex items-center gap-2 cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#C6FF3D]/40 text-xs font-semibold text-slate-900 dark:text-[#F4F4F6] transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <span>{split.name}</span>
-                  <span className="text-[10px] text-[#A1A1AA] hidden sm:inline">
+                  <span className="text-[10px] text-slate-500 dark:text-[#A1A1AA] hidden sm:inline">
                     · {split.desc}
                   </span>
                 </button>
@@ -1154,21 +1154,21 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     return (
       <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-300">
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#24242E]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-[#24242E]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-lime-500/10 border border-lime-500/30 dark:bg-[#C6FF3D]/10 dark:border-[#C6FF3D]/30 flex items-center justify-center text-lime-700 dark:text-[#C6FF3D] shrink-0">
               <Dumbbell className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+                <h1 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                   {workoutPlan.name}
                 </h1>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 text-[10px] font-mono font-bold text-[#C6FF3D] uppercase">
+                <span className="px-2.5 py-0.5 rounded-full bg-lime-500/10 border border-lime-500/30 dark:bg-[#C6FF3D]/10 dark:border-[#C6FF3D]/30 text-[10px] font-mono font-bold text-lime-700 dark:text-[#C6FF3D] uppercase">
                   Ready Mode
                 </span>
               </div>
-              <p className="text-xs text-[#A1A1AA] mt-0.5">
+              <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
                 {SPLIT_DESCRIPTIONS[String(selectedSplit).toLowerCase()] ||
                   'Structured 5-exercise resistance routine tailored for your profile.'}
               </p>
@@ -1180,17 +1180,17 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             <button
               type="button"
               onClick={() => setIsPaceModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono text-[#F4F4F6] transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-[#16161D] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] text-xs font-mono text-slate-800 dark:text-[#F4F4F6] transition-colors cursor-pointer"
               title="Configure seconds per rep tempo"
             >
-              <Settings className="w-3.5 h-3.5 text-[#C6FF3D]" />
+              <Settings className="w-3.5 h-3.5 text-lime-700 dark:text-[#C6FF3D]" />
               <span>{secondsPerRep}s / rep</span>
             </button>
 
             <button
               type="button"
               onClick={() => setSelectedSplit(null)}
-              className="px-3 py-1.5 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs font-semibold text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#16161D] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] text-xs font-semibold text-slate-700 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] transition-colors cursor-pointer"
             >
               Switch Plan
             </button>
@@ -1198,32 +1198,32 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         </div>
 
         {/* Ready Briefing Card */}
-        <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div className="bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] p-6 sm:p-8 space-y-6 shadow-sm dark:shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-72 h-72 bg-[#C6FF3D]/5 rounded-full blur-3xl pointer-events-none" />
 
           {/* Overview Metrics Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-center font-mono">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-center font-mono">
             <div className="space-y-0.5">
-              <span className="text-[10px] uppercase text-[#A1A1AA] block">Exercises</span>
-              <span className="text-xl font-black text-[#F4F4F6]">5 Exercises</span>
-              <span className="text-[10px] text-[#A1A1AA] block">Sequential</span>
+              <span className="text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA] block">Exercises</span>
+              <span className="text-xl font-black text-slate-900 dark:text-[#F4F4F6]">5 Exercises</span>
+              <span className="text-[10px] text-slate-500 dark:text-[#A1A1AA] block">Sequential</span>
             </div>
             <div className="space-y-0.5">
-              <span className="text-[10px] uppercase text-[#A1A1AA] block">Total Sets</span>
-              <span className="text-xl font-black text-[#F4F4F6]">{totalWorkoutSets} Sets</span>
-              <span className="text-[10px] text-[#A1A1AA] block">Prescribed</span>
+              <span className="text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA] block">Total Sets</span>
+              <span className="text-xl font-black text-slate-900 dark:text-[#F4F4F6]">{totalWorkoutSets} Sets</span>
+              <span className="text-[10px] text-slate-500 dark:text-[#A1A1AA] block">Prescribed</span>
             </div>
             <div className="space-y-0.5">
-              <span className="text-[10px] uppercase text-[#C6FF3D] block font-bold">Estimated Time</span>
-              <span className="text-xl font-black text-[#C6FF3D]">{estimatedRoutineMinutes} mins</span>
-              <span className="text-[10px] text-[#A1A1AA] block">Work + Rest</span>
+              <span className="text-[10px] uppercase text-lime-700 dark:text-[#C6FF3D] block font-bold">Estimated Time</span>
+              <span className="text-xl font-black text-lime-700 dark:text-[#C6FF3D]">{estimatedRoutineMinutes} mins</span>
+              <span className="text-[10px] text-slate-500 dark:text-[#A1A1AA] block">Work + Rest</span>
             </div>
             <div className="space-y-0.5">
-              <span className="text-[10px] uppercase text-[#A1A1AA] block">Intensity Rating</span>
-              <span className="text-xl font-black text-[#F4F4F6]">
+              <span className="text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA] block">Intensity Rating</span>
+              <span className="text-xl font-black text-slate-900 dark:text-[#F4F4F6]">
                 {workoutPlan.getMETValue().toFixed(1)} MET
               </span>
-              <span className="text-[10px] text-orange-400 font-bold block">
+              <span className="text-[10px] text-orange-600 dark:text-orange-400 font-bold block">
                 ~{Math.round(workoutPlan.getMETValue() * userWeightKg * (estimatedRoutineMinutes / 60))} kcal
               </span>
             </div>
@@ -1234,16 +1234,16 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             <button
               type="button"
               onClick={handleStartWorkout}
-              className="w-full py-4 sm:py-5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-heading font-black text-xl sm:text-2xl uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer shadow-xl shadow-[#C6FF3D]/20 hover:scale-[1.01] active:scale-[0.99]"
+              className="w-full py-4 sm:py-5 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] font-heading font-black text-xl sm:text-2xl uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer shadow-sm dark:shadow-xl dark:shadow-[#C6FF3D]/20 hover:scale-[1.01] active:scale-[0.99]"
             >
               <Play className="w-6 h-6 fill-current stroke-[2.5]" />
               <span>Start Workout</span>
             </button>
 
             {skipWarmupForSession ? (
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs">
-                <span className="text-[#A1A1AA] flex items-center gap-1.5 font-mono text-[11px]">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs">
+                <span className="text-slate-600 dark:text-[#A1A1AA] flex items-center gap-1.5 font-mono text-[11px]">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                   Warm-up skipped for this session
                 </span>
                 <div className="flex items-center gap-2">
@@ -1255,23 +1255,23 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                       setIsWarmupTimerRunning(false);
                       setCurrentWarmupMoveIndex(0);
                     }}
-                    className="text-[#C6FF3D] hover:underline font-bold font-mono text-[11px] cursor-pointer"
+                    className="text-lime-700 dark:text-[#C6FF3D] hover:underline font-bold font-mono text-[11px] cursor-pointer"
                   >
                     View Warm-up
                   </button>
-                  <span className="text-[#24242E]">·</span>
+                  <span className="text-slate-300 dark:text-[#24242E]">·</span>
                   <button
                     type="button"
                     onClick={handleResetSkipChoice}
-                    className="text-[#A1A1AA] hover:text-[#F4F4F6] font-mono text-[11px] cursor-pointer"
+                    className="text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] font-mono text-[11px] cursor-pointer"
                   >
                     Re-enable
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center gap-2 text-xs text-[#A1A1AA] font-mono">
-                <Flame className="w-3.5 h-3.5 text-[#C6FF3D]" />
+              <div className="flex items-center justify-center gap-2 text-xs text-slate-600 dark:text-[#A1A1AA] font-mono">
+                <Flame className="w-3.5 h-3.5 text-lime-700 dark:text-[#C6FF3D]" />
                 <span>Starts with ~5-min warm-up ({warmUpRoutine.moves.length} simple moves)</span>
                 <span>·</span>
                 <button
@@ -1282,7 +1282,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     setIsWarmupTimerRunning(false);
                     setCurrentWarmupMoveIndex(0);
                   }}
-                  className="text-[#C6FF3D] hover:underline cursor-pointer"
+                  className="text-lime-700 dark:text-[#C6FF3D] hover:underline cursor-pointer"
                 >
                   Preview
                 </button>
@@ -1291,12 +1291,12 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           </div>
 
           {/* Ordered 5-Exercise Routine List */}
-          <div className="space-y-4 pt-4 border-t border-[#24242E]">
+          <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-[#24242E]">
             <div className="flex items-center justify-between">
-              <h2 className="font-heading text-xl font-bold uppercase tracking-wider text-[#F4F4F6]">
+              <h2 className="font-heading text-xl font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                 Prescribed 5-Exercise Routine (Order of Execution)
               </h2>
-              <span className="text-xs font-mono text-[#A1A1AA]">
+              <span className="text-xs font-mono text-slate-500 dark:text-[#A1A1AA]">
                 Pace: {secondsPerRep}s / rep
               </span>
             </div>
@@ -1310,30 +1310,30 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                 return (
                   <div
                     key={exercise.id || index}
-                    className="p-4 sm:p-5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors hover:border-[#383848]"
+                    className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors hover:border-slate-300 dark:hover:border-[#383848]"
                   >
                     <div className="flex items-start sm:items-center gap-3.5">
-                      <div className="w-8 h-8 rounded-xl bg-[#16161D] border border-[#24242E] text-[#C6FF3D] font-mono font-bold text-sm flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-slate-900 dark:text-[#C6FF3D] font-mono font-bold text-sm flex items-center justify-center shrink-0">
                         {index + 1}
                       </div>
 
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-[#C6FF3D]/10 text-[#C6FF3D] font-bold">
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-lime-500/15 border border-lime-500/30 text-lime-800 dark:bg-[#C6FF3D]/10 dark:text-[#C6FF3D] dark:border-transparent font-bold">
                             {exercise.targetMuscle}
                           </span>
-                          <span className="text-[10px] font-mono text-[#A1A1AA]">
+                          <span className="text-[10px] font-mono text-slate-500 dark:text-[#A1A1AA]">
                             · {exercise.equipment}
                           </span>
                         </div>
 
-                        <h3 className="text-base font-bold text-[#F4F4F6]">
+                        <h3 className="text-base font-bold text-slate-900 dark:text-[#F4F4F6]">
                           {exercise.name}
                         </h3>
 
                         {/* Beginner Form Cue Line (Requirement 1: Beginners get a short tip line for each exercise) */}
                         {isBeginner ? (
-                          <div className="text-xs text-[#C6FF3D] font-mono flex items-center gap-1.5 pt-0.5">
+                          <div className="text-xs text-lime-800 dark:text-[#C6FF3D] font-mono flex items-center gap-1.5 pt-0.5">
                             <Sparkles className="w-3.5 h-3.5 shrink-0" />
                             <span>
                               Beginner Tip: {exercise.formTip || 'Maintain steady cadence and control the weight on every rep.'}
@@ -1341,7 +1341,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                           </div>
                         ) : (
                           exercise.formTip && (
-                            <p className="text-xs text-[#A1A1AA] italic line-clamp-1">
+                            <p className="text-xs text-slate-500 dark:text-[#A1A1AA] italic line-clamp-1">
                               Cue: {exercise.formTip}
                             </p>
                           )
@@ -1349,16 +1349,16 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 font-mono text-left sm:text-right pt-2 sm:pt-0 border-t sm:border-t-0 border-[#24242E]/50">
+                    <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 font-mono text-left sm:text-right pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200 dark:border-[#24242E]/50">
                       <div>
-                        <div className="text-xs font-bold text-[#F4F4F6]">
+                        <div className="text-xs font-bold text-slate-900 dark:text-[#F4F4F6]">
                           {sets} sets × {reps} reps
                         </div>
-                        <div className="text-[10px] text-[#A1A1AA]">
+                        <div className="text-[10px] text-slate-500 dark:text-[#A1A1AA]">
                           Rest: {rest}s
                         </div>
                       </div>
-                      <span className="px-2.5 py-1 rounded-lg bg-[#16161D] text-[10px] font-mono text-[#A1A1AA] border border-[#24242E]">
+                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#16161D] text-[10px] font-mono text-slate-600 dark:text-[#A1A1AA] border border-slate-200 dark:border-[#24242E]">
                         Pending
                       </span>
                     </div>
@@ -1371,21 +1371,21 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
         {/* Pace Settings Modal */}
         {isPaceModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/80 backdrop-blur-sm">
-            <div className="bg-[#16161D] border border-[#24242E] rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-              <div className="flex items-center justify-between border-b border-[#24242E] pb-3">
-                <h3 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-[#0B0B0F]/80 backdrop-blur-sm">
+            <div className="bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#24242E] pb-3">
+                <h3 className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] uppercase">
                   Workout Pace Tempo
                 </h3>
                 <button
                   type="button"
                   onClick={() => setIsPaceModalOpen(false)}
-                  className="text-[#A1A1AA] hover:text-[#F4F4F6]"
+                  className="text-slate-500 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6]"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <p className="text-xs text-[#A1A1AA]">
+              <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
                 Set the suggested time per repetition for work countdown rings (default is 4 seconds).
               </p>
               <div className="grid grid-cols-5 gap-2">
@@ -1397,7 +1397,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     className={`py-2 rounded-xl text-xs font-bold font-mono transition-all border ${
                       secondsPerRep === sec
                         ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D]'
-                        : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E]'
+                        : 'bg-slate-100 dark:bg-[#0B0B0F] text-slate-700 dark:text-[#A1A1AA] border-slate-200 dark:border-[#24242E]'
                     }`}
                   >
                     {sec}s
@@ -1421,7 +1421,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     return (
       <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-300">
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#24242E]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-[#24242E]">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -1429,27 +1429,27 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                 setIsWarmupTimerRunning(false);
                 setSessionState('ready');
               }}
-              className="p-2.5 rounded-2xl bg-[#16161D] border border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] hover:border-[#383848] transition-colors cursor-pointer"
+              className="p-2.5 rounded-2xl bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] hover:border-slate-300 dark:hover:border-[#383848] transition-colors cursor-pointer"
               title="Back to workout overview"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
-              <Flame className="w-5 h-5 fill-[#C6FF3D]" />
+            <div className="w-10 h-10 rounded-2xl bg-lime-500/10 border border-lime-500/30 dark:bg-[#C6FF3D]/10 dark:border-[#C6FF3D]/30 flex items-center justify-center text-lime-700 dark:text-[#C6FF3D] shrink-0">
+              <Flame className="w-5 h-5 fill-lime-600 dark:fill-[#C6FF3D]" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-[#F4F4F6]">
+                <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                   {warmUpRoutine.title}
                 </h1>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 text-[10px] font-mono font-bold text-[#C6FF3D] uppercase">
+                <span className="px-2.5 py-0.5 rounded-full bg-lime-500/10 border border-lime-500/30 dark:bg-[#C6FF3D]/10 dark:border-[#C6FF3D]/30 text-[10px] font-mono font-bold text-lime-700 dark:text-[#C6FF3D] uppercase">
                   ~5 Minutes
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#16161D] border border-[#24242E] text-[10px] font-mono text-[#A1A1AA] uppercase">
+                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] text-[10px] font-mono text-slate-600 dark:text-[#A1A1AA] uppercase">
                   {warmUpRoutine.moves.length} Moves
                 </span>
               </div>
-              <p className="text-xs text-[#A1A1AA] mt-0.5">
+              <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
                 {warmUpRoutine.subtitle} · Loosen joints and prime muscles before lifting
               </p>
             </div>
@@ -1459,7 +1459,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             <button
               type="button"
               onClick={handleSkipWarmup}
-              className="px-4 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono font-bold text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-white dark:bg-[#16161D] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] text-xs font-mono font-bold text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer"
               title="Skip warm-up and start workout now"
             >
               <SkipForward className="w-3.5 h-3.5" />
@@ -1469,29 +1469,29 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         </div>
 
         {/* First Exercise Priming Notice Card (Required) */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-[#16161D] border border-amber-500/30 flex items-start gap-3.5 shadow-lg shadow-amber-500/5">
-          <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/70 dark:bg-[#16161D] border border-amber-200 dark:border-amber-500/30 flex items-start gap-3.5 shadow-sm dark:shadow-lg dark:shadow-amber-500/5">
+          <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-500/10 border border-amber-300 dark:border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0 mt-0.5">
             <Dumbbell className="w-5 h-5" />
           </div>
           <div className="space-y-1">
-            <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider block">
+            <span className="text-xs font-mono font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider block">
               Light Sets on First Exercise
             </span>
-            <p className="text-xs sm:text-sm text-[#F4F4F6] leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-800 dark:text-[#F4F4F6] leading-relaxed">
               {warmUpRoutine.firstExerciseWarmupNote}
             </p>
           </div>
         </div>
 
         {/* Warm-up Controls & Timer Box */}
-        <div className="p-5 sm:p-6 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-5 shadow-xl">
+        <div className="p-5 sm:p-6 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] space-y-5 shadow-sm dark:shadow-xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="space-y-0.5">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA] block">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-[#A1A1AA] block">
                   Warm-up Clock
                 </span>
-                <span className="text-3xl sm:text-4xl font-mono font-black text-[#C6FF3D] tracking-tight">
+                <span className="text-3xl sm:text-4xl font-mono font-black text-lime-700 dark:text-[#C6FF3D] tracking-tight">
                   {formattedWarmupTime}
                 </span>
               </div>
@@ -1500,7 +1500,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <button
                     type="button"
                     onClick={handlePauseWarmupTimer}
-                    className="p-3 rounded-2xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] transition-colors cursor-pointer"
+                    className="p-3 rounded-2xl bg-slate-200 dark:bg-[#24242E] hover:bg-slate-300 dark:hover:bg-[#2E2E3C] text-slate-900 dark:text-[#F4F4F6] transition-colors cursor-pointer"
                     title={isWarmupTimerRunning ? 'Pause timer' : 'Resume timer'}
                   >
                     <Pause className="w-4 h-4" />
@@ -1508,7 +1508,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <button
                     type="button"
                     onClick={handleResetWarmupTimer}
-                    className="p-3 rounded-2xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+                    className="p-3 rounded-2xl bg-slate-200 dark:bg-[#24242E] hover:bg-slate-300 dark:hover:bg-[#2E2E3C] text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] transition-colors cursor-pointer"
                     title="Reset to 5:00"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -1524,7 +1524,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <button
                     type="button"
                     onClick={handleStartWarmupTimer}
-                    className="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-[#C6FF3D]/15 cursor-pointer active:scale-95"
+                    className="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/15 cursor-pointer active:scale-95"
                   >
                     <Flame className="w-5 h-5 fill-current" />
                     <span>Start warm-up</span>
@@ -1532,9 +1532,9 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <button
                     type="button"
                     onClick={handleSkipWarmup}
-                    className="flex-1 sm:flex-none px-5 py-3.5 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-[#F4F4F6] font-heading font-bold text-base uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                    className="flex-1 sm:flex-none px-5 py-3.5 rounded-2xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] text-slate-800 dark:text-[#F4F4F6] font-heading font-bold text-base uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <SkipForward className="w-4 h-4 text-[#A1A1AA]" />
+                    <SkipForward className="w-4 h-4 text-slate-500 dark:text-[#A1A1AA]" />
                     <span>Skip warm-up</span>
                   </button>
                 </>
@@ -1543,7 +1543,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <button
                     type="button"
                     onClick={handleCompleteWarmup}
-                    className="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-[#C6FF3D]/15 cursor-pointer active:scale-95"
+                    className="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/15 cursor-pointer active:scale-95"
                   >
                     <Play className="w-5 h-5 fill-current" />
                     <span>I'm Ready — Start Workout</span>
@@ -1551,7 +1551,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <button
                     type="button"
                     onClick={handleSkipWarmup}
-                    className="px-4 py-3.5 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] font-heading font-bold text-sm uppercase tracking-wider transition-all cursor-pointer"
+                    className="px-4 py-3.5 rounded-2xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] font-heading font-bold text-sm uppercase tracking-wider transition-all cursor-pointer"
                   >
                     Skip warm-up
                   </button>
@@ -1561,12 +1561,12 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           </div>
 
           {/* Session Skip Preference Info */}
-          <div className="pt-2 border-t border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#A1A1AA]">
+          <div className="pt-2 border-t border-slate-200 dark:border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600 dark:text-[#A1A1AA]">
             <p className="flex items-center gap-1.5 font-mono text-[11px]">
-              <Sparkles className="w-3.5 h-3.5 text-[#C6FF3D]" />
+              <Sparkles className="w-3.5 h-3.5 text-lime-700 dark:text-[#C6FF3D]" />
               "Skip warm-up" remembers your choice for this browser session only.
             </p>
-            <span className="text-[11px] font-mono text-[#71717A]">
+            <span className="text-[11px] font-mono text-slate-500 dark:text-[#71717A]">
               Focus: {warmUpRoutine.targetArea}
             </span>
           </div>
@@ -1575,10 +1575,10 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         {/* 4-6 Warm-up Moves List */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-heading text-xl font-bold uppercase tracking-wider text-[#F4F4F6]">
+            <h2 className="font-heading text-xl font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
               Warm-up Moves ({warmUpRoutine.moves.length})
             </h2>
-            <span className="text-xs font-mono text-[#A1A1AA]">
+            <span className="text-xs font-mono text-slate-500 dark:text-[#A1A1AA]">
               Complete in order or at your own pace
             </span>
           </div>
@@ -1594,10 +1594,10 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   onClick={() => handleToggleWarmupMove(move.id)}
                   className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer ${
                     isChecked
-                      ? 'bg-[#16161D]/60 border-[#C6FF3D]/30 opacity-80'
+                      ? 'bg-slate-100/70 dark:bg-[#16161D]/60 border-lime-600/30 dark:border-[#C6FF3D]/30 opacity-80'
                       : isCurrent
-                      ? 'bg-[#16161D] border-[#C6FF3D] shadow-lg shadow-[#C6FF3D]/10'
-                      : 'bg-[#16161D] border-[#24242E] hover:border-[#383848]'
+                      ? 'bg-white dark:bg-[#16161D] border-lime-600 dark:border-[#C6FF3D] shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/10'
+                      : 'bg-[#f8fafc] dark:bg-[#16161D] border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#383848]'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -1606,7 +1606,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                         className={`w-8 h-8 rounded-xl border flex items-center justify-center font-mono font-bold text-xs shrink-0 mt-0.5 transition-colors ${
                           isChecked
                             ? 'bg-[#C6FF3D] border-[#C6FF3D] text-[#0B0B0F]'
-                            : 'bg-[#0B0B0F] border-[#24242E] text-[#C6FF3D]'
+                            : 'bg-white dark:bg-[#0B0B0F] border-slate-200 dark:border-[#24242E] text-lime-700 dark:text-[#C6FF3D]'
                         }`}
                       >
                         {isChecked ? <Check className="w-4 h-4 stroke-[3]" /> : `0${index + 1}`}
@@ -1614,19 +1614,19 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
                       <div className="space-y-1.5 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-bold text-base text-[#F4F4F6]">{move.name}</h3>
-                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-[#C6FF3D]/10 text-[#C6FF3D] font-bold">
+                          <h3 className="font-bold text-base text-slate-900 dark:text-[#F4F4F6]">{move.name}</h3>
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-lime-500/15 border border-lime-500/30 text-lime-800 dark:bg-[#C6FF3D]/10 dark:text-[#C6FF3D] dark:border-transparent font-bold">
                             {move.targetMuscles}
                           </span>
                         </div>
 
-                        <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed">
+                        <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A1A1AA] leading-relaxed">
                           {move.description}
                         </p>
 
                         {move.tip && (
-                          <p className="text-xs text-zinc-400 italic flex items-center gap-1.5 pt-0.5">
-                            <span className="text-[#C6FF3D] font-bold not-italic">Tip:</span>{' '}
+                          <p className="text-xs text-slate-500 dark:text-zinc-400 italic flex items-center gap-1.5 pt-0.5">
+                            <span className="text-lime-700 dark:text-[#C6FF3D] font-bold not-italic">Tip:</span>{' '}
                             {move.tip}
                           </p>
                         )}
@@ -1634,7 +1634,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     </div>
 
                     <div className="shrink-0 text-right">
-                      <span className="inline-block px-3 py-1 rounded-xl bg-[#0B0B0F] border border-[#24242E] text-xs font-mono font-bold text-[#C6FF3D]">
+                      <span className="inline-block px-3 py-1 rounded-xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs font-mono font-bold text-lime-700 dark:text-[#C6FF3D]">
                         {move.durationOrReps}
                       </span>
                     </div>
@@ -1646,22 +1646,22 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         </div>
 
         {/* Bottom Actions */}
-        <div className="p-4 rounded-2xl bg-[#16161D] border border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <p className="text-xs text-[#A1A1AA]">
+        <div className="p-4 rounded-2xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+          <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
             Finished your warm-up? Jump straight into your first working set.
           </p>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={handleSkipWarmup}
-              className="px-4 py-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] text-xs font-bold font-mono transition-colors cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] text-slate-600 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] text-xs font-bold font-mono transition-colors cursor-pointer border border-slate-200 dark:border-transparent"
             >
               Skip warm-up
             </button>
             <button
               type="button"
               onClick={handleCompleteWarmup}
-              className="px-6 py-2.5 rounded-2xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] font-heading font-black text-sm uppercase tracking-wider transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-lg shadow-[#C6FF3D]/15 active:scale-95"
+              className="px-6 py-2.5 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] font-heading font-black text-sm uppercase tracking-wider transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/15 active:scale-95"
             >
               <Play className="w-4 h-4 fill-current" />
               <span>Start Workout</span>
@@ -2467,21 +2467,21 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
       {/* ================= FINISH AND SAVE SCREEN (Requirement 6) ================= */}
       {sessionState === 'finished' && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
         >
-          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden space-y-5 p-6 sm:p-8">
-            <div className="flex items-start justify-between border-b border-[#24242E] pb-4">
+          <div className="bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden space-y-5 p-6 sm:p-8">
+            <div className="flex items-start justify-between border-b border-slate-200 dark:border-[#24242E] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/30 dark:bg-[#C6FF3D]/10 dark:border-[#C6FF3D]/30 flex items-center justify-center text-lime-700 dark:text-[#C6FF3D] shrink-0">
                   <Trophy className="w-6 h-6 stroke-[2.5]" />
                 </div>
                 <div>
-                  <h3 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-[#F4F4F6]">
+                  <h3 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                     Workout Complete!
                   </h3>
-                  <p className="text-xs text-[#A1A1AA] mt-0.5">
+                  <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
                     Save performance metrics to your workout history log.
                   </p>
                 </div>
@@ -2489,29 +2489,29 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             </div>
 
             {/* Performance Metrics Summary */}
-            <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-center font-mono">
+            <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-center font-mono">
               <div className="space-y-0.5">
-                <span className="text-[10px] uppercase text-[#A1A1AA] block">Duration</span>
-                <span className="text-base font-black text-[#F4F4F6] tabular-nums">
+                <span className="text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA] block">Duration</span>
+                <span className="text-base font-black text-slate-900 dark:text-[#F4F4F6] tabular-nums">
                   {elapsedMinutes}m
                 </span>
-                <span className="text-[10px] text-[#A1A1AA] block">
+                <span className="text-[10px] text-slate-500 dark:text-[#A1A1AA] block">
                   {formatTime(stopwatchSeconds)}
                 </span>
               </div>
               <div className="space-y-0.5">
-                <span className="text-[10px] uppercase text-[#A1A1AA] block">Calories</span>
-                <span className="text-base font-black text-[#C6FF3D] tabular-nums">
+                <span className="text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA] block">Calories</span>
+                <span className="text-base font-black text-lime-700 dark:text-[#C6FF3D] tabular-nums">
                   {displayCalories}
                 </span>
-                <span className="text-[10px] text-[#A1A1AA] block">kcal burned</span>
+                <span className="text-[10px] text-slate-500 dark:text-[#A1A1AA] block">kcal burned</span>
               </div>
               <div className="space-y-0.5">
-                <span className="text-[10px] uppercase text-[#A1A1AA] block">Sets Done</span>
-                <span className="text-base font-black text-[#F4F4F6] tabular-nums">
+                <span className="text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA] block">Sets Done</span>
+                <span className="text-base font-black text-slate-900 dark:text-[#F4F4F6] tabular-nums">
                   {totalCompletedSets} / {totalWorkoutSets}
                 </span>
-                <span className="text-[10px] text-[#C6FF3D] font-bold block">
+                <span className="text-[10px] text-lime-700 dark:text-[#C6FF3D] font-bold block">
                   {completedCount} of 5 done
                 </span>
               </div>
@@ -2521,7 +2521,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             <div className="space-y-1.5">
               <label
                 htmlFor="session-notes-input"
-                className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA]"
+                className="block text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA]"
               >
                 Session Notes (Optional)
               </label>
@@ -2531,23 +2531,23 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                 value={sessionNotes}
                 onChange={(e) => setSessionNotes(e.target.value)}
                 placeholder="Felt strong on compound sets, sustained cadence, notes for next session..."
-                className="w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] focus:border-[#C6FF3D] text-xs text-[#F4F4F6] outline-none transition-colors resize-none placeholder:text-zinc-600"
+                className="w-full px-3.5 py-2.5 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] focus:border-[#C6FF3D] text-xs text-slate-900 dark:text-[#F4F4F6] outline-none transition-colors resize-none placeholder:text-slate-400 dark:placeholder:text-zinc-600"
               />
             </div>
 
             {/* Actions */}
-            <div className="pt-2 flex items-center justify-end gap-3 border-t border-[#24242E]">
+            <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-200 dark:border-[#24242E]">
               <button
                 type="button"
                 onClick={() => setSessionState('guided')}
-                className="px-4 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-semibold cursor-pointer transition-colors"
+                className="px-4 py-2.5 rounded-xl bg-slate-200 dark:bg-[#24242E] hover:bg-slate-300 dark:hover:bg-[#2E2E3C] text-slate-900 dark:text-[#F4F4F6] text-xs font-semibold cursor-pointer transition-colors"
               >
                 Resume
               </button>
               <button
                 type="button"
                 onClick={handleSaveWorkout}
-                className="px-6 py-2.5 rounded-xl bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] text-xs font-bold font-heading uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 cursor-pointer shadow-lg shadow-[#C6FF3D]/15"
+                className="px-6 py-2.5 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] text-xs font-bold font-heading uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 cursor-pointer shadow-sm dark:shadow-lg dark:shadow-[#C6FF3D]/15"
               >
                 <Save className="w-4 h-4" />
                 <span>Save to History</span>
@@ -2570,21 +2570,21 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
       {/* Pace Settings Modal */}
       {isPaceModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/80 backdrop-blur-sm">
-          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#24242E] pb-3">
-              <h3 className="font-heading text-lg font-bold text-[#F4F4F6] uppercase">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-[#0B0B0F]/80 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#24242E] pb-3">
+              <h3 className="font-heading text-lg font-bold text-slate-900 dark:text-[#F4F4F6] uppercase">
                 Workout Pace Tempo
               </h3>
               <button
                 type="button"
                 onClick={() => setIsPaceModalOpen(false)}
-                className="text-[#A1A1AA] hover:text-[#F4F4F6]"
+                className="text-slate-500 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-xs text-[#A1A1AA]">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
               Set the suggested time per repetition for work countdown rings (default is 4 seconds).
             </p>
             <div className="grid grid-cols-5 gap-2">
@@ -2596,7 +2596,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   className={`py-2 rounded-xl text-xs font-bold font-mono transition-all border ${
                     secondsPerRep === sec
                       ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D]'
-                      : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E]'
+                      : 'bg-slate-100 dark:bg-[#0B0B0F] text-slate-700 dark:text-[#A1A1AA] border-slate-200 dark:border-[#24242E]'
                   }`}
                 >
                   {sec}s

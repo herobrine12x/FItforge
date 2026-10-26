@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Award,
   Bell,
+  BookOpen,
   Calendar,
   Check,
   CheckCircle2,
@@ -101,6 +102,24 @@ export function DashboardPage() {
   const [isLogWalkModalOpen, setIsLogWalkModalOpen] = useState(false);
   const [walkDuration, setWalkDuration] = useState(30);
   const [walkNotes, setWalkNotes] = useState('Brisk outdoor walk');
+
+  // Beginner Basics first-visit banner state (dismissible and remembered)
+  const [isBasicsBannerDismissed, setIsBasicsBannerDismissed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('fitforge_dismissed_beginner_banner') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleDismissBasicsBanner = () => {
+    setIsBasicsBannerDismissed(true);
+    try {
+      localStorage.setItem('fitforge_dismissed_beginner_banner', 'true');
+    } catch {
+      // safe
+    }
+  };
 
   // Check and unlock badges on records update
   useEffect(() => {
@@ -324,6 +343,53 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
+      {/* ================= FIRST-VISIT BEGINNER BASICS BANNER ================= */}
+      {!isBasicsBannerDismissed && (
+        <section
+          className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#16161D] via-[#1c1c28] to-[#16161D] border border-[#C6FF3D]/30 text-[#F4F4F6] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl shadow-[#C6FF3D]/5 animate-in slide-in-from-top-3 duration-300 relative overflow-hidden"
+          role="region"
+          aria-label="Beginner basics introduction"
+        >
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
+              <BookOpen className="w-5 h-5" />
+            </div>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono uppercase tracking-wider text-[#C6FF3D] font-bold">
+                  New to Training?
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#24242E] text-[#A1A1AA]">
+                  Beginner Guide
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-[#F4F4F6]">
+                Learn what sets, reps, and rest mean, how to pick your starting weights, and how to train safely.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+            <Link
+              to="/basics"
+              className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-md shadow-[#C6FF3D]/15 cursor-pointer"
+            >
+              <span>Read Beginner Basics</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+            <button
+              type="button"
+              onClick={handleDismissBasicsBanner}
+              className="p-2 rounded-xl text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#24242E] transition-colors cursor-pointer"
+              title="Dismiss banner"
+              aria-label="Dismiss banner"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </section>
+      )}
+
       {/* ================= DELOAD WEEK RECOMMENDATION BANNER (Requirement 5) ================= */}
       {deloadStatus.isDeloadRecommended && (
         <DeloadBanner

@@ -16,6 +16,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { Stage1TestPage } from './pages/Stage1TestPage';
 import { SummaryPage } from './pages/SummaryPage';
 import { WorkoutPage } from './pages/WorkoutPage';
+import { BeginnerBasicsPage } from './pages/BeginnerBasicsPage';
 
 export default function App() {
   return (
@@ -58,6 +59,8 @@ export default function App() {
               <Route path="/records" element={<RecordsPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/reports" element={<ReportsPage />} />
+              <Route path="/basics" element={<BeginnerBasicsPage />} />
+              <Route path="/beginner-basics" element={<Navigate to="/basics" replace />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
 

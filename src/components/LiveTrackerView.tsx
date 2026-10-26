@@ -14,6 +14,8 @@ import {
   Dumbbell,
   FastForward,
   Flame,
+  Heart,
+  HelpCircle,
   Pause,
   Play,
   RotateCcw,
@@ -31,6 +33,9 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { DeloadManager } from '../models/DeloadManager';
 import { Exercise } from '../models/Exercise';
+import { ExerciseImage } from './ExerciseImage';
+import { ExerciseGuideView } from './ExerciseGuideView';
+import { getExerciseGuide } from '../models/exerciseGuides';
 import { MemberProfile } from '../models/MemberProfile';
 import { PersonalRecord, PersonalRecordManager } from '../models/PersonalRecord';
 import { RecordManager } from '../models/RecordManager';
@@ -163,6 +168,18 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   const [sessionNotes, setSessionNotes] = useState<string>('');
   const [isQuitModalOpen, setIsQuitModalOpen] = useState<boolean>(false);
   const [isOverviewExpanded, setIsOverviewExpanded] = useState<boolean>(true);
+
+  // Beginner-friendly exercise instruction panel state
+  // Open by default for Beginners before set 1, collapsed for others
+  const [isGuidePanelOpen, setIsGuidePanelOpen] = useState<boolean>(() => isBeginner);
+
+  useEffect(() => {
+    if (currentSetIndex === 1) {
+      setIsGuidePanelOpen(isBeginner);
+    } else {
+      setIsGuidePanelOpen(false);
+    }
+  }, [currentExerciseIndex, isBeginner]);
 
   // Current active exercise object
   const currentExercise = exercises[currentExerciseIndex] || exercises[0];
@@ -1398,6 +1415,16 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         {/* Ambient Glow */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-[#C6FF3D]/5 rounded-full blur-3xl pointer-events-none" />
 
+        {/* Current Exercise Photo */}
+        <div className="rounded-2xl overflow-hidden border border-[#24242E]">
+          <ExerciseImage
+            exerciseName={currentExercise.name}
+            targetMuscle={currentExercise.targetMuscle}
+            imageUrl={currentExercise.imageUrl}
+            className="w-full aspect-[16/9]"
+          />
+        </div>
+
         {/* Top Badges & Exercise Identity */}
         <div className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1413,9 +1440,22 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               </span>
             </div>
 
-            {/* Set Indicator Pill */}
-            <div className="px-3 py-1 rounded-xl bg-[#C6FF3D]/15 border border-[#C6FF3D]/30 text-xs font-mono font-bold text-[#C6FF3D]">
-              Set {currentSetIndex} of {currentExTotalSets}
+            <div className="flex items-center gap-2">
+              {/* How to button available during the exercise (does not pause or reset any timer) */}
+              <button
+                type="button"
+                onClick={() => setIsGuidePanelOpen((prev) => !prev)}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#C6FF3D] text-xs font-mono transition-colors cursor-pointer"
+                title="View how to do this exercise"
+              >
+                <HelpCircle className="w-3.5 h-3.5" />
+                <span>{isGuidePanelOpen ? 'Hide Guide' : 'How to'}</span>
+              </button>
+
+              {/* Set Indicator Pill */}
+              <div className="px-3 py-1 rounded-xl bg-[#C6FF3D]/15 border border-[#C6FF3D]/30 text-xs font-mono font-bold text-[#C6FF3D]">
+                Set {currentSetIndex} of {currentExTotalSets}
+              </div>
             </div>
           </div>
 
@@ -1429,6 +1469,34 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             <span>Rest interval: <strong className="text-[#F4F4F6]">{currentExercise.restSeconds || 60}s</strong></span>
           </div>
         </div>
+
+        {/* Beginner-friendly Exercise Instruction Panel */}
+        {isGuidePanelOpen && currentExercise && (
+          <div className="animate-in fade-in duration-200">
+            <ExerciseGuideView
+              guide={getExerciseGuide(
+                currentExercise.name,
+                currentExercise.equipment,
+                currentExercise.targetMuscle
+              )}
+              exerciseName={currentExercise.name}
+              targetMuscle={currentExercise.targetMuscle}
+              onClose={() => setIsGuidePanelOpen(false)}
+              actionButton={
+                currentSetIndex === 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsGuidePanelOpen(false)}
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-[#C6FF3D]/15"
+                  >
+                    <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
+                    <span>Got it, start set 1</span>
+                  </button>
+                ) : undefined
+              }
+            />
+          </div>
+        )}
 
         {/* Progressive Overload Suggestion (Requirement 4) */}
         {overloadHint && (
@@ -1902,6 +1970,13 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     >
                       {isExComplete ? <Check className="w-4 h-4 stroke-[3]" /> : idx + 1}
                     </div>
+
+                    <ExerciseImage
+                      exerciseName={exercise.name}
+                      targetMuscle={exercise.targetMuscle}
+                      imageUrl={exercise.imageUrl}
+                      className="w-14 h-14 rounded-xl shrink-0 border border-[#24242E]"
+                    />
 
                     <div>
                       <div className="flex items-center gap-2">

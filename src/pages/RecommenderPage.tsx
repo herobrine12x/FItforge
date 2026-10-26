@@ -1,17 +1,20 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Activity,
   AlertCircle,
   AlertTriangle,
   ArrowRight,
+  BookOpen,
   Calendar,
   CheckCircle2,
+  ChevronDown,
   Clock,
   Compass,
   Dumbbell,
   Flame,
   HeartHandshake,
+  HelpCircle,
   Info,
   Layers,
   Play,
@@ -24,6 +27,9 @@ import {
   Zap,
 } from 'lucide-react';
 import { EquipmentSelector } from '../components/EquipmentSelector';
+import { ExerciseImage } from '../components/ExerciseImage';
+import { ExerciseGuideView } from '../components/ExerciseGuideView';
+import { getExerciseGuide } from '../models/exerciseGuides';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { BMICalculator } from '../models/BMICalculator';
@@ -84,6 +90,9 @@ export function RecommenderPage() {
 
   // User-swapped exercises override (null when using default generated routine)
   const [customExercises, setCustomExercises] = useState<Exercise[] | null>(null);
+
+  // Accordion state: only one exercise guide card can be open at a time
+  const [openGuideIndex, setOpenGuideIndex] = useState<number | null>(null);
 
   // Biometrics & BMI evaluation
   const weightKg = currentProfile?.weightKg || 70;
@@ -487,11 +496,21 @@ export function RecommenderPage() {
         /* The 5 Exercise Cards */
         <section className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Target className="w-4 h-4 text-[#C6FF3D]" />
-              <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
-                {workoutPlan.name} Routine · 5 Prescribed Exercises
-              </h2>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Target className="w-4 h-4 text-[#C6FF3D]" />
+                <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+                  {workoutPlan.name} Routine · 5 Prescribed Exercises
+                </h2>
+              </div>
+              <Link
+                to="/basics"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#C6FF3D]/10 hover:bg-[#C6FF3D]/20 text-xs font-mono text-[#C6FF3D] border border-[#C6FF3D]/30 transition-colors"
+                title="Read Beginner Basics Guide"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Beginner Basics Guide</span>
+              </Link>
             </div>
             <div className="flex items-center gap-3 text-xs font-mono text-[#A1A1AA]">
               <span className="flex items-center gap-1">
@@ -509,29 +528,37 @@ export function RecommenderPage() {
           {/* Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {exercises.map((exercise: Exercise, index: number) => {
+              const isBeginner = experienceLevel.toLowerCase() === 'beginner';
+              const guide = getExerciseGuide(exercise.name, exercise.equipment, exercise.targetMuscle);
+              const isGuideOpen = openGuideIndex === index;
+
               return (
                 <div
                   key={`${exercise.id}-${index}`}
-                  className="p-5 rounded-3xl bg-[#16161D] border border-[#24242E] hover:border-[#383846] transition-all flex flex-col justify-between space-y-4 group"
+                  className="p-5 rounded-3xl bg-[#16161D] border border-[#24242E] hover:border-[#383846] transition-all flex flex-col justify-between space-y-4 group overflow-hidden"
                 >
                   <div className="space-y-3">
-                    {/* Top Bar: Order number, Muscle tag & Swap Button */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-7 h-7 rounded-xl bg-[#24242E] group-hover:bg-[#C6FF3D]/15 group-hover:text-[#C6FF3D] flex items-center justify-center font-mono font-bold text-xs text-[#F4F4F6] transition-colors">
+                    {/* Top of prescribed exercise card: image with order pill and muscle badge overlay */}
+                    <div className="relative rounded-2xl overflow-hidden mb-1">
+                      <ExerciseImage
+                        exerciseName={exercise.name}
+                        targetMuscle={exercise.targetMuscle}
+                        imageUrl={exercise.imageUrl}
+                        className="w-full aspect-[16/9] rounded-2xl"
+                      />
+                      <div className="absolute top-2.5 left-2.5 flex items-center gap-2">
+                        <span className="w-7 h-7 rounded-xl bg-[#0B0B0F]/85 backdrop-blur-sm border border-[#24242E] flex items-center justify-center font-mono font-bold text-xs text-[#F4F4F6]">
                           0{index + 1}
                         </span>
-                        <span className="text-[10px] font-mono uppercase bg-[#0B0B0F] px-2.5 py-1 rounded-xl border border-[#24242E] text-[#C6FF3D] font-bold">
+                        <span className="text-[10px] font-mono uppercase bg-[#0B0B0F]/85 backdrop-blur-sm px-2.5 py-1 rounded-xl border border-[#24242E] text-[#C6FF3D] font-bold">
                           {exercise.targetMuscle}
                         </span>
                       </div>
-
-                      {/* Requirement 6: Swap this exercise button */}
                       <button
                         type="button"
                         onClick={() => handleSwapExercise(index)}
                         title={`Swap ${exercise.name} for another ${exercise.targetMuscle} exercise`}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#A1A1AA] hover:text-[#C6FF3D] text-[11px] font-mono transition-all cursor-pointer"
+                        className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#0B0B0F]/85 backdrop-blur-sm hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#A1A1AA] hover:text-[#C6FF3D] text-[11px] font-mono transition-all cursor-pointer"
                       >
                         <RefreshCw className="w-3 h-3 group-hover:rotate-180 transition-transform duration-300" />
                         <span>Swap</span>
@@ -548,10 +575,58 @@ export function RecommenderPage() {
                       </p>
                     </div>
 
-                    {/* Form Tip / Coaching cue */}
-                    {exercise.formTip && (
-                      <div className="p-3 rounded-2xl bg-[#0B0B0F] border border-[#24242E]/70 text-[11px] text-[#A1A1AA] italic leading-relaxed">
-                        "{exercise.formTip}"
+                    {/* Beginner Tip Line (shown without opening the guide when Beginner level is selected) */}
+                    {isBeginner ? (
+                      <div className="p-3 rounded-2xl bg-[#0B0B0F] border border-[#C6FF3D]/30 flex items-start gap-2 text-xs">
+                        <Sparkles className="w-3.5 h-3.5 text-[#C6FF3D] shrink-0 mt-0.5" />
+                        <div className="space-y-0.5 flex-1">
+                          <span className="text-[10px] font-mono uppercase text-[#C6FF3D] font-bold block">
+                            Beginner Tip
+                          </span>
+                          <p className="text-[11px] text-zinc-300 leading-relaxed">
+                            {guide.safetyTips[0] || guide.setup[0] || exercise.formTip}
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      exercise.formTip && (
+                        <div className="p-3 rounded-2xl bg-[#0B0B0F] border border-[#24242E]/70 text-[11px] text-[#A1A1AA] italic leading-relaxed">
+                          "{exercise.formTip}"
+                        </div>
+                      )
+                    )}
+
+                    {/* How to do it Accordion Button */}
+                    <button
+                      type="button"
+                      onClick={() => setOpenGuideIndex(isGuideOpen ? null : index)}
+                      className={`w-full py-2 px-3 rounded-2xl border text-xs font-mono font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                        isGuideOpen
+                          ? 'bg-[#C6FF3D]/10 border-[#C6FF3D] text-[#C6FF3D]'
+                          : 'bg-[#0B0B0F] border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] hover:border-[#383848]'
+                      }`}
+                      aria-expanded={isGuideOpen}
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <HelpCircle className="w-3.5 h-3.5 text-[#C6FF3D]" />
+                        <span>How to do it</span>
+                      </span>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                          isGuideOpen ? 'rotate-180 text-[#C6FF3D]' : ''
+                        }`}
+                      />
+                    </button>
+
+                    {/* Expanded Guide Accordion (Only one open at a time) */}
+                    {isGuideOpen && (
+                      <div className="pt-1 animate-in fade-in duration-200">
+                        <ExerciseGuideView
+                          guide={guide}
+                          exerciseName={exercise.name}
+                          targetMuscle={exercise.targetMuscle}
+                          onClose={() => setOpenGuideIndex(null)}
+                        />
                       </div>
                     )}
                   </div>

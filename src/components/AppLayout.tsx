@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Award,
   BarChart3,
+  BookOpen,
   Calendar,
   Dumbbell,
   History,
@@ -39,6 +40,7 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'Records', path: '/records', icon: Trophy },
   { name: 'History', path: '/history', icon: History },
   { name: 'Reports', path: '/reports', icon: BarChart3 },
+  { name: 'Beginner Basics', path: '/basics', icon: BookOpen },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
 

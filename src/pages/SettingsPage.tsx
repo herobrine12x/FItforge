@@ -950,9 +950,9 @@ export function SettingsPage() {
             />
           </div>
 
-          <div className="pt-4 border-t border-[#24242E] text-[11px] font-mono text-[#A1A1AA] flex items-center justify-between">
+          <div className="pt-4 border-t border-[#24242E] text-[11px] font-mono text-[#A1A1AA] flex items-center justify-between flex-wrap gap-2">
             <span>Saved to athlete profile</span>
-            <span className="text-[#C6FF3D]">{equipment.length} / 5 types active</span>
+            <span className="text-[#C6FF3D] shrink-0 font-medium">{equipment.length} / 5 types active</span>
           </div>
         </div>
 

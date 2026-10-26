@@ -12,6 +12,7 @@ import {
 import { MemberProfile } from '../models/MemberProfile';
 import { ExperienceLevel, FitnessGoal, SplitType } from '../models/types';
 import { WorkoutPlanFactory } from '../models/WorkoutPlanFactory';
+import { ExerciseImage } from './ExerciseImage';
 
 interface WorkoutRecommenderViewProps {
   currentProfile: MemberProfile | null;
@@ -213,6 +214,12 @@ export const WorkoutRecommenderView: React.FC<WorkoutRecommenderViewProps> = ({
                     <span className="w-7 h-7 rounded border border-gray-800 bg-gray-950 font-mono text-xs font-bold text-emerald-400 flex items-center justify-center shrink-0">
                       0{index + 1}
                     </span>
+                    <ExerciseImage
+                      exerciseName={ex.name}
+                      targetMuscle={ex.targetMuscle}
+                      imageUrl={ex.imageUrl}
+                      className="w-12 h-12 rounded-lg shrink-0 border border-gray-800"
+                    />
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-bold text-white">{ex.name}</span>

@@ -104,7 +104,7 @@ export const EquipmentSelector: React.FC<EquipmentSelectorProps> = ({
 
       {/* Checkboxes for Individual Equipment */}
       <div>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between flex-wrap gap-1 mb-2">
           <span className="text-xs font-mono uppercase tracking-wider text-[#A1A1AA]">
             Available Equipment Checklist
           </span>
@@ -113,7 +113,7 @@ export const EquipmentSelector: React.FC<EquipmentSelectorProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+        <div className="flex flex-wrap gap-2">
           {ALL_EQUIPMENT_OPTIONS.map((option) => {
             const isChecked = selectedEquipment.includes(option);
             const isLocked = option === 'Bodyweight';
@@ -121,7 +121,7 @@ export const EquipmentSelector: React.FC<EquipmentSelectorProps> = ({
             return (
               <label
                 key={option}
-                className={`relative flex items-center justify-between p-2.5 rounded-2xl border text-xs font-bold transition-all select-none ${
+                className={`relative inline-flex items-center gap-2 px-3.5 py-2.5 rounded-2xl border text-xs font-bold transition-all select-none shrink-0 whitespace-nowrap ${
                   isLocked
                     ? 'bg-[#16161D] border-[#24242E] text-[#F4F4F6] cursor-not-allowed opacity-90'
                     : isChecked
@@ -130,34 +130,32 @@ export const EquipmentSelector: React.FC<EquipmentSelectorProps> = ({
                 }`}
                 title={isLocked ? 'Bodyweight is always included and cannot be disabled' : undefined}
               >
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    disabled={isLocked}
-                    onChange={() => handleToggleOption(option)}
-                    className="sr-only"
-                  />
-                  <div
-                    className={`w-4 h-4 rounded-lg flex items-center justify-center border transition-all ${
-                      isChecked
-                        ? 'bg-[#C6FF3D] border-[#C6FF3D] text-[#0B0B0F]'
-                        : 'border-[#383848] bg-[#0B0B0F]'
-                    }`}
-                  >
-                    {isChecked && (
-                      <svg className="w-3 h-3 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    )}
-                  </div>
-                  <span className={isChecked ? 'text-[#F4F4F6]' : 'text-[#A1A1AA]'}>
-                    {option}
-                  </span>
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  disabled={isLocked}
+                  onChange={() => handleToggleOption(option)}
+                  className="sr-only"
+                />
+                <div
+                  className={`w-4 h-4 rounded-lg flex items-center justify-center border transition-all shrink-0 ${
+                    isChecked
+                      ? 'bg-[#C6FF3D] border-[#C6FF3D] text-[#0B0B0F]'
+                      : 'border-[#383848] bg-[#0B0B0F]'
+                  }`}
+                >
+                  {isChecked && (
+                    <svg className="w-3 h-3 stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
                 </div>
+                <span className={isChecked ? 'text-[#F4F4F6]' : 'text-[#A1A1AA]'}>
+                  {option}
+                </span>
 
                 {isLocked && (
-                  <span title="Locked: always active" className="flex items-center">
+                  <span title="Locked: always active" className="inline-flex items-center shrink-0 ml-0.5">
                     <Lock className="w-3 h-3 text-[#A1A1AA] shrink-0" />
                   </span>
                 )}

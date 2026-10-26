@@ -29,34 +29,34 @@ export function BmiGauge({ bmi, category: explicitCategory }: BmiGaugeProps) {
 
   let categoryTheme = {
     color: '#10B981', // green
-    badgeBg: 'bg-emerald-500/15',
-    badgeBorder: 'border-emerald-500/30',
-    badgeText: 'text-emerald-400',
+    badgeBg: 'bg-emerald-100 dark:bg-emerald-500/15',
+    badgeBorder: 'border-emerald-300 dark:border-emerald-500/30',
+    badgeText: 'text-emerald-900 dark:text-emerald-400',
     label: 'Normal',
   };
 
   if (isUnderweight) {
     categoryTheme = {
       color: '#EAB308', // yellow
-      badgeBg: 'bg-yellow-500/15',
-      badgeBorder: 'border-yellow-500/30',
-      badgeText: 'text-yellow-400',
+      badgeBg: 'bg-amber-100 dark:bg-yellow-500/15',
+      badgeBorder: 'border-amber-300 dark:border-yellow-500/30',
+      badgeText: 'text-amber-900 dark:text-yellow-400',
       label: 'Underweight',
     };
   } else if (isOverweight) {
     categoryTheme = {
       color: '#F59E0B', // yellow/amber
-      badgeBg: 'bg-amber-500/15',
-      badgeBorder: 'border-amber-500/30',
-      badgeText: 'text-amber-400',
+      badgeBg: 'bg-amber-100 dark:bg-amber-500/15',
+      badgeBorder: 'border-amber-300 dark:border-amber-500/30',
+      badgeText: 'text-amber-900 dark:text-amber-400',
       label: 'Overweight',
     };
   } else if (isObese) {
     categoryTheme = {
       color: '#EF4444', // red
-      badgeBg: 'bg-rose-500/15',
-      badgeBorder: 'border-rose-500/30',
-      badgeText: 'text-rose-400',
+      badgeBg: 'bg-rose-100 dark:bg-rose-500/15',
+      badgeBorder: 'border-rose-300 dark:border-rose-500/30',
+      badgeText: 'text-rose-900 dark:text-rose-400',
       label: 'Obese',
     };
   }
@@ -98,13 +98,13 @@ export function BmiGauge({ bmi, category: explicitCategory }: BmiGaugeProps) {
 
   return (
     <div
-      className="flex flex-col items-center justify-between p-4 bg-[#16161D] rounded-3xl border border-[#24242E] relative overflow-hidden"
+      className="flex flex-col items-center justify-between p-5 bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] shadow-sm relative overflow-hidden"
       role="region"
       aria-label={`BMI Semicircle Gauge showing score ${safeBmi.toFixed(1)} and category ${categoryTheme.label}`}
     >
-      <div className="w-full flex items-center justify-between pb-2 border-b border-[#24242E]/60 mb-2">
-        <span className="text-xs font-mono uppercase tracking-wider text-[#A1A1AA]">Biometric Gauge</span>
-        <span className="text-[11px] font-mono text-[#A1A1AA]">Formula: kg / m²</span>
+      <div className="w-full flex items-center justify-between pb-2 border-b border-slate-200 dark:border-[#24242E]/60 mb-2">
+        <span className="text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA]">Biometric Gauge</span>
+        <span className="text-[11px] font-mono text-slate-500 dark:text-[#A1A1AA]">Formula: kg / m²</span>
       </div>
 
       <div className="relative w-64 h-38 flex items-center justify-center mt-1">
@@ -113,11 +113,12 @@ export function BmiGauge({ bmi, category: explicitCategory }: BmiGaugeProps) {
           className="w-full h-full overflow-visible"
           aria-hidden="true"
         >
-          {/* Background Arc Shadow */}
+          {/* Background Arc Shadow / Empty Track */}
           <path
             d={describeArc(cx, cy, r, 0, 180)}
             fill="none"
-            stroke="#1E1E28"
+            stroke="currentColor"
+            className="text-slate-200 dark:text-[#1E1E28]"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
           />
@@ -168,7 +169,8 @@ export function BmiGauge({ bmi, category: explicitCategory }: BmiGaugeProps) {
               y1={cy}
               x2={cx}
               y2={cy - r + 4}
-              stroke="#F4F4F6"
+              stroke="currentColor"
+              className="text-slate-800 dark:text-[#F4F4F6]"
               strokeWidth="3.5"
               strokeLinecap="round"
             />
@@ -178,22 +180,29 @@ export function BmiGauge({ bmi, category: explicitCategory }: BmiGaugeProps) {
               cy={cy - r + 4}
               r="4.5"
               fill={categoryTheme.color}
-              stroke="#F4F4F6"
+              stroke="currentColor"
+              className="text-slate-800 dark:text-[#F4F4F6]"
               strokeWidth="1.5"
             />
           </g>
 
           {/* Center Pivot */}
-          <circle cx={cx} cy={cy} r="7" fill="#0B0B0F" stroke="#F4F4F6" strokeWidth="2.5" />
+          <circle
+            cx={cx}
+            cy={cy}
+            r="7"
+            stroke="currentColor"
+            className="fill-slate-900 stroke-slate-300 dark:fill-[#0B0B0F] dark:stroke-[#F4F4F6]"
+            strokeWidth="2.5"
+          />
           <circle cx={cx} cy={cy} r="3" fill={categoryTheme.color} />
 
-          {/* Numeric Readout mathematically positioned below pivot (cy=105, pivot bottom=112, text=136) */}
+          {/* Numeric Readout mathematically positioned below pivot */}
           <text
             x={cx}
             y={134}
             textAnchor="middle"
-            fill="#F4F4F6"
-            className="font-heading font-black"
+            className="font-heading font-black fill-slate-900 dark:fill-[#F4F4F6]"
             style={{ fontSize: '26px', fontWeight: 900 }}
           >
             {safeBmi.toFixed(1)}
@@ -202,8 +211,7 @@ export function BmiGauge({ bmi, category: explicitCategory }: BmiGaugeProps) {
             x={cx}
             y={147}
             textAnchor="middle"
-            fill="#A1A1AA"
-            className="font-mono uppercase"
+            className="font-mono uppercase fill-slate-500 dark:fill-[#A1A1AA]"
             style={{ fontSize: '9px', letterSpacing: '0.05em' }}
           >
             BMI Score
@@ -219,8 +227,8 @@ export function BmiGauge({ bmi, category: explicitCategory }: BmiGaugeProps) {
           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: categoryTheme.color }} />
           <span>{categoryTheme.label}</span>
         </div>
-        <span className="text-[11px] text-[#A1A1AA]">
-          Target Healthy Zone: <strong className="text-emerald-400 font-medium">18.5 – 24.9</strong>
+        <span className="text-[11px] text-slate-600 dark:text-[#A1A1AA]">
+          Target Healthy Zone: <strong className="text-emerald-800 dark:text-emerald-400 font-bold">18.5 – 24.9</strong>
         </span>
       </div>
     </div>

@@ -1676,28 +1676,28 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* ================= TOP HUD: STOPWATCH, CALORIES, PAUSE & CONTROLS ================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#24242E]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-[#24242E]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] shrink-0">
-            <Play className="w-5 h-5 fill-[#C6FF3D]" />
+          <div className="w-10 h-10 rounded-2xl bg-lime-500/10 border border-lime-500/30 text-lime-700 dark:bg-[#C6FF3D]/10 dark:border-[#C6FF3D]/30 dark:text-[#C6FF3D] flex items-center justify-center shrink-0">
+            <Play className="w-5 h-5 fill-current" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-[#F4F4F6]">
+              <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                 {workoutPlan.name}
               </h1>
               {isPaused ? (
-                <span className="px-2 py-0.5 rounded-full bg-amber-950/60 border border-amber-500/40 text-[10px] font-mono text-amber-400 font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-amber-50 border border-amber-300 text-[10px] font-mono text-amber-800 font-bold dark:bg-amber-950/60 dark:border-amber-500/40 dark:text-amber-400">
                   PAUSED
                 </span>
               ) : (
-                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-[10px] font-mono text-emerald-400 font-bold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-300 text-[10px] font-mono text-emerald-800 font-bold dark:bg-emerald-950/60 dark:border-emerald-500/40 dark:text-emerald-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-ping" />
                   GUIDED LIVE
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#A1A1AA] mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
               Exercise {currentExerciseIndex + 1} of 5 · Set {currentSetIndex} of {currentExTotalSets}
             </p>
           </div>
@@ -1709,10 +1709,10 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           <button
             type="button"
             onClick={handleTogglePause}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 cursor-pointer shadow-md ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
               isPaused
-                ? 'bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] shadow-[#C6FF3D]/15'
-                : 'bg-amber-500 hover:bg-amber-400 text-[#0B0B0F] shadow-amber-500/10'
+                ? 'bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] dark:shadow-[#C6FF3D]/15'
+                : 'bg-amber-500 hover:bg-amber-400 text-slate-950 dark:text-[#0B0B0F] shadow-amber-500/10'
             }`}
           >
             {isPaused ? (
@@ -1736,14 +1736,14 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               updatePreferences({ soundEnabled: next });
               if (next && !sounds.muted) sounds.playTick();
             }}
-            className="p-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs text-[#A1A1AA] transition-colors cursor-pointer"
+            className="p-2 rounded-xl bg-[#f8fafc] hover:bg-slate-200 border border-slate-200 text-xs text-slate-600 dark:bg-[#16161D] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:text-[#A1A1AA] transition-colors cursor-pointer"
             title={userPreferences.soundEnabled ? 'Mute audio cues' : 'Enable audio cues'}
             aria-label="Toggle sound"
           >
             {userPreferences.soundEnabled && !sounds.muted ? (
-              <Volume2 className="w-4 h-4 text-[#C6FF3D]" />
+              <Volume2 className="w-4 h-4 text-lime-700 dark:text-[#C6FF3D]" />
             ) : (
-              <VolumeX className="w-4 h-4 text-zinc-500" />
+              <VolumeX className="w-4 h-4 text-slate-400 dark:text-zinc-500" />
             )}
           </button>
 
@@ -1751,17 +1751,17 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           <button
             type="button"
             onClick={() => setIsPaceModalOpen(true)}
-            className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono text-[#A1A1AA] transition-colors cursor-pointer"
+            className="px-2.5 py-2 rounded-xl bg-[#f8fafc] hover:bg-slate-200 border border-slate-200 text-xs font-mono text-slate-600 dark:bg-[#16161D] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:text-[#A1A1AA] transition-colors cursor-pointer"
             title="Adjust seconds per rep pace"
           >
-            <Settings className="w-4 h-4 text-[#C6FF3D]" />
+            <Settings className="w-4 h-4 text-lime-700 dark:text-[#C6FF3D]" />
           </button>
 
           {/* Quit Workout Button (Requirement 4) */}
           <button
             type="button"
             onClick={() => setIsQuitModalOpen(true)}
-            className="px-3 py-2 rounded-xl border border-rose-900/60 bg-rose-950/20 hover:bg-rose-950/40 text-rose-400 text-xs font-semibold transition-colors cursor-pointer"
+            className="px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/20 dark:hover:bg-rose-950/40 dark:text-rose-400 text-xs font-semibold transition-colors cursor-pointer"
           >
             Quit
           </button>
@@ -1769,37 +1769,37 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
       </div>
 
       {/* ================= METRICS BAR: STOPWATCH & ENERGY ================= */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-[#16161D] border border-[#24242E] font-mono">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] font-mono shadow-sm dark:shadow-none">
         <div className="space-y-0.5">
-          <div className="flex items-center gap-1.5 text-[10px] uppercase text-[#A1A1AA]">
-            <Clock className="w-3.5 h-3.5 text-[#C6FF3D]" />
+          <div className="flex items-center gap-1.5 text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA]">
+            <Clock className="w-3.5 h-3.5 text-lime-700 dark:text-[#C6FF3D]" />
             <span>Stopwatch</span>
           </div>
-          <div className="text-xl sm:text-2xl font-black text-[#F4F4F6] tabular-nums">
+          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-[#F4F4F6] tabular-nums">
             {formatTime(stopwatchSeconds)}
           </div>
         </div>
 
         <div className="space-y-0.5">
-          <div className="flex items-center gap-1.5 text-[10px] uppercase text-[#A1A1AA]">
-            <Flame className="w-3.5 h-3.5 text-orange-400" />
+          <div className="flex items-center gap-1.5 text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA]">
+            <Flame className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" />
             <span>Energy Burned</span>
           </div>
-          <div className="text-xl sm:text-2xl font-black text-[#F4F4F6] tabular-nums">
-            {displayCalories} <span className="text-xs text-[#A1A1AA] font-normal">kcal</span>
+          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-[#F4F4F6] tabular-nums">
+            {displayCalories} <span className="text-xs text-slate-500 dark:text-[#A1A1AA] font-normal">kcal</span>
           </div>
         </div>
 
         <div className="space-y-0.5">
-          <span className="text-[10px] uppercase text-[#A1A1AA] block">Exercises Done</span>
-          <div className="text-xl sm:text-2xl font-black text-[#C6FF3D] tabular-nums">
+          <span className="text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA] block">Exercises Done</span>
+          <div className="text-xl sm:text-2xl font-black text-lime-700 dark:text-[#C6FF3D] tabular-nums">
             {completedCount} / 5
           </div>
         </div>
 
         <div className="space-y-0.5">
-          <span className="text-[10px] uppercase text-[#A1A1AA] block">Overall Sets</span>
-          <div className="text-xl sm:text-2xl font-black text-[#F4F4F6] tabular-nums">
+          <span className="text-[10px] uppercase text-slate-500 dark:text-[#A1A1AA] block">Overall Sets</span>
+          <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-[#F4F4F6] tabular-nums">
             {totalCompletedSets} / {totalWorkoutSets}
           </div>
         </div>
@@ -1808,14 +1808,14 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
       {/* ================= DYNAMIC PROGRESS BAR (Requirement 5) ================= */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between text-xs font-mono">
-          <span className="text-[#A1A1AA]">
+          <span className="text-slate-600 dark:text-[#A1A1AA]">
             Workout Progress ({totalCompletedSets} of {totalWorkoutSets} sets completed)
           </span>
-          <span className="text-[#C6FF3D] font-bold">{progressPercent}%</span>
+          <span className="text-lime-700 dark:text-[#C6FF3D] font-bold">{progressPercent}%</span>
         </div>
-        <div className="h-2.5 bg-[#0B0B0F] border border-[#24242E] rounded-full overflow-hidden p-0.5">
+        <div className="h-2.5 bg-slate-200 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] rounded-full overflow-hidden p-0.5">
           <div
-            className="h-full bg-[#C6FF3D] rounded-full transition-all duration-500 ease-out shadow-sm shadow-[#C6FF3D]/50"
+            className="h-full bg-lime-600 dark:bg-[#C6FF3D] rounded-full transition-all duration-500 ease-out shadow-sm shadow-lime-600/30 dark:shadow-[#C6FF3D]/50"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -1823,12 +1823,12 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
       {/* ================= PAUSED NOTICE BANNER (Requirement 4) ================= */}
       {isPaused && (
-        <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-600/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left animate-in fade-in duration-200">
+        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-600/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left animate-in fade-in duration-200">
           <div className="flex items-center gap-2.5">
-            <Pause className="w-5 h-5 text-amber-400 shrink-0" />
+            <Pause className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
             <div>
-              <h4 className="text-sm font-bold text-amber-300">Workout Session Paused</h4>
-              <p className="text-xs text-amber-200/70">
+              <h4 className="text-sm font-bold text-amber-900 dark:text-amber-300">Workout Session Paused</h4>
+              <p className="text-xs text-amber-800 dark:text-amber-200/70">
                 All timers (stopwatch, set countdown, and rest intervals) are frozen.
               </p>
             </div>
@@ -1836,7 +1836,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           <button
             type="button"
             onClick={handleTogglePause}
-            className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#0B0B0F] font-bold text-xs uppercase tracking-wider cursor-pointer transition-colors shrink-0"
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 dark:text-[#0B0B0F] font-bold text-xs uppercase tracking-wider cursor-pointer transition-colors shrink-0"
           >
             Resume Workout
           </button>
@@ -1844,12 +1844,12 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
       )}
 
       {/* ================= GUIDED VIEW: SINGLE ACTIVE EXERCISE (Requirement 2 & 3) ================= */}
-      <div className="bg-[#16161D] rounded-3xl border border-[#24242E] p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+      <div className="bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] p-6 sm:p-8 space-y-6 shadow-sm dark:shadow-2xl relative overflow-hidden">
         {/* Ambient Glow */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-[#C6FF3D]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-lime-500/5 dark:bg-[#C6FF3D]/5 rounded-full blur-3xl pointer-events-none" />
 
         {/* Current Exercise Photo */}
-        <div className="rounded-2xl overflow-hidden border border-[#24242E]">
+        <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-[#24242E]">
           <ExerciseImage
             exerciseName={currentExercise.name}
             targetMuscle={currentExercise.targetMuscle}
@@ -1862,13 +1862,13 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         <div className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-1 rounded-lg bg-[#0B0B0F] border border-[#24242E] text-xs font-mono text-[#A1A1AA]">
+              <span className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
                 Exercise {currentExerciseIndex + 1} of 5
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-[#C6FF3D]/10 text-[#C6FF3D] text-xs font-mono font-bold uppercase">
+              <span className="px-2.5 py-1 rounded-lg bg-lime-500/15 border border-lime-500/30 text-lime-800 dark:border-transparent dark:bg-[#C6FF3D]/10 dark:text-[#C6FF3D] text-xs font-mono font-bold uppercase">
                 {currentExercise.targetMuscle}
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-[#0B0B0F] border border-[#24242E] text-xs font-mono text-[#A1A1AA]">
+              <span className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
                 {currentExercise.equipment}
               </span>
             </div>
@@ -1878,7 +1878,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               <button
                 type="button"
                 onClick={() => setIsGuidePanelOpen((prev) => !prev)}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-[#C6FF3D] text-xs font-mono transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] hover:border-lime-600 dark:hover:border-[#C6FF3D]/40 text-lime-700 dark:text-[#C6FF3D] text-xs font-mono transition-colors cursor-pointer"
                 title="View how to do this exercise"
               >
                 <HelpCircle className="w-3.5 h-3.5" />
@@ -1886,20 +1886,20 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               </button>
 
               {/* Set Indicator Pill */}
-              <div className="px-3 py-1 rounded-xl bg-[#C6FF3D]/15 border border-[#C6FF3D]/30 text-xs font-mono font-bold text-[#C6FF3D]">
+              <div className="px-3 py-1 rounded-xl bg-lime-500/15 border border-lime-500/30 text-lime-800 dark:bg-[#C6FF3D]/15 dark:border-[#C6FF3D]/30 dark:text-[#C6FF3D] text-xs font-mono font-bold">
                 Set {currentSetIndex} of {currentExTotalSets}
               </div>
             </div>
           </div>
 
-          <h2 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-[#F4F4F6]">
+          <h2 className="font-heading text-3xl sm:text-4xl font-black uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
             {currentExercise.name}
           </h2>
 
-          <div className="flex items-center gap-3 font-mono text-sm text-[#A1A1AA]">
-            <span>Target: <strong className="text-[#F4F4F6]">{currentExReps} reps</strong></span>
+          <div className="flex items-center gap-3 font-mono text-sm text-slate-600 dark:text-[#A1A1AA]">
+            <span>Target: <strong className="text-slate-900 dark:text-[#F4F4F6]">{currentExReps} reps</strong></span>
             <span>·</span>
-            <span>Rest interval: <strong className="text-[#F4F4F6]">{currentExercise.restSeconds || 60}s</strong></span>
+            <span>Rest interval: <strong className="text-slate-900 dark:text-[#F4F4F6]">{currentExercise.restSeconds || 60}s</strong></span>
           </div>
         </div>
 
@@ -1920,7 +1920,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsGuidePanelOpen(false)}
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-[#C6FF3D]/15"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-heading font-black text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm dark:shadow-md dark:shadow-[#C6FF3D]/15"
                   >
                     <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
                     <span>Got it, start set 1</span>
@@ -1933,22 +1933,22 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
         {/* Progressive Overload Suggestion (Requirement 4) */}
         {overloadHint && (
-          <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex items-start gap-3">
-            <div className="p-2 rounded-xl bg-[#C6FF3D]/10 text-[#C6FF3D] border border-[#C6FF3D]/20 shrink-0 mt-0.5">
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] flex items-start gap-3 shadow-sm">
+            <div className="p-2 rounded-xl bg-lime-500/10 text-lime-700 border border-lime-500/30 dark:bg-[#C6FF3D]/10 dark:text-[#C6FF3D] dark:border-[#C6FF3D]/20 shrink-0 mt-0.5">
               <Zap className="w-4 h-4" />
             </div>
             <div className="space-y-0.5 flex-1">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-[#C6FF3D] font-bold">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-lime-800 dark:text-[#C6FF3D] font-bold">
                   Progressive Overload Target
                 </span>
                 {overloadHint.badgeText && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#C6FF3D]/15 text-[#C6FF3D] border border-[#C6FF3D]/30">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-lime-500/15 text-lime-800 border border-lime-500/30 dark:bg-[#C6FF3D]/15 dark:text-[#C6FF3D] dark:border-[#C6FF3D]/30">
                     {overloadHint.badgeText}
                   </span>
                 )}
               </div>
-              <p className="text-xs sm:text-sm text-[#F4F4F6] leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-700 dark:text-[#F4F4F6] leading-relaxed">
                 {overloadHint.message}
               </p>
             </div>
@@ -1957,21 +1957,21 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
         {/* Active Personal Record Celebration Alert (Requirement 2) */}
         {activePRAlert && (
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-[#C6FF3D]/20 via-amber-500/15 to-[#16161D] border border-[#C6FF3D] flex items-center justify-between gap-3 animate-in fade-in duration-300">
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-lime-100/70 via-amber-50 to-white dark:from-[#C6FF3D]/20 dark:via-amber-500/15 dark:to-[#16161D] border border-lime-500 dark:border-[#C6FF3D] flex items-center justify-between gap-3 animate-in fade-in duration-300 shadow-sm">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-[#C6FF3D]/20 text-[#C6FF3D] border border-[#C6FF3D]/40">
+              <div className="p-2 rounded-xl bg-lime-500/20 text-lime-800 border border-lime-500/40 dark:bg-[#C6FF3D]/20 dark:text-[#C6FF3D] dark:border-[#C6FF3D]/40">
                 <Trophy className="w-5 h-5" />
               </div>
               <div>
-                <span className="font-heading text-sm font-black uppercase text-[#C6FF3D] tracking-wider block">
+                <span className="font-heading text-sm font-black uppercase text-lime-800 dark:text-[#C6FF3D] tracking-wider block">
                   New Personal Record!
                 </span>
-                <p className="text-xs text-[#F4F4F6]">
-                  {activePRAlert.exerciseName}: <strong className="text-white">{activePRAlert.weightKg} kg</strong> × {activePRAlert.reps} reps · Estimated 1RM: <strong className="text-[#C6FF3D]">{activePRAlert.est1RM} kg</strong>
+                <p className="text-xs text-slate-800 dark:text-[#F4F4F6]">
+                  {activePRAlert.exerciseName}: <strong className="text-slate-950 dark:text-white">{activePRAlert.weightKg} kg</strong> × {activePRAlert.reps} reps · Estimated 1RM: <strong className="text-lime-800 dark:text-[#C6FF3D]">{activePRAlert.est1RM} kg</strong>
                 </p>
               </div>
             </div>
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-black bg-[#C6FF3D] text-[#0B0B0F] uppercase">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-black bg-lime-600 text-white dark:bg-[#C6FF3D] dark:text-[#0B0B0F] uppercase">
               PR Set
             </span>
           </div>
@@ -1979,13 +1979,13 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
         {/* Form Tip Card */}
         {currentExercise.formTip && (
-          <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-[#C6FF3D] shrink-0 mt-0.5" />
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] flex items-start gap-3 shadow-sm">
+            <Sparkles className="w-5 h-5 text-lime-700 dark:text-[#C6FF3D] shrink-0 mt-0.5" />
             <div className="space-y-0.5">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-[#C6FF3D] font-bold block">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-lime-800 dark:text-[#C6FF3D] font-bold block">
                 Form & Execution Cue
               </span>
-              <p className="text-xs sm:text-sm text-[#F4F4F6] leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-700 dark:text-[#F4F4F6] leading-relaxed">
                 {currentExercise.formTip}
               </p>
             </div>
@@ -1994,7 +1994,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
         {/* ================= DYNAMIC WORK / REST / GET READY PHASE ================= */}
         {phase === 'work' && (
-          <div className="p-6 rounded-3xl bg-gradient-to-b from-[#1c1c27] to-[#16161D] border border-[#24242E] space-y-6">
+          <div className="p-6 rounded-3xl bg-white dark:bg-gradient-to-b dark:from-[#1c1c27] dark:to-[#16161D] border border-slate-200 dark:border-[#24242E] space-y-6 shadow-sm">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
               {/* Circular Set Countdown Ring */}
               <div className="relative w-36 h-36 shrink-0 flex items-center justify-center">
@@ -2003,7 +2003,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     cx="70"
                     cy="70"
                     r={ringRadius}
-                    className="text-[#24242E]"
+                    className="text-slate-200 dark:text-[#24242E]"
                     strokeWidth="10"
                     stroke="currentColor"
                     fill="transparent"
@@ -2013,7 +2013,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     cy="70"
                     r={ringRadius}
                     className={`transition-all duration-1000 ease-linear ${
-                      workRemaining === 0 ? 'text-emerald-400' : 'text-[#C6FF3D]'
+                      workRemaining === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-lime-600 dark:text-[#C6FF3D]'
                     }`}
                     strokeWidth="10"
                     strokeDasharray={ringCircumference}
@@ -2025,10 +2025,10 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                 </svg>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="font-mono text-3xl font-black text-[#F4F4F6] tabular-nums leading-none">
+                  <span className="font-mono text-3xl font-black text-slate-900 dark:text-[#F4F4F6] tabular-nums leading-none">
                     {workRemaining > 0 ? `${workRemaining}s` : '0s'}
                   </span>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#C6FF3D] mt-1 font-bold">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-lime-700 dark:text-[#C6FF3D] mt-1 font-bold">
                     {workRemaining > 0 ? 'Work Phase' : 'Set Complete'}
                   </span>
                 </div>
@@ -2037,13 +2037,13 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               {/* Work Instructions & "I'm Done" Action */}
               <div className="flex-1 space-y-4 text-center sm:text-left">
                 <div>
-                  <div className="text-xs font-mono uppercase tracking-wider text-[#C6FF3D] font-bold">
+                  <div className="text-xs font-mono uppercase tracking-wider text-lime-800 dark:text-[#C6FF3D] font-bold">
                     Suggested Pace: {currentExReps} reps × {secondsPerRep}s = {workTotalDuration}s
                   </div>
-                  <h3 className="text-lg font-bold text-[#F4F4F6] mt-0.5">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-[#F4F4F6] mt-0.5">
                     Execute Set {currentSetIndex} of {currentExTotalSets} with controlled tempo
                   </h3>
-                  <p className="text-xs text-[#A1A1AA] mt-1">
+                  <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-1">
                     {workRemaining > 0
                       ? 'Confirm your weight and reps below, then press "I\'m done" when complete.'
                       : 'Countdown finished! Confirm your weight and reps, then press "I\'m done" to rest.'}
@@ -2051,12 +2051,12 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                 </div>
 
                 {/* Requirement 1 & 6: Per-Set Logging Inputs with Inline Validation */}
-                <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] space-y-3">
+                <div className="p-4 rounded-2xl bg-[#f8fafc] dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] space-y-3">
                   <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[#A1A1AA] uppercase tracking-wider font-semibold">
+                    <span className="text-slate-600 dark:text-[#A1A1AA] uppercase tracking-wider font-semibold">
                       Set {currentSetIndex} Data:
                     </span>
-                    <span className="text-[#C6FF3D]">
+                    <span className="text-lime-700 dark:text-[#C6FF3D] font-bold">
                       Est. 1RM: {PersonalRecord.calculate1RM(currentSetWeight, currentSetReps)} kg
                     </span>
                   </div>
@@ -2064,8 +2064,8 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
                     {/* Weight (kg) */}
                     <div>
-                      <label className="block text-[11px] font-mono uppercase text-[#A1A1AA] mb-1">
-                        Weight (kg) <span className="text-[10px] text-[#71717A]">(0-500)</span>
+                      <label className="block text-[11px] font-mono uppercase text-slate-600 dark:text-[#A1A1AA] mb-1">
+                        Weight (kg) <span className="text-[10px] text-slate-400 dark:text-[#71717A]">(0-500)</span>
                       </label>
                       <div className="flex items-center gap-1.5">
                         <button
@@ -2076,7 +2076,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                             const val = SetLogManager.validate(next, currentSetReps);
                             setWeightError(val.weightError || null);
                           }}
-                          className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] text-xs font-mono font-bold text-[#F4F4F6] cursor-pointer"
+                          className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 dark:border-transparent dark:bg-[#16161D] dark:hover:bg-[#24242E] text-xs font-mono font-bold text-slate-800 dark:text-[#F4F4F6] cursor-pointer transition-colors shadow-xs"
                         >
                           -2.5
                         </button>
@@ -2092,8 +2092,10 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                             const res = SetLogManager.validate(val, currentSetReps);
                             setWeightError(res.weightError || null);
                           }}
-                          className={`w-full px-2 py-2 bg-[#16161D] border rounded-xl font-mono text-sm font-bold text-center text-[#F4F4F6] focus:outline-none ${
-                            weightError ? 'border-red-500' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                          className={`w-full px-2 py-2 bg-white dark:bg-[#16161D] border rounded-xl font-mono text-sm font-bold text-center text-slate-900 dark:text-[#F4F4F6] focus:outline-none transition-colors ${
+                            weightError
+                              ? 'border-red-500'
+                              : 'border-slate-300 dark:border-[#24242E] focus:border-slate-500 dark:focus:border-[#C6FF3D]'
                           }`}
                         />
                         <button
@@ -2104,13 +2106,13 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                             const val = SetLogManager.validate(next, currentSetReps);
                             setWeightError(val.weightError || null);
                           }}
-                          className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] text-xs font-mono font-bold text-[#F4F4F6] cursor-pointer"
+                          className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 dark:border-transparent dark:bg-[#16161D] dark:hover:bg-[#24242E] text-xs font-mono font-bold text-slate-800 dark:text-[#F4F4F6] cursor-pointer transition-colors shadow-xs"
                         >
                           +2.5
                         </button>
                       </div>
                       {weightError && (
-                        <span className="text-[10px] text-red-400 font-medium block mt-1">
+                        <span className="text-[10px] text-red-600 dark:text-red-400 font-medium block mt-1">
                           {weightError}
                         </span>
                       )}
@@ -2118,8 +2120,8 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
                     {/* Reps */}
                     <div>
-                      <label className="block text-[11px] font-mono uppercase text-[#A1A1AA] mb-1">
-                        Reps Done <span className="text-[10px] text-[#71717A]">(1-100)</span>
+                      <label className="block text-[11px] font-mono uppercase text-slate-600 dark:text-[#A1A1AA] mb-1">
+                        Reps Done <span className="text-[10px] text-slate-400 dark:text-[#71717A]">(1-100)</span>
                       </label>
                       <div className="flex items-center gap-1.5">
                         <button
@@ -2130,7 +2132,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                             const val = SetLogManager.validate(currentSetWeight, next);
                             setRepsError(val.repsError || null);
                           }}
-                          className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] text-xs font-mono font-bold text-[#F4F4F6] cursor-pointer"
+                          className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 dark:border-transparent dark:bg-[#16161D] dark:hover:bg-[#24242E] text-xs font-mono font-bold text-slate-800 dark:text-[#F4F4F6] cursor-pointer transition-colors shadow-xs"
                         >
                           -1
                         </button>
@@ -2145,8 +2147,10 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                             const res = SetLogManager.validate(currentSetWeight, val);
                             setRepsError(res.repsError || null);
                           }}
-                          className={`w-full px-2 py-2 bg-[#16161D] border rounded-xl font-mono text-sm font-bold text-center text-[#F4F4F6] focus:outline-none ${
-                            repsError ? 'border-red-500' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                          className={`w-full px-2 py-2 bg-white dark:bg-[#16161D] border rounded-xl font-mono text-sm font-bold text-center text-slate-900 dark:text-[#F4F4F6] focus:outline-none transition-colors ${
+                            repsError
+                              ? 'border-red-500'
+                              : 'border-slate-300 dark:border-[#24242E] focus:border-slate-500 dark:focus:border-[#C6FF3D]'
                           }`}
                         />
                         <button
@@ -2157,13 +2161,13 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                             const val = SetLogManager.validate(currentSetWeight, next);
                             setRepsError(val.repsError || null);
                           }}
-                          className="px-2.5 py-2 rounded-xl bg-[#16161D] hover:bg-[#24242E] text-xs font-mono font-bold text-[#F4F4F6] cursor-pointer"
+                          className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 dark:border-transparent dark:bg-[#16161D] dark:hover:bg-[#24242E] text-xs font-mono font-bold text-slate-800 dark:text-[#F4F4F6] cursor-pointer transition-colors shadow-xs"
                         >
                           +1
                         </button>
                       </div>
                       {repsError && (
-                        <span className="text-[10px] text-red-400 font-medium block mt-1">
+                        <span className="text-[10px] text-red-600 dark:text-red-400 font-medium block mt-1">
                           {repsError}
                         </span>
                       )}
@@ -2176,12 +2180,12 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   type="button"
                   onClick={handleSetDone}
                   disabled={isPaused || !!weightError || !!repsError}
-                  className={`w-full sm:w-auto px-8 py-4 rounded-2xl font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl ${
+                  className={`w-full sm:w-auto px-8 py-4 rounded-2xl font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm ${
                     weightError || repsError
-                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                      ? 'bg-slate-200 text-slate-400 dark:bg-gray-800 dark:text-gray-500 cursor-not-allowed'
                       : workRemaining === 0
-                      ? 'bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] shadow-[#C6FF3D]/25 ring-4 ring-[#C6FF3D]/30 animate-pulse'
-                      : 'bg-[#C6FF3D] hover:bg-[#d4ff66] text-[#0B0B0F] shadow-[#C6FF3D]/15'
+                      ? 'bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 ring-4 ring-slate-300/40 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] dark:shadow-xl dark:shadow-[#C6FF3D]/25 dark:ring-[#C6FF3D]/30 animate-pulse'
+                      : 'bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] dark:shadow-xl dark:shadow-[#C6FF3D]/15'
                   } disabled:opacity-50`}
                 >
                   <Check className="w-5 h-5 stroke-[3]" />
@@ -2194,7 +2198,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
         {/* REST PHASE (Requirement 3) */}
         {phase === 'rest' && (
-          <div className="p-6 rounded-3xl bg-gradient-to-r from-[#16161D] via-[#1e1e2d] to-[#16161D] border border-[#C6FF3D]/40 space-y-6 animate-in fade-in duration-300">
+          <div className="p-6 rounded-3xl bg-white dark:bg-gradient-to-r dark:from-[#16161D] dark:via-[#1e1e2d] dark:to-[#16161D] border border-slate-200 dark:border-[#C6FF3D]/40 space-y-6 animate-in fade-in duration-300 shadow-sm">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
               {/* Circular Rest Ring */}
               <div className="relative w-36 h-36 shrink-0 flex items-center justify-center">
@@ -2203,7 +2207,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     cx="70"
                     cy="70"
                     r={ringRadius}
-                    className="text-[#24242E]"
+                    className="text-slate-200 dark:text-[#24242E]"
                     strokeWidth="10"
                     stroke="currentColor"
                     fill="transparent"
@@ -2212,7 +2216,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     cx="70"
                     cy="70"
                     r={ringRadius}
-                    className="text-[#C6FF3D] transition-all duration-1000 ease-linear"
+                    className="text-lime-600 dark:text-[#C6FF3D] transition-all duration-1000 ease-linear"
                     strokeWidth="10"
                     strokeDasharray={ringCircumference}
                     strokeDashoffset={restStrokeOffset}
@@ -2223,10 +2227,10 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                 </svg>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="font-mono text-3xl font-black text-[#F4F4F6] tabular-nums leading-none">
+                  <span className="font-mono text-3xl font-black text-slate-900 dark:text-[#F4F4F6] tabular-nums leading-none">
                     {restRemaining}s
                   </span>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#C6FF3D] mt-1 font-bold">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-lime-700 dark:text-[#C6FF3D] mt-1 font-bold">
                     Rest
                   </span>
                 </div>
@@ -2235,28 +2239,28 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               {/* Rest Details & Controls */}
               <div className="flex-1 space-y-4 text-center sm:text-left">
                 <div>
-                  <div className="text-xs font-mono uppercase tracking-wider text-[#C6FF3D] font-bold">
+                  <div className="text-xs font-mono uppercase tracking-wider text-lime-800 dark:text-[#C6FF3D] font-bold">
                     Active Recovery Interval
                   </div>
-                  <h3 className="text-lg font-bold text-[#F4F4F6] mt-0.5">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-[#F4F4F6] mt-0.5">
                     Hydrate & prepare for the next effort
                   </h3>
-                  <p className="text-xs text-[#A1A1AA] mt-1">
+                  <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-1">
                     Resting after Set {currentSetIndex}. Next set starts automatically with a 3-second ready cue.
                   </p>
                 </div>
 
                 {/* Logged Set Confirmation Card */}
-                <div className="p-3.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex items-center justify-between text-xs font-mono">
+                <div className="p-3.5 rounded-2xl bg-[#f8fafc] dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] flex items-center justify-between text-xs font-mono">
                   <div>
-                    <span className="text-[#A1A1AA] uppercase block text-[10px]">Set {currentSetIndex} Logged</span>
-                    <span className="text-sm font-bold text-[#F4F4F6]">
+                    <span className="text-slate-500 dark:text-[#A1A1AA] uppercase block text-[10px]">Set {currentSetIndex} Logged</span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-[#F4F4F6]">
                       {currentSetWeight} kg × {currentSetReps} reps
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[#A1A1AA] uppercase block text-[10px]">Est. 1RM</span>
-                    <span className="text-sm font-bold text-[#C6FF3D]">
+                    <span className="text-slate-500 dark:text-[#A1A1AA] uppercase block text-[10px]">Est. 1RM</span>
+                    <span className="text-sm font-bold text-lime-700 dark:text-[#C6FF3D]">
                       {PersonalRecord.calculate1RM(currentSetWeight, currentSetReps)} kg
                     </span>
                   </div>
@@ -2266,7 +2270,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <button
                     type="button"
                     onClick={() => handleAddRestTime(15)}
-                    className="px-4 py-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono text-[#F4F4F6] transition-colors cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-mono text-slate-800 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:text-[#F4F4F6] transition-colors cursor-pointer"
                   >
                     +15s Rest
                   </button>
@@ -2274,9 +2278,9 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   <button
                     type="button"
                     onClick={handleSkipRest}
-                    className="px-5 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="px-5 py-2.5 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6] text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
                   >
-                    <FastForward className="w-4 h-4 text-[#C6FF3D]" />
+                    <FastForward className="w-4 h-4 text-slate-700 dark:text-[#C6FF3D]" />
                     <span>Skip Rest</span>
                   </button>
                 </div>
@@ -2287,14 +2291,14 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
         {/* GET READY 3-2-1 PHASE (Requirement 3) */}
         {phase === 'get_ready' && (
-          <div className="p-8 rounded-3xl bg-[#0B0B0F] border border-[#C6FF3D] text-center space-y-4 animate-in zoom-in-95 duration-200">
-            <span className="text-xs font-mono uppercase tracking-widest text-[#C6FF3D] font-bold">
+          <div className="p-8 rounded-3xl bg-white dark:bg-[#0B0B0F] border border-lime-500 dark:border-[#C6FF3D] text-center space-y-4 animate-in zoom-in-95 duration-200 shadow-sm">
+            <span className="text-xs font-mono uppercase tracking-widest text-lime-700 dark:text-[#C6FF3D] font-bold">
               Next Set Starting
             </span>
-            <div className="font-mono text-6xl font-black text-[#F4F4F6] animate-pulse">
+            <div className="font-mono text-6xl font-black text-slate-900 dark:text-[#F4F4F6] animate-pulse">
               {getReadyRemaining}
             </div>
-            <p className="text-xs text-[#A1A1AA]">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
               Get in position and grip the bar.
             </p>
           </div>
@@ -2302,21 +2306,21 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
 
         {/* Next Up Preview (Requirement 2) */}
         {nextUpPreview && (
-          <div className="p-3.5 rounded-xl bg-[#0B0B0F] border border-[#24242E] text-xs font-mono text-[#A1A1AA] flex items-center justify-between">
-            <span className="text-[#C6FF3D] font-bold uppercase tracking-wider text-[11px]">
+          <div className="p-3.5 rounded-xl bg-[#f8fafc] dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs font-mono text-slate-600 dark:text-[#A1A1AA] flex items-center justify-between">
+            <span className="text-lime-700 dark:text-[#C6FF3D] font-bold uppercase tracking-wider text-[11px]">
               {nextUpPreview}
             </span>
-            <span className="text-[10px] text-zinc-500">Upcoming</span>
+            <span className="text-[10px] text-slate-400 dark:text-zinc-500">Upcoming</span>
           </div>
         )}
 
         {/* Guided Navigation Buttons: Previous Set & Skip Exercise (Requirement 4) */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#24242E]">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-[#24242E]">
           <button
             type="button"
             onClick={handlePreviousSet}
             disabled={currentExerciseIndex === 0 && currentSetIndex === 1}
-            className="px-4 py-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-xs font-semibold text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-600 hover:text-slate-900 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Previous Set</span>
@@ -2326,18 +2330,18 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
             <button
               type="button"
               onClick={handleSkipExercise}
-              className="px-4 py-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-xs font-semibold text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-600 hover:text-slate-900 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <span>Skip Exercise</span>
-              <SkipForward className="w-4 h-4 text-[#C6FF3D]" />
+              <SkipForward className="w-4 h-4 text-lime-700 dark:text-[#C6FF3D]" />
             </button>
 
             <button
               type="button"
               onClick={handleCompleteWorkout}
-              className="px-4 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-xs font-bold text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 hover:text-slate-900 dark:border-transparent dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer"
             >
-              <CheckCircle2 className="w-4 h-4 text-[#C6FF3D]" />
+              <CheckCircle2 className="w-4 h-4 text-lime-700 dark:text-[#C6FF3D]" />
               <span>Finish Early</span>
             </button>
           </div>
@@ -2345,35 +2349,35 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
       </div>
 
       {/* ================= COLLAPSIBLE OVERVIEW LIST (Requirement 7) ================= */}
-      <div className="bg-[#16161D] rounded-3xl border border-[#24242E] overflow-hidden transition-all duration-300">
+      <div className="bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] overflow-hidden transition-all duration-300 shadow-sm">
         <button
           type="button"
           onClick={() => setIsOverviewExpanded(!isOverviewExpanded)}
-          className="w-full p-4 sm:p-5 flex items-center justify-between text-left cursor-pointer hover:bg-[#1a1a24] transition-colors"
+          className="w-full p-4 sm:p-5 flex items-center justify-between text-left cursor-pointer hover:bg-slate-100 dark:hover:bg-[#1a1a24] transition-colors"
           aria-expanded={isOverviewExpanded}
         >
           <div className="flex items-center gap-3">
-            <Dumbbell className="w-5 h-5 text-[#C6FF3D]" />
-            <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+            <Dumbbell className="w-5 h-5 text-lime-700 dark:text-[#C6FF3D]" />
+            <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
               Routine Overview ({exercises.length} Exercises)
             </h3>
-            <span className="text-xs font-mono text-[#A1A1AA]">
+            <span className="text-xs font-mono text-slate-500 dark:text-[#A1A1AA]">
               · {completedCount} / 5 completed
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
             <span>{isOverviewExpanded ? 'Hide' : 'Show'}</span>
             {isOverviewExpanded ? (
-              <ChevronUp className="w-4 h-4 text-[#C6FF3D]" />
+              <ChevronUp className="w-4 h-4 text-lime-700 dark:text-[#C6FF3D]" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-[#C6FF3D]" />
+              <ChevronDown className="w-4 h-4 text-lime-700 dark:text-[#C6FF3D]" />
             )}
           </div>
         </button>
 
         {isOverviewExpanded && (
-          <div className="p-4 sm:p-5 pt-0 space-y-2.5 border-t border-[#24242E]/60 animate-in fade-in duration-200">
+          <div className="p-4 sm:p-5 pt-0 space-y-2.5 border-t border-slate-200 dark:border-[#24242E]/60 animate-in fade-in duration-200">
             {exercises.map((exercise, idx) => {
               const setsRequired = exercise.sets || exercise.defaultSets || 3;
               const setsDone = completedSetsByExercise[idx] || 0;
@@ -2385,20 +2389,20 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   key={exercise.id || idx}
                   className={`p-3.5 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                     isCurrent
-                      ? 'bg-[#1c1c27] border-[#C6FF3D]/50 shadow-md shadow-[#C6FF3D]/5'
+                      ? 'bg-white border-2 border-lime-500 shadow-sm dark:bg-[#1c1c27] dark:border-[#C6FF3D]/50 dark:shadow-md dark:shadow-[#C6FF3D]/5'
                       : isExComplete
-                      ? 'bg-[#0B0B0F]/60 border-emerald-900/40 text-[#A1A1AA]'
-                      : 'bg-[#0B0B0F] border-[#24242E]'
+                      ? 'bg-slate-100/70 border-slate-200 text-slate-500 dark:bg-[#0B0B0F]/60 dark:border-emerald-900/40 dark:text-[#A1A1AA]'
+                      : 'bg-white border-slate-200 dark:bg-[#0B0B0F] dark:border-[#24242E]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-7 h-7 rounded-xl flex items-center justify-center font-mono text-xs font-bold shrink-0 ${
                         isExComplete
-                          ? 'bg-[#C6FF3D] text-[#0B0B0F]'
+                          ? 'bg-[#cbd5e1] text-slate-900 dark:bg-[#C6FF3D] dark:text-[#0B0B0F]'
                           : isCurrent
-                          ? 'bg-[#C6FF3D]/10 text-[#C6FF3D] border border-[#C6FF3D]/40'
-                          : 'bg-[#16161D] text-[#A1A1AA] border border-[#24242E]'
+                          ? 'bg-lime-500/15 text-lime-800 border border-lime-500/40 dark:bg-[#C6FF3D]/10 dark:text-[#C6FF3D] dark:border-[#C6FF3D]/40'
+                          : 'bg-slate-100 text-slate-600 border border-slate-200 dark:bg-[#16161D] dark:text-[#A1A1AA] dark:border-[#24242E]'
                       }`}
                     >
                       {isExComplete ? <Check className="w-4 h-4 stroke-[3]" /> : idx + 1}
@@ -2408,7 +2412,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                       exerciseName={exercise.name}
                       targetMuscle={exercise.targetMuscle}
                       imageUrl={exercise.imageUrl}
-                      className="w-14 h-14 rounded-xl shrink-0 border border-[#24242E]"
+                      className="w-14 h-14 rounded-xl shrink-0 border border-slate-200 dark:border-[#24242E]"
                     />
 
                     <div>
@@ -2416,38 +2420,38 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                         <span
                           className={`text-sm font-bold ${
                             isExComplete
-                              ? 'line-through text-[#A1A1AA]'
+                              ? 'line-through text-slate-400 dark:text-[#A1A1AA]'
                               : isCurrent
-                              ? 'text-[#F4F4F6]'
-                              : 'text-[#F4F4F6]'
+                              ? 'text-slate-900 dark:text-[#F4F4F6]'
+                              : 'text-slate-900 dark:text-[#F4F4F6]'
                           }`}
                         >
                           {exercise.name}
                         </span>
                         {isCurrent && (
-                          <span className="flex items-center gap-1 text-[10px] font-mono text-[#C6FF3D]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF3D] animate-ping" />
+                          <span className="flex items-center gap-1 text-[10px] font-mono text-lime-700 dark:text-[#C6FF3D]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-lime-600 dark:bg-[#C6FF3D] animate-ping" />
                             Active
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] font-mono text-[#A1A1AA]">
+                      <span className="text-[11px] font-mono text-slate-500 dark:text-[#A1A1AA]">
                         {exercise.targetMuscle} · {setsRequired} sets × {exercise.reps || 10} reps
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono">
-                    <span className="text-[#A1A1AA]">
+                    <span className="text-slate-500 dark:text-[#A1A1AA]">
                       {setsDone} / {setsRequired} sets
                     </span>
                     <span
                       className={`px-2.5 py-0.5 rounded-md text-[10px] font-mono uppercase font-bold ${
                         isExComplete
-                          ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/40'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-800/40'
                           : isCurrent
-                          ? 'bg-[#C6FF3D]/10 text-[#C6FF3D] border border-[#C6FF3D]/30'
-                          : 'bg-[#16161D] text-[#A1A1AA] border border-[#24242E]'
+                          ? 'bg-lime-500/15 text-lime-800 border border-lime-500/30 dark:bg-[#C6FF3D]/10 dark:text-[#C6FF3D] dark:border-[#C6FF3D]/30'
+                          : 'bg-slate-100 text-slate-600 border border-slate-200 dark:bg-[#16161D] dark:text-[#A1A1AA] dark:border-[#24242E]'
                       }`}
                     >
                       {isExComplete

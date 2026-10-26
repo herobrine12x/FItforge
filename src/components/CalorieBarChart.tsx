@@ -7,6 +7,21 @@ interface CalorieBarChartProps {
 }
 
 export function CalorieBarChart({ records }: CalorieBarChartProps) {
+  const [isDark, setIsDark] = React.useState<boolean>(() => {
+    if (typeof document !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
+
+  React.useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
   // Aggregate calories over the past 7 calendar days
   const last7DaysData = React.useMemo(() => {
     const data = [];
@@ -44,23 +59,27 @@ export function CalorieBarChart({ records }: CalorieBarChartProps) {
 
   const total7DayCalories = last7DaysData.reduce((acc, curr) => acc + curr.calories, 0);
 
+  const axisTextColor = isDark ? '#71717A' : '#475569';
+  const axisLineColor = isDark ? '#24242E' : '#cbd5e1';
+  const barColor = isDark ? '#C6FF3D' : '#16a34a';
+
   return (
     <div
-      className="p-5 bg-[#16161D] rounded-3xl border border-[#24242E] flex flex-col justify-between"
+      className="p-5 bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] shadow-sm flex flex-col justify-between"
       role="region"
       aria-label="Calories burned over the last 7 days bar chart"
     >
-      <div className="flex items-center justify-between pb-3 border-b border-[#24242E]/60 mb-4">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#24242E]/60 mb-4">
         <div>
-          <h2 className="text-xs font-mono uppercase tracking-wider text-[#A1A1AA]">7-Day Energy Output</h2>
+          <h2 className="text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA]">7-Day Energy Output</h2>
           <div className="flex items-baseline gap-2 mt-0.5">
-            <span className="font-heading text-2xl font-black text-[#F4F4F6]">
+            <span className="font-heading text-2xl font-black text-slate-900 dark:text-[#F4F4F6]">
               {total7DayCalories.toLocaleString()}
             </span>
-            <span className="text-xs font-mono text-[#C6FF3D]">kcal total</span>
+            <span className="text-xs font-mono text-emerald-800 dark:text-[#C6FF3D] font-bold">kcal total</span>
           </div>
         </div>
-        <div className="text-[11px] font-mono text-[#A1A1AA] bg-[#0B0B0F] px-2.5 py-1 rounded-xl border border-[#24242E]">
+        <div className="text-[11px] font-mono text-slate-600 dark:text-[#A1A1AA] bg-slate-100 dark:bg-[#0B0B0F] px-2.5 py-1 rounded-xl border border-slate-200 dark:border-[#24242E]">
           Past 7 Days
         </div>
       </div>
@@ -70,30 +89,30 @@ export function CalorieBarChart({ records }: CalorieBarChartProps) {
           <BarChart data={last7DaysData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <XAxis
               dataKey="day"
-              stroke="#71717A"
+              stroke={axisTextColor}
               fontSize={11}
               tickLine={false}
-              axisLine={{ stroke: '#24242E' }}
+              axisLine={{ stroke: axisLineColor }}
             />
             <YAxis
-              stroke="#71717A"
+              stroke={axisTextColor}
               fontSize={10}
               tickLine={false}
               axisLine={false}
               tickFormatter={(val) => `${val}`}
             />
             <Tooltip
-              cursor={{ fill: 'rgba(198, 255, 61, 0.05)' }}
+              cursor={{ fill: isDark ? 'rgba(198, 255, 61, 0.05)' : 'rgba(22, 163, 74, 0.08)' }}
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   const item = payload[0].payload;
                   return (
-                    <div className="bg-[#0B0B0F] border border-[#24242E] rounded-xl p-2.5 shadow-2xl text-xs">
-                      <div className="text-[#A1A1AA] font-mono">{item.date} ({item.day})</div>
-                      <div className="font-bold text-[#C6FF3D] text-sm mt-0.5">
+                    <div className="bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] rounded-xl p-2.5 shadow-xl text-xs">
+                      <div className="text-slate-600 dark:text-[#A1A1AA] font-mono">{item.date} ({item.day})</div>
+                      <div className="font-bold text-emerald-800 dark:text-[#C6FF3D] text-sm mt-0.5">
                         {item.calories} kcal
                       </div>
-                      <div className="text-[10px] text-[#A1A1AA] mt-0.5">
+                      <div className="text-[10px] text-slate-500 dark:text-[#A1A1AA] mt-0.5">
                         {item.sessions} {item.sessions === 1 ? 'workout' : 'workouts'}
                       </div>
                     </div>
@@ -104,7 +123,7 @@ export function CalorieBarChart({ records }: CalorieBarChartProps) {
             />
             <Bar
               dataKey="calories"
-              fill="#C6FF3D"
+              fill={barColor}
               radius={[6, 6, 2, 2]}
               maxBarSize={36}
             />

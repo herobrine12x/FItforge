@@ -547,7 +547,7 @@ export function DashboardPage() {
 
           <Link
             to="/schedule"
-            className="text-xs font-mono text-emerald-600 dark:text-[#C6FF3D] hover:underline flex items-center gap-1 cursor-pointer font-bold"
+            className="text-xs font-mono text-emerald-800 hover:text-emerald-950 dark:text-[#C6FF3D] dark:hover:text-[#d5ff6a] hover:underline flex items-center gap-1 cursor-pointer font-bold"
           >
             <span>Customize Schedule</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -562,12 +562,12 @@ export function DashboardPage() {
                   {todayPlannedWorkout.routineName}
                 </span>
                 {todayPlannedWorkout.status === 'done' ? (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-bold">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-bold">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     Completed
                   </span>
                 ) : (
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#C6FF3D]/20 text-slate-900 dark:text-[#C6FF3D] border border-[#C6FF3D]/40 text-[10px] font-mono font-bold uppercase">
+                  <span className="px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-900 dark:bg-[#C6FF3D]/20 dark:text-[#C6FF3D] border border-slate-300 dark:border-[#C6FF3D]/40 text-[10px] font-mono font-bold uppercase">
                     Planned
                   </span>
                 )}
@@ -580,7 +580,7 @@ export function DashboardPage() {
 
             <div className="flex items-center gap-3 shrink-0">
               {todayPlannedWorkout.status === 'done' ? (
-                <div className="flex items-center gap-2 text-xs font-mono text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-2.5 rounded-xl border border-emerald-300 dark:border-emerald-500/40">
+                <div className="flex items-center gap-2 text-xs font-mono text-emerald-800 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-2.5 rounded-xl border border-emerald-300 dark:border-emerald-500/40 font-bold">
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Session Logged Today</span>
                 </div>
@@ -616,7 +616,7 @@ export function DashboardPage() {
               </Link>
               <Link
                 to="/schedule"
-                className="px-4 py-2 rounded-xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] text-xs font-mono text-emerald-600 dark:text-[#C6FF3D] font-bold transition-colors"
+                className="px-4 py-2 rounded-xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] text-xs font-mono text-emerald-800 hover:text-emerald-950 dark:text-[#C6FF3D] font-bold transition-colors"
               >
                 + Schedule Workout
               </Link>
@@ -664,11 +664,11 @@ export function DashboardPage() {
               {formatWeight(weightKg, userPreferences.units)}
             </div>
             <div className="text-[11px] text-slate-500 dark:text-[#A1A1AA] mt-1 flex items-center justify-between">
-              <span className="text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-bold">Active Profile</span>
+              <span className="text-emerald-800 dark:text-emerald-400 font-mono text-[10px] font-bold">Active Profile</span>
               <button
                 type="button"
                 onClick={() => setIsLogWeightModalOpen(true)}
-                className="text-[10px] font-mono text-emerald-600 dark:text-[#C6FF3D] hover:underline cursor-pointer font-bold"
+                className="text-[10px] font-mono text-emerald-800 hover:text-emerald-950 dark:text-[#C6FF3D] hover:underline cursor-pointer font-bold"
               >
                 + Log Weight
               </button>
@@ -690,12 +690,12 @@ export function DashboardPage() {
             </div>
             <div className="text-[11px] mt-1 flex items-center gap-1.5 font-medium">
               <span
-                className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-md ${
+                className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-md font-bold ${
                   bmiCategory === 'Normal'
-                    ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400'
+                    ? 'bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-400 dark:border-transparent'
                     : bmiCategory === 'Obese'
-                    ? 'bg-rose-500/20 text-rose-700 dark:text-rose-400'
-                    : 'bg-yellow-500/20 text-yellow-800 dark:text-yellow-400'
+                    ? 'bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-500/20 dark:text-rose-400 dark:border-transparent'
+                    : 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-yellow-500/20 dark:text-yellow-400 dark:border-transparent'
                 }`}
               >
                 {bmiCategory}
@@ -775,21 +775,21 @@ export function DashboardPage() {
 
       {/* ================= REQUIREMENT 3: BADGES SECTION ================= */}
       <section className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#24242E]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200 dark:border-[#24242E]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+            <div className="w-8 h-8 rounded-xl bg-slate-200/80 dark:bg-[#24242E] flex items-center justify-center text-slate-800 dark:text-[#C6FF3D]">
               <Trophy className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+                <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                   Discipline Badges
                 </h2>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#C6FF3D]/10 text-[#C6FF3D] border border-[#C6FF3D]/30 font-bold">
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-[#C6FF3D]/10 dark:text-[#C6FF3D] dark:border-[#C6FF3D]/30 font-bold">
                   {badges.filter((b) => b.isUnlocked).length} / {badges.length} Unlocked
                 </span>
               </div>
-              <p className="text-[11px] text-[#A1A1AA]">
+              <p className="text-[11px] text-slate-500 dark:text-[#A1A1AA]">
                 Permanent milestone achievements tracked automatically across your training history.
               </p>
             </div>
@@ -797,7 +797,7 @@ export function DashboardPage() {
 
           <Link
             to="/summary"
-            className="text-xs font-mono text-[#C6FF3D] hover:underline flex items-center gap-1 cursor-pointer self-start sm:self-auto"
+            className="text-xs font-mono text-emerald-800 hover:text-emerald-950 dark:text-[#C6FF3D] hover:underline flex items-center gap-1 cursor-pointer self-start sm:self-auto font-bold"
           >
             <span>View Full Summary</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -813,28 +813,28 @@ export function DashboardPage() {
                 key={badge.id}
                 className={`p-4 rounded-3xl border transition-all duration-200 flex flex-col justify-between space-y-3 group ${
                   isUnlocked
-                    ? 'bg-[#16161D] border-[#C6FF3D]/50 shadow-md shadow-[#C6FF3D]/10 hover:border-[#C6FF3D]'
-                    : 'bg-[#121217]/60 border-[#24242E]/70 opacity-45 hover:opacity-60'
+                    ? 'bg-[#f8fafc] dark:bg-[#16161D] border-slate-200 dark:border-[#C6FF3D]/50 shadow-sm dark:shadow-md hover:border-slate-300 dark:hover:border-[#C6FF3D]'
+                    : 'bg-slate-100/60 dark:bg-[#121217]/60 border-slate-200/70 dark:border-[#24242E]/70 opacity-60 hover:opacity-80'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div
                     className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
                       isUnlocked
-                        ? 'bg-[#C6FF3D]/15 text-[#C6FF3D] border border-[#C6FF3D]/30 shadow-sm'
-                        : 'bg-[#1C1C24] text-[#71717A] border border-[#2A2A36]'
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-[#C6FF3D]/15 dark:text-[#C6FF3D] dark:border-[#C6FF3D]/30 shadow-sm'
+                        : 'bg-slate-200 text-slate-500 border border-slate-300 dark:bg-[#1C1C24] dark:text-[#71717A] dark:border-[#2A2A36]'
                     }`}
                   >
                     {renderBadgeIcon(badge.iconName)}
                   </div>
 
                   {isUnlocked ? (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-800 font-bold bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300 dark:text-emerald-400 dark:bg-emerald-500/10 dark:border-emerald-500/30">
                       <CheckCircle2 className="w-3 h-3" />
                       Unlocked
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#71717A] bg-[#16161D] px-2 py-0.5 rounded-full border border-[#24242E]">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-mono text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-full border border-slate-300 dark:text-[#71717A] dark:bg-[#16161D] dark:border-[#24242E]">
                       <Lock className="w-3 h-3" />
                       Locked
                     </span>
@@ -844,23 +844,23 @@ export function DashboardPage() {
                 <div className="space-y-1">
                   <h3
                     className={`font-heading text-sm font-bold uppercase tracking-wide transition-colors ${
-                      isUnlocked ? 'text-[#F4F4F6] group-hover:text-[#C6FF3D]' : 'text-[#71717A]'
+                      isUnlocked ? 'text-slate-900 group-hover:text-emerald-800 dark:text-[#F4F4F6] dark:group-hover:text-[#C6FF3D]' : 'text-slate-500 dark:text-[#71717A]'
                     }`}
                   >
                     {badge.title}
                   </h3>
-                  <p className="text-[11px] text-[#A1A1AA] line-clamp-2 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 dark:text-[#A1A1AA] line-clamp-2 leading-relaxed">
                     {badge.description}
                   </p>
                 </div>
 
-                <div className="pt-2 border-t border-[#24242E]/60 text-[10px] font-mono">
+                <div className="pt-2 border-t border-slate-200 dark:border-[#24242E]/60 text-[10px] font-mono">
                   {isUnlocked && badge.unlockedAt ? (
-                    <span className="text-[#C6FF3D] font-medium">
+                    <span className="text-emerald-800 dark:text-[#C6FF3D] font-medium">
                       Unlocked {new Date(badge.unlockedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     </span>
                   ) : (
-                    <span className="text-[#71717A]">{badge.requirement}</span>
+                    <span className="text-slate-500 dark:text-[#71717A]">{badge.requirement}</span>
                   )}
                 </div>
               </div>
@@ -871,15 +871,15 @@ export function DashboardPage() {
 
       {/* ================= WORKOUT HISTORY OR EMPTY STATE ================= */}
       {hasNoWorkouts ? (
-        <section className="p-8 sm:p-12 bg-[#16161D] rounded-3xl border border-[#24242E] text-center space-y-4">
-          <div className="w-16 h-16 rounded-3xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D] mx-auto shadow-lg shadow-[#C6FF3D]/5">
+        <section className="p-8 sm:p-12 bg-[#f8fafc] dark:bg-[#16161D] rounded-3xl border border-slate-200 dark:border-[#24242E] text-center space-y-4 shadow-sm">
+          <div className="w-16 h-16 rounded-3xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-800 dark:bg-[#C6FF3D]/10 dark:border-[#C6FF3D]/30 dark:text-[#C6FF3D] mx-auto shadow-sm">
             <Trophy className="w-8 h-8" />
           </div>
           <div className="space-y-1.5 max-w-md mx-auto">
-            <h3 className="font-heading text-xl sm:text-2xl font-bold text-[#F4F4F6]">
+            <h3 className="font-heading text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#F4F4F6]">
               No workouts recorded yet
             </h3>
-            <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A1A1AA] leading-relaxed">
               Kickstart your training journey! Choose a routine customized to your experience level, record your completed sets, and watch your progress stats populate.
             </p>
           </div>
@@ -887,7 +887,7 @@ export function DashboardPage() {
             <button
               type="button"
               onClick={() => navigate('/recommender')}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-md shadow-[#C6FF3D]/20 cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-sm cursor-pointer"
             >
               <PlusCircle className="w-4 h-4 stroke-[2.5]" />
               <span>Start Workout Now</span>
@@ -899,14 +899,14 @@ export function DashboardPage() {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#C6FF3D]" />
-              <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+              <Clock className="w-4 h-4 text-emerald-700 dark:text-[#C6FF3D]" />
+              <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                 Recent Sessions
               </h2>
             </div>
             <Link
               to="/history"
-              className="text-xs font-mono text-[#C6FF3D] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono text-emerald-800 hover:text-emerald-950 dark:text-[#C6FF3D] hover:underline flex items-center gap-1 cursor-pointer font-bold"
             >
               <span>View All History</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -917,12 +917,12 @@ export function DashboardPage() {
             {userRecords.slice(0, 3).map((record) => (
               <div
                 key={record.id}
-                className="p-4 rounded-2xl bg-[#16161D] border border-[#24242E] hover:border-[#2E2E3C] transition-all space-y-2.5"
+                className="p-4 rounded-2xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#2E2E3C] transition-all space-y-2.5 shadow-sm"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="font-bold text-sm text-[#F4F4F6] truncate">{record.splitName}</h3>
-                    <p className="text-[11px] font-mono text-[#A1A1AA]">
+                    <h3 className="font-bold text-sm text-slate-900 dark:text-[#F4F4F6] truncate">{record.splitName}</h3>
+                    <p className="text-[11px] font-mono text-slate-500 dark:text-[#A1A1AA]">
                       {new Date(record.date).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
@@ -930,24 +930,24 @@ export function DashboardPage() {
                       })}
                     </p>
                   </div>
-                  <span className="text-[10px] font-mono uppercase bg-[#C6FF3D]/10 text-[#C6FF3D] px-2 py-0.5 rounded-md font-bold">
+                  <span className="text-[10px] font-mono uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-[#C6FF3D]/10 dark:text-[#C6FF3D] dark:border-transparent px-2 py-0.5 rounded-md font-bold">
                     {record.caloriesBurned} kcal
                   </span>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs text-[#A1A1AA] pt-1 border-t border-[#24242E]/60">
+                <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-[#A1A1AA] pt-1 border-t border-slate-200 dark:border-[#24242E]/60">
                   <span className="flex items-center gap-1 font-mono">
-                    <Clock className="w-3.5 h-3.5 text-[#A1A1AA]" />
+                    <Clock className="w-3.5 h-3.5 text-slate-400 dark:text-[#A1A1AA]" />
                     {record.durationMinutes} min
                   </span>
                   <span className="flex items-center gap-1 font-mono">
-                    <Dumbbell className="w-3.5 h-3.5 text-[#A1A1AA]" />
+                    <Dumbbell className="w-3.5 h-3.5 text-slate-400 dark:text-[#A1A1AA]" />
                     {record.exercisesCompleted}/{record.totalExercises} exercises
                   </span>
                 </div>
 
                 {record.notes && (
-                  <p className="text-[11px] text-[#71717A] italic truncate">
+                  <p className="text-[11px] text-slate-600 dark:text-[#71717A] italic truncate">
                     "{record.notes}"
                   </p>
                 )}

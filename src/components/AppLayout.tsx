@@ -269,14 +269,14 @@ export function AppLayout() {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center transition-all duration-200 group rounded-2xl text-sm font-semibold ${
+                    `flex items-center transition-all duration-200 group rounded-2xl text-sm ${
                       isCollapsed
                         ? 'w-11 h-11 justify-center'
                         : 'w-full gap-3 px-3.5 py-2.5'
                     } ${
                       isActive
-                        ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-md shadow-[#C6FF3D]/15 font-bold'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E]/50'
+                        ? 'bg-slate-300 text-slate-900 font-semibold border-l-4 border-slate-700 shadow-sm dark:border-transparent dark:bg-[#C6FF3D] dark:text-[#0B0B0F] dark:font-bold dark:shadow-md dark:shadow-[#C6FF3D]/15'
+                        : 'border-l-4 border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 font-semibold dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E]/50'
                     }`
                   }
                 >
@@ -285,7 +285,7 @@ export function AppLayout() {
                       <Icon
                         className={`w-5 h-5 shrink-0 transition-transform group-hover:scale-105 ${
                           isActive
-                            ? 'text-[#0B0B0F] stroke-[2.5]'
+                            ? 'text-slate-900 stroke-[2.5] dark:text-[#0B0B0F]'
                             : 'text-slate-500 group-hover:text-slate-900 dark:text-[#A1A1AA] dark:group-hover:text-[#F4F4F6]'
                         }`}
                       />
@@ -293,7 +293,7 @@ export function AppLayout() {
                         <>
                           <span className="tracking-wide truncate">{item.name}</span>
                           {isActive && (
-                            <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#0B0B0F]" />
+                            <span className="ml-auto w-1.5 h-1.5 rounded-full bg-slate-800 dark:bg-[#0B0B0F]" />
                           )}
                         </>
                       )}
@@ -442,20 +442,20 @@ export function AppLayout() {
       )}
 
       <aside
-        className={`md:hidden fixed top-0 bottom-0 left-0 w-72 max-w-[85vw] bg-[#16161D] border-r border-[#24242E] z-50 flex flex-col transition-transform duration-200 ease-in-out ${
+        className={`md:hidden fixed top-0 bottom-0 left-0 w-72 max-w-[85vw] bg-[#f8fafc] dark:bg-[#16161D] border-r border-slate-200 dark:border-[#24242E] z-50 flex flex-col transition-transform duration-200 ease-in-out ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         aria-label="Mobile Navigation Drawer"
       >
         {/* Drawer Header */}
-        <div className="p-4 border-b border-[#24242E] flex items-center justify-between">
+        <div className="p-4 border-b border-slate-200 dark:border-[#24242E] flex items-center justify-between">
           <div className="flex flex-col gap-0.5">
             <img
               src="/assets/aistudio/fitforge-logo_28ede239.svg"
               alt="FitForge"
               className="h-7 w-auto object-contain object-left"
             />
-            <span className="text-[9px] font-mono uppercase tracking-widest text-[#A1A1AA]">
+            <span className="text-[9px] font-mono uppercase tracking-widest text-slate-500 dark:text-[#A1A1AA]">
               Workout Recommender
             </span>
           </div>
@@ -463,7 +463,7 @@ export function AppLayout() {
             type="button"
             onClick={() => setIsMobileOpen(false)}
             aria-label="Close navigation menu"
-            className="p-2 rounded-xl border border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#24242E] transition-colors"
+            className="p-2 rounded-xl border border-slate-200 dark:border-[#24242E] text-slate-500 hover:text-slate-900 hover:bg-slate-200 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -471,7 +471,7 @@ export function AppLayout() {
 
         {/* Drawer Navigation Links */}
         <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto" aria-label="Mobile Drawer Navigation">
-          <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
+          <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-[#A1A1AA]">
             Navigation
           </div>
           {NAV_ITEMS.map((item) => {
@@ -482,10 +482,10 @@ export function AppLayout() {
                 to={item.path}
                 onClick={() => setIsMobileOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 ${
+                  `flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm transition-all duration-200 ${
                     isActive
-                      ? 'bg-[#C6FF3D] text-[#0B0B0F] shadow-md shadow-[#C6FF3D]/15'
-                      : 'text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#24242E]/50'
+                      ? 'bg-slate-300 text-slate-900 font-semibold border-l-4 border-slate-700 shadow-sm dark:border-transparent dark:bg-[#C6FF3D] dark:text-[#0B0B0F] dark:font-bold dark:shadow-md dark:shadow-[#C6FF3D]/15'
+                      : 'border-l-4 border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 font-semibold dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E]/50'
                   }`
                 }
               >
@@ -493,12 +493,12 @@ export function AppLayout() {
                   <>
                     <Icon
                       className={`w-5 h-5 ${
-                        isActive ? 'text-[#0B0B0F] stroke-[2.5]' : 'text-[#A1A1AA]'
+                        isActive ? 'text-slate-900 stroke-[2.5] dark:text-[#0B0B0F]' : 'text-slate-500 dark:text-[#A1A1AA]'
                       }`}
                     />
                     <span className="tracking-wide">{item.name}</span>
                     {isActive && (
-                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#0B0B0F]" />
+                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-slate-800 dark:bg-[#0B0B0F]" />
                     )}
                   </>
                 )}
@@ -508,20 +508,20 @@ export function AppLayout() {
         </nav>
 
         {/* Drawer User Card & Logout */}
-        <div className="p-4 border-t border-[#24242E] bg-[#16161D]">
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#0B0B0F] border border-[#24242E] mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D] font-bold font-heading text-lg shrink-0">
+        <div className="p-4 border-t border-slate-200 dark:border-[#24242E] bg-[#f8fafc] dark:bg-[#16161D]">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-100 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] mb-3">
+            <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-[#24242E] flex items-center justify-center text-slate-800 dark:text-[#C6FF3D] font-bold font-heading text-lg shrink-0">
               {username.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-bold text-[#F4F4F6] truncate">
+              <div className="text-sm font-bold text-slate-900 dark:text-[#F4F4F6] truncate">
                 {displayName}
               </div>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] font-mono uppercase text-[#C6FF3D] bg-[#C6FF3D]/10 px-1.5 py-0.5 rounded-md">
+                <span className="text-[10px] font-mono uppercase text-emerald-800 bg-emerald-100 dark:text-[#C6FF3D] dark:bg-[#C6FF3D]/10 px-1.5 py-0.5 rounded-md font-bold">
                   {level}
                 </span>
-                <span className="text-[11px] text-[#A1A1AA] truncate">@{username}</span>
+                <span className="text-[11px] text-slate-500 dark:text-[#A1A1AA] truncate">@{username}</span>
               </div>
             </div>
           </div>
@@ -532,7 +532,7 @@ export function AppLayout() {
               setIsMobileOpen(false);
               handleLogout();
             }}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-[#24242E] text-rose-400 hover:text-white hover:bg-rose-950/40 hover:border-rose-500/40 transition-colors text-xs font-semibold cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-[#24242E] text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:text-rose-400 dark:hover:text-white dark:hover:bg-rose-950/40 dark:hover:border-rose-500/40 transition-colors text-xs font-semibold cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Log out</span>
@@ -541,14 +541,14 @@ export function AppLayout() {
       </aside>
 
       {/* ================= MOBILE TOP HEADER (Requirement 6) ================= */}
-      <header className="md:hidden sticky top-0 z-30 bg-[#16161D]/95 backdrop-blur-md border-b border-[#24242E] px-4 py-3 flex items-center justify-between">
+      <header className="md:hidden sticky top-0 z-30 bg-[#f8fafc]/95 dark:bg-[#16161D]/95 backdrop-blur-md border-b border-slate-200 dark:border-[#24242E] px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           {/* Menu button to slide in sidebar overlay */}
           <button
             type="button"
             onClick={() => setIsMobileOpen(true)}
             aria-label="Open navigation menu"
-            className="p-2 rounded-xl border border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] hover:bg-[#24242E]/50 transition-colors cursor-pointer"
+            className="p-2 rounded-xl border border-slate-200 dark:border-[#24242E] text-slate-500 hover:text-slate-900 hover:bg-slate-200/50 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] dark:hover:bg-[#24242E]/50 transition-colors cursor-pointer"
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -560,8 +560,8 @@ export function AppLayout() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#0B0B0F] border border-[#24242E] text-xs font-medium text-[#F4F4F6]">
-            <UserIcon className="w-3.5 h-3.5 text-[#C6FF3D]" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-xs font-medium text-slate-900 dark:text-[#F4F4F6]">
+            <UserIcon className="w-3.5 h-3.5 text-emerald-700 dark:text-[#C6FF3D]" />
             <span className="max-w-[90px] truncate">{username}</span>
           </div>
           <button
@@ -569,7 +569,7 @@ export function AppLayout() {
             onClick={handleLogout}
             title="Log out"
             aria-label="Log out"
-            className="p-2 rounded-xl border border-[#24242E] text-[#A1A1AA] hover:text-rose-400 hover:border-rose-500/40 transition-colors cursor-pointer"
+            className="p-2 rounded-xl border border-slate-200 dark:border-[#24242E] text-slate-500 hover:text-rose-600 hover:border-rose-300 dark:text-[#A1A1AA] dark:hover:text-rose-400 dark:hover:border-rose-500/40 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -587,9 +587,9 @@ export function AppLayout() {
         </div>
 
         {/* Footer Disclaimer on every page */}
-        <footer className="mt-auto border-t border-[#24242E] bg-[#0B0B0F] px-4 py-4 md:py-6 text-center text-xs text-[#A1A1AA]">
+        <footer className="mt-auto border-t border-slate-200 dark:border-[#24242E] bg-slate-100 dark:bg-[#0B0B0F] px-4 py-4 md:py-6 text-center text-xs text-slate-500 dark:text-[#A1A1AA]">
           <div className="max-w-4xl mx-auto flex items-center justify-center gap-2 leading-relaxed">
-            <ShieldAlert className="w-4 h-4 text-[#C6FF3D] shrink-0" />
+            <ShieldAlert className="w-4 h-4 text-emerald-700 dark:text-[#C6FF3D] shrink-0" />
             <span>
               These routines are general guides for healthy individuals and do not replace professional medical advice.
             </span>
@@ -599,7 +599,7 @@ export function AppLayout() {
 
       {/* ================= MOBILE BOTTOM TAB BAR ================= */}
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#16161D]/95 backdrop-blur-lg border-t border-[#24242E] px-2 py-2 flex items-center justify-around"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#f8fafc]/95 dark:bg-[#16161D]/95 backdrop-blur-lg border-t border-slate-200 dark:border-[#24242E] px-2 py-2 flex items-center justify-around"
         aria-label="Mobile Navigation"
       >
         {NAV_ITEMS.map((item) => {
@@ -611,8 +611,8 @@ export function AppLayout() {
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all duration-150 min-w-[52px] ${
                   isActive
-                    ? 'text-[#C6FF3D]'
-                    : 'text-[#A1A1AA] hover:text-[#F4F4F6]'
+                    ? 'text-slate-900 dark:text-[#C6FF3D]'
+                    : 'text-slate-500 hover:text-slate-900 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6]'
                 }`
               }
             >

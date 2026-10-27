@@ -166,6 +166,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   // ================= STOPWATCH TIMER =================
   const [stopwatchSeconds, setStopwatchSeconds] = useState<number>(0);
   const [isStopwatchRunning, setIsStopwatchRunning] = useState<boolean>(false);
+  const [isMainTimerStarted, setIsMainTimerStarted] = useState<boolean>(false);
   const stopwatchIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // ================= WORK PHASE COUNTDOWN TIMER =================
@@ -209,6 +210,11 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   // Calculate total workout sets & completed sets
   const totalWorkoutSets = useMemo(() => {
     return exercises.reduce((acc, ex) => acc + (ex.sets || ex.defaultSets || 3), 0) || 15;
+  }, [exercises]);
+
+  const maxRounds = useMemo(() => {
+    if (!exercises || exercises.length === 0) return 3;
+    return Math.max(...exercises.map((ex) => ex.sets || ex.defaultSets || 3), 3);
   }, [exercises]);
 
   const totalCompletedSets = useMemo(() => {
@@ -301,11 +307,12 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     setSessionState('ready');
     setPhase('work');
     setIsPaused(false);
+    setIsMainTimerStarted(false);
   }, [selectedSplit]);
 
   // ================= 1. SESSION STOPWATCH INTERVAL =================
   useEffect(() => {
-    if (isStopwatchRunning && !isPaused && sessionState === 'guided') {
+    if (isStopwatchRunning && !isPaused && sessionState === 'guided' && isMainTimerStarted) {
       if (stopwatchIntervalRef.current) {
         clearInterval(stopwatchIntervalRef.current);
       }
@@ -325,7 +332,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         stopwatchIntervalRef.current = null;
       }
     };
-  }, [isStopwatchRunning, isPaused, sessionState]);
+  }, [isStopwatchRunning, isPaused, sessionState, isMainTimerStarted]);
 
   // ================= PER-SET LOGGING & PROGRESS TRACKING =================
   const [setLogManager] = useState(() => new SetLogManager());
@@ -441,7 +448,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   };
 
   useEffect(() => {
-    if (sessionState === 'guided' && phase === 'work' && !isPaused) {
+    if (sessionState === 'guided' && phase === 'work' && !isPaused && isMainTimerStarted) {
       if (workIntervalRef.current) {
         clearInterval(workIntervalRef.current);
       }
@@ -476,7 +483,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
         workIntervalRef.current = null;
       }
     };
-  }, [sessionState, phase, isPaused, userPreferences.soundEnabled]);
+  }, [sessionState, phase, isPaused, isMainTimerStarted, userPreferences.soundEnabled]);
 
   // ================= 3. REST PHASE TIMER =================
   useEffect(() => {
@@ -577,27 +584,40 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     };
   }, [sessionState, phase, isPaused, userPreferences.soundEnabled]);
 
-  // ================= ADVANCING SETS & EXERCISES =================
-  const advanceToNextSet = () => {
-    const currentEx = exercises[currentExerciseIndex];
-    const totalSets = currentEx?.sets || currentEx?.defaultSets || 3;
+  // ================= ADVANCING SETS & EXERCISES (CIRCUIT ROTATION) =================
+  // Finds the next exercise index in circuit rotation that still has incomplete sets
+  const getNextExerciseInRotation = (
+    fromIndex: number,
+    completedSets: number[] = completedSetsByExercise
+  ): { nextIndex: number; nextSetNumber: number } | null => {
+    const totalExercises = exercises.length;
+    if (totalExercises === 0) return null;
 
-    if (currentSetIndex < totalSets) {
-      // Advance to next set of same exercise
-      const nextSet = currentSetIndex + 1;
-      setCurrentSetIndex(nextSet);
-      startWorkPhase(currentExerciseIndex, nextSet);
-    } else {
-      // Advance to next exercise
-      if (currentExerciseIndex < exercises.length - 1) {
-        const nextExIdx = currentExerciseIndex + 1;
-        setCurrentExerciseIndex(nextExIdx);
-        setCurrentSetIndex(1);
-        startWorkPhase(nextExIdx, 1);
-      } else {
-        // All exercises completed!
-        handleCompleteWorkout();
+    for (let step = 1; step <= totalExercises; step++) {
+      const candidateIndex = (fromIndex + step) % totalExercises;
+      const candidateEx = exercises[candidateIndex];
+      const requiredSets = candidateEx?.sets || candidateEx?.defaultSets || 3;
+      const doneSets = completedSets[candidateIndex] || 0;
+
+      if (doneSets < requiredSets) {
+        return {
+          nextIndex: candidateIndex,
+          nextSetNumber: doneSets + 1,
+        };
       }
+    }
+    return null;
+  };
+
+  const advanceToNextSet = () => {
+    const next = getNextExerciseInRotation(currentExerciseIndex);
+    if (next) {
+      setCurrentExerciseIndex(next.nextIndex);
+      setCurrentSetIndex(next.nextSetNumber);
+      startWorkPhase(next.nextIndex, next.nextSetNumber);
+    } else {
+      // All exercises completed!
+      handleCompleteWorkout();
     }
   };
 
@@ -612,11 +632,20 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     }
     setIsWarmupTimerRunning(false);
     setSessionState('guided');
-    setIsStopwatchRunning(true);
+    setIsStopwatchRunning(false);
+    setIsMainTimerStarted(false);
     setIsPaused(false);
     setCurrentExerciseIndex(0);
     setCurrentSetIndex(1);
     startWorkPhase(0, 1);
+  };
+
+  const handleStartMainTimer = () => {
+    if (userPreferences.soundEnabled && !sounds.muted) {
+      sounds.playTick();
+    }
+    setIsMainTimerStarted(true);
+    setIsStopwatchRunning(true);
   };
 
   // 1. Start Workout from Ready screen (triggers Warm-up unless skipped for session)
@@ -767,21 +796,21 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     }
 
     // Record set completion
-    setCompletedSetsByExercise((prev) => {
-      const updated = [...prev];
-      updated[currentExerciseIndex] = Math.min(
-        currentExTotalSets,
-        (updated[currentExerciseIndex] || 0) + 1
-      );
-      return updated;
+    const nextCompletedSets = [...completedSetsByExercise];
+    nextCompletedSets[currentExerciseIndex] = Math.min(
+      currentExTotalSets,
+      (nextCompletedSets[currentExerciseIndex] || 0) + 1
+    );
+    setCompletedSetsByExercise(nextCompletedSets);
+
+    // Check if every exercise has completed all of its sets
+    const isAllExercisesDone = exercises.every((ex, idx) => {
+      const required = ex.sets || ex.defaultSets || 3;
+      return (nextCompletedSets[idx] || 0) >= required;
     });
 
-    // Check if this was the last set of the last exercise (Exercise 5, last set)
-    const isFinalSetOfFinalExercise =
-      currentExerciseIndex === exercises.length - 1 && currentSetIndex >= currentExTotalSets;
-
-    if (isFinalSetOfFinalExercise) {
-      // Requirement 6: After the last set of the last exercise, skip the rest and show the Finish and Save screen
+    if (isAllExercisesDone) {
+      // After every exercise has finished all of its sets, finish workout
       handleCompleteWorkout();
     } else {
       // Automatically transition to rest phase
@@ -824,16 +853,21 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     if (restIntervalRef.current) clearInterval(restIntervalRef.current);
     if (getReadyIntervalRef.current) clearInterval(getReadyIntervalRef.current);
 
-    if (currentSetIndex > 1) {
-      const prevSet = currentSetIndex - 1;
-      setCurrentSetIndex(prevSet);
-      startWorkPhase(currentExerciseIndex, prevSet);
-    } else if (currentExerciseIndex > 0) {
-      const prevExIdx = currentExerciseIndex - 1;
-      const prevExSets = exercises[prevExIdx].sets || exercises[prevExIdx].defaultSets || 3;
-      setCurrentExerciseIndex(prevExIdx);
-      setCurrentSetIndex(prevExSets);
-      startWorkPhase(prevExIdx, prevExSets);
+    const totalExercises = exercises.length;
+    for (let step = 1; step <= totalExercises; step++) {
+      const prevIdx = (currentExerciseIndex - step + totalExercises) % totalExercises;
+      const doneSets = completedSetsByExercise[prevIdx] || 0;
+      if (doneSets > 0) {
+        setCompletedSetsByExercise((prev) => {
+          const updated = [...prev];
+          updated[prevIdx] = Math.max(0, doneSets - 1);
+          return updated;
+        });
+        setCurrentExerciseIndex(prevIdx);
+        setCurrentSetIndex(doneSets);
+        startWorkPhase(prevIdx, doneSets);
+        return;
+      }
     }
   };
 
@@ -848,13 +882,13 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
     if (getReadyIntervalRef.current) clearInterval(getReadyIntervalRef.current);
     if (workIntervalRef.current) clearInterval(workIntervalRef.current);
 
-    if (currentExerciseIndex < exercises.length - 1) {
-      const nextExIdx = currentExerciseIndex + 1;
-      setCurrentExerciseIndex(nextExIdx);
-      setCurrentSetIndex(1);
-      startWorkPhase(nextExIdx, 1);
+    const next = getNextExerciseInRotation(currentExerciseIndex);
+    if (next) {
+      setCurrentExerciseIndex(next.nextIndex);
+      setCurrentSetIndex(next.nextSetNumber);
+      startWorkPhase(next.nextIndex, next.nextSetNumber);
     } else {
-      // On last exercise, skip triggers finish
+      // If no incomplete exercises remain, triggers finish
       handleCompleteWorkout();
     }
   };
@@ -956,6 +990,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   const handleConfirmQuit = () => {
     setIsStopwatchRunning(false);
     setIsPaused(false);
+    setIsMainTimerStarted(false);
     setStopwatchSeconds(0);
     setSessionState('ready');
     setPhase('work');
@@ -1038,16 +1073,14 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
   // Next up preview calculation for Guided View
   const nextUpPreview = useMemo(() => {
     if (!currentExercise) return null;
-    if (currentSetIndex < currentExTotalSets) {
-      return `Next up: Set ${currentSetIndex + 1} of ${currentExTotalSets} (${currentExercise.name})`;
-    }
-    if (currentExerciseIndex < exercises.length - 1) {
-      const nextEx = exercises[currentExerciseIndex + 1];
+    const next = getNextExerciseInRotation(currentExerciseIndex);
+    if (next) {
+      const nextEx = exercises[next.nextIndex];
       const nextSets = nextEx.sets || nextEx.defaultSets || 3;
-      return `Next up: Exercise ${currentExerciseIndex + 2} — ${nextEx.name} (Set 1 of ${nextSets})`;
+      return `Next up: Exercise ${next.nextIndex + 1} — ${nextEx.name} (Set ${next.nextSetNumber} of ${nextSets})`;
     }
     return 'Next up: Finish & Save Workout 🏆';
-  }, [currentExercise, currentSetIndex, currentExTotalSets, currentExerciseIndex, exercises]);
+  }, [currentExercise, currentExerciseIndex, exercises, completedSetsByExercise]);
 
   // SVG circular calculations
   const ringRadius = 58;
@@ -1698,7 +1731,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
               )}
             </div>
             <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-0.5">
-              Exercise {currentExerciseIndex + 1} of 5 · Set {currentSetIndex} of {currentExTotalSets}
+              Exercise {currentExerciseIndex + 1} of 5 · Set {currentSetIndex} of {currentExTotalSets} · Round {currentSetIndex} of {maxRounds}
             </p>
           </div>
         </div>
@@ -1885,9 +1918,14 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                 <span>{isGuidePanelOpen ? 'Hide Guide' : 'How to'}</span>
               </button>
 
-              {/* Set Indicator Pill */}
-              <div className="px-3 py-1 rounded-xl bg-lime-500/15 border border-lime-500/30 text-lime-800 dark:bg-[#C6FF3D]/15 dark:border-[#C6FF3D]/30 dark:text-[#C6FF3D] text-xs font-mono font-bold">
-                Set {currentSetIndex} of {currentExTotalSets}
+              {/* Set & Round Indicator Pills */}
+              <div className="flex items-center gap-1.5">
+                <div className="px-3 py-1 rounded-xl bg-lime-500/15 border border-lime-500/30 text-lime-800 dark:bg-[#C6FF3D]/15 dark:border-[#C6FF3D]/30 dark:text-[#C6FF3D] text-xs font-mono font-bold">
+                  Set {currentSetIndex} of {currentExTotalSets}
+                </div>
+                <div className="px-2.5 py-1 rounded-xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-slate-600 dark:text-[#A1A1AA] text-xs font-mono">
+                  Round {currentSetIndex} of {maxRounds}
+                </div>
               </div>
             </div>
           </div>
@@ -2029,7 +2067,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     {workRemaining > 0 ? `${workRemaining}s` : '0s'}
                   </span>
                   <span className="text-[10px] font-mono uppercase tracking-widest text-lime-700 dark:text-[#C6FF3D] mt-1 font-bold">
-                    {workRemaining > 0 ? 'Work Phase' : 'Set Complete'}
+                    {!isMainTimerStarted ? 'Paused' : workRemaining > 0 ? 'Work Phase' : 'Set Complete'}
                   </span>
                 </div>
               </div>
@@ -2041,10 +2079,12 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     Suggested Pace: {currentExReps} reps × {secondsPerRep}s = {workTotalDuration}s
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 dark:text-[#F4F4F6] mt-0.5">
-                    Execute Set {currentSetIndex} of {currentExTotalSets} with controlled tempo
+                    Execute Set {currentSetIndex} of {currentExTotalSets} (Round {currentSetIndex} of {maxRounds}) with controlled tempo
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-1">
-                    {workRemaining > 0
+                    {!isMainTimerStarted
+                      ? 'Timer is paused. Press "Start Timer" when you are ready to begin Set 1.'
+                      : workRemaining > 0
                       ? 'Confirm your weight and reps below, then press "I\'m done" when complete.'
                       : 'Countdown finished! Confirm your weight and reps, then press "I\'m done" to rest.'}
                   </p>
@@ -2175,22 +2215,33 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                   </div>
                 </div>
 
-                {/* Primary "I'm Done" Button (Requirement 3) */}
-                <button
-                  type="button"
-                  onClick={handleSetDone}
-                  disabled={isPaused || !!weightError || !!repsError}
-                  className={`w-full sm:w-auto px-8 py-4 rounded-2xl font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm ${
-                    weightError || repsError
-                      ? 'bg-slate-200 text-slate-400 dark:bg-gray-800 dark:text-gray-500 cursor-not-allowed'
-                      : workRemaining === 0
-                      ? 'bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 ring-4 ring-slate-300/40 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] dark:shadow-xl dark:shadow-[#C6FF3D]/25 dark:ring-[#C6FF3D]/30 animate-pulse'
-                      : 'bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] dark:shadow-xl dark:shadow-[#C6FF3D]/15'
-                  } disabled:opacity-50`}
-                >
-                  <Check className="w-5 h-5 stroke-[3]" />
-                  <span>I'm Done (Log Set {currentSetIndex})</span>
-                </button>
+                {/* Primary Action Button: Start Timer or I'm Done */}
+                {!isMainTimerStarted ? (
+                  <button
+                    type="button"
+                    onClick={handleStartMainTimer}
+                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm dark:shadow-xl dark:shadow-[#C6FF3D]/15 active:scale-95"
+                  >
+                    <Play className="w-5 h-5 fill-current" />
+                    <span>Start Timer</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleSetDone}
+                    disabled={isPaused || !!weightError || !!repsError}
+                    className={`w-full sm:w-auto px-8 py-4 rounded-2xl font-heading font-black text-lg uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm ${
+                      weightError || repsError
+                        ? 'bg-slate-200 text-slate-400 dark:bg-gray-800 dark:text-gray-500 cursor-not-allowed'
+                        : workRemaining === 0
+                        ? 'bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 ring-4 ring-slate-300/40 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] dark:shadow-xl dark:shadow-[#C6FF3D]/25 dark:ring-[#C6FF3D]/30 animate-pulse'
+                        : 'bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d4ff66] dark:text-[#0B0B0F] dark:shadow-xl dark:shadow-[#C6FF3D]/15'
+                    } disabled:opacity-50`}
+                  >
+                    <Check className="w-5 h-5 stroke-[3]" />
+                    <span>I'm Done (Log Set {currentSetIndex})</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -2246,7 +2297,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                     Hydrate & prepare for the next effort
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-[#A1A1AA] mt-1">
-                    Resting after Set {currentSetIndex}. Next set starts automatically with a 3-second ready cue.
+                    Resting after {currentExercise.name} (Set {currentSetIndex} of {currentExTotalSets}). Next set starts automatically with a 3-second ready cue.
                   </p>
                 </div>
 
@@ -2319,7 +2370,7 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
           <button
             type="button"
             onClick={handlePreviousSet}
-            disabled={currentExerciseIndex === 0 && currentSetIndex === 1}
+            disabled={totalCompletedSets === 0}
             className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-600 hover:text-slate-900 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -2458,6 +2509,8 @@ export const LiveTrackerView: React.FC<LiveTrackerViewProps> = ({
                         ? 'Completed'
                         : isCurrent
                         ? `Set ${currentSetIndex}/${setsRequired}`
+                        : setsDone > 0
+                        ? `Set ${setsDone + 1}/${setsRequired}`
                         : 'Pending'}
                     </span>
                   </div>

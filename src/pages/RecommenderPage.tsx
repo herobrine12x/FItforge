@@ -455,16 +455,16 @@ export function RecommenderPage() {
       {/* ================= 5 EXERCISE CARDS OR FRIENDLY EMPTY STATE ================= */}
       {exercises.length === 0 ? (
         /* Requirement 8: Friendly message and suggest another split when no exercises match */
-        <section className="p-8 sm:p-12 rounded-3xl bg-[#16161D] border border-amber-500/40 text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-3xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto">
+        <section className="p-8 sm:p-12 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-amber-300 dark:border-amber-500/40 text-center space-y-6 shadow-sm dark:shadow-2xl">
+          <div className="w-16 h-16 rounded-3xl bg-amber-500/15 border border-amber-500/30 text-amber-500 dark:text-amber-400 flex items-center justify-center mx-auto">
             <AlertCircle className="w-8 h-8" />
           </div>
 
           <div className="max-w-lg mx-auto space-y-2">
-            <h3 className="font-heading text-2xl font-black uppercase text-[#F4F4F6]">
+            <h3 className="font-heading text-2xl font-black uppercase text-slate-900 dark:text-[#F4F4F6]">
               No exercises match your equipment for {workoutPlan.name}
             </h3>
-            <p className="text-sm text-[#A1A1AA] leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-[#A1A1AA] leading-relaxed">
               Pull movements generally require resistance equipment like dumbbells, a barbell, cables, or machines. Because your profile is set to Bodyweight only, no exercises in the {workoutPlan.name} split match.
             </p>
           </div>
@@ -473,7 +473,7 @@ export function RecommenderPage() {
             <button
               type="button"
               onClick={() => handleSplitChange('full_body')}
-              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-md shadow-[#C6FF3D]/20 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-sm dark:shadow-md dark:shadow-[#C6FF3D]/20 cursor-pointer flex items-center justify-center gap-2"
             >
               <Layers className="w-4 h-4" />
               <span>Switch to Full Body</span>
@@ -482,13 +482,13 @@ export function RecommenderPage() {
             <button
               type="button"
               onClick={() => handleSplitChange('legs_core')}
-              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] font-heading font-black uppercase tracking-wider text-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-slate-200 hover:bg-slate-300 text-slate-800 dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6] font-heading font-black uppercase tracking-wider text-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
             >
               <span>Switch to Legs & Core</span>
             </button>
           </div>
 
-          <div className="pt-4 border-t border-[#24242E] text-xs text-[#A1A1AA]">
+          <div className="pt-4 border-t border-slate-200 dark:border-[#24242E] text-xs text-slate-600 dark:text-[#A1A1AA]">
             Or quick-enable dumbbells in the equipment checklist above to unlock pull exercises.
           </div>
         </section>
@@ -498,28 +498,28 @@ export function RecommenderPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-[#C6FF3D]" />
-                <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+                <Target className="w-4 h-4 text-emerald-600 dark:text-[#C6FF3D]" />
+                <h2 className="font-heading text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                   {workoutPlan.name} Routine · 5 Prescribed Exercises
                 </h2>
               </div>
               <Link
                 to="/basics"
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#C6FF3D]/10 hover:bg-[#C6FF3D]/20 text-xs font-mono text-[#C6FF3D] border border-[#C6FF3D]/30 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-[#C6FF3D]/10 hover:bg-emerald-200 dark:hover:bg-[#C6FF3D]/20 text-xs font-mono text-emerald-800 dark:text-[#C6FF3D] border border-emerald-300 dark:border-[#C6FF3D]/30 transition-colors"
                 title="Read Beginner Basics Guide"
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>Beginner Basics Guide</span>
               </Link>
             </div>
-            <div className="flex items-center gap-3 text-xs font-mono text-[#A1A1AA]">
+            <div className="flex items-center gap-3 text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
               <span className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-[#C6FF3D]" />
+                <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-[#C6FF3D]" />
                 ~45 Min Session
               </span>
               <span>·</span>
               <span className="flex items-center gap-1">
-                <Flame className="w-3.5 h-3.5 text-[#C6FF3D]" />
+                <Flame className="w-3.5 h-3.5 text-orange-500 dark:text-[#C6FF3D]" />
                 ~{estimatedCalories} kcal
               </span>
             </div>

@@ -119,7 +119,7 @@ export function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0B0F] text-[#F4F4F6] flex flex-col justify-between p-4 sm:p-6 lg:p-12 selection:bg-[#C6FF3D] selection:text-[#0B0B0F]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0B0F] text-slate-900 dark:text-[#F4F4F6] flex flex-col justify-between p-4 sm:p-6 lg:p-12 selection:bg-[#C6FF3D] selection:text-[#0B0B0F]">
       <div className="max-w-3xl w-full mx-auto my-auto">
         
         {/* Brand Header */}
@@ -179,7 +179,7 @@ export function OnboardingPage() {
         </div>
 
         {/* Onboarding Main Card */}
-        <div className="bg-[#16161D] border border-[#24242E] rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+        <div className="bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl shadow-sm dark:shadow-none p-6 sm:p-10 shadow-2xl relative overflow-hidden">
           {/* Subtle Ambient Background */}
           <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-[#C6FF3D]/5 blur-3xl pointer-events-none" />
 
@@ -190,7 +190,7 @@ export function OnboardingPage() {
                 <h2 className="font-heading text-3xl font-bold tracking-tight text-[#F4F4F6] uppercase">
                   Biometrics & Physiological Profile
                 </h2>
-                <p className="text-xs sm:text-sm text-[#A1A1AA] mt-1">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A1A1AA] mt-1">
                   These metrics calibrate your daily caloric burn calculations and safe workout loads.
                 </p>
               </div>
@@ -205,7 +205,7 @@ export function OnboardingPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Full Name */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA] mb-1.5">
                     Athlete Display Name
                   </label>
                   <input
@@ -227,7 +227,7 @@ export function OnboardingPage() {
 
                 {/* Gender */}
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA] mb-1.5">
                     Biological Gender
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -250,7 +250,7 @@ export function OnboardingPage() {
 
                 {/* Age */}
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA] mb-1.5">
                     Age (Years · 10-100)
                   </label>
                   <input
@@ -273,7 +273,7 @@ export function OnboardingPage() {
 
                 {/* Height */}
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA] mb-1.5">
                     Height (cm · 50-250)
                   </label>
                   <input
@@ -296,7 +296,7 @@ export function OnboardingPage() {
 
                 {/* Weight */}
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA] mb-1.5">
                     Body Weight (kg · 20-300)
                   </label>
                   <input
@@ -326,7 +326,7 @@ export function OnboardingPage() {
                       <Scale className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-mono uppercase tracking-wider text-[#A1A1AA]">
+                      <div className="text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA]">
                         Estimated Body Mass Index (BMI)
                       </div>
                       <div className="text-xl font-heading font-black text-[#F4F4F6]">
@@ -352,7 +352,7 @@ export function OnboardingPage() {
                 <h2 className="font-heading text-3xl font-bold tracking-tight text-[#F4F4F6] uppercase">
                   Select Training Experience
                 </h2>
-                <p className="text-xs sm:text-sm text-[#A1A1AA] mt-1">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A1A1AA] mt-1">
                   Workout splits automatically prescribe sets, rep ranges, and rest intervals calibrated to your tier.
                 </p>
               </div>
@@ -407,7 +407,7 @@ export function OnboardingPage() {
                         <div className="text-xs font-mono font-semibold text-[#C6FF3D]">
                           {tier.setsDesc}
                         </div>
-                        <p className="text-xs text-[#A1A1AA] max-w-xl leading-relaxed">
+                        <p className="text-xs text-slate-600 dark:text-[#A1A1AA] max-w-xl leading-relaxed">
                           {tier.desc}
                         </p>
                       </div>
@@ -435,14 +435,14 @@ export function OnboardingPage() {
                 <h2 className="font-heading text-3xl font-bold tracking-tight text-[#F4F4F6] uppercase">
                   Commit to Your Weekly Target
                 </h2>
-                <p className="text-xs sm:text-sm text-[#A1A1AA] mt-1">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A1A1AA] mt-1">
                   How many workout sessions do you aim to complete each week?
                 </p>
               </div>
 
               {/* Weekly Workouts Stepper */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-2">
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA] mb-2">
                   Target Workouts per Week
                 </label>
                 <div className="grid grid-cols-5 gap-2.5">
@@ -466,7 +466,7 @@ export function OnboardingPage() {
 
               {/* Primary Fitness Focus */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-2">
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA] mb-2">
                   Primary Fitness Focus
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -541,7 +541,7 @@ export function OnboardingPage() {
               <button
                 type="button"
                 onClick={handleNextStep}
-                className="py-3.5 px-7 rounded-2xl bg-[#C6FF3D] hover:bg-[#b8f52b] text-[#0B0B0F] font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-[#C6FF3D]/15 active:scale-[0.99]"
+                className="py-3.5 px-7 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#b8f52b] dark:text-[#0B0B0F] font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-[#C6FF3D]/15 active:scale-[0.99]"
               >
                 <span>Continue</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -551,7 +551,7 @@ export function OnboardingPage() {
                 type="button"
                 onClick={handleFinishOnboarding}
                 disabled={isSubmitting}
-                className="py-3.5 px-8 rounded-2xl bg-[#C6FF3D] hover:bg-[#b8f52b] text-[#0B0B0F] font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-[#C6FF3D]/15 active:scale-[0.99] disabled:opacity-50"
+                className="py-3.5 px-8 rounded-2xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#b8f52b] dark:text-[#0B0B0F] font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-[#C6FF3D]/15 active:scale-[0.99] disabled:opacity-50"
               >
                 <Sparkles className="w-4 h-4 stroke-[2.5]" />
                 <span>Launch Dashboard</span>

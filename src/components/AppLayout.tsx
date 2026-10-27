@@ -423,7 +423,7 @@ export function AppLayout() {
         <button
           type="button"
           onClick={() => setIsFocusMode(false)}
-          className="hidden md:flex fixed top-4 left-4 z-40 items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#16161D]/90 backdrop-blur-md border border-[#C6FF3D]/40 text-[#C6FF3D] hover:bg-[#24242E] text-xs font-bold font-mono shadow-2xl transition-all cursor-pointer hover:scale-105"
+          className="hidden md:flex fixed top-4 left-4 z-40 items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/90 dark:bg-[#16161D]/90 backdrop-blur-md border border-slate-300 dark:border-[#C6FF3D]/40 text-slate-800 dark:text-[#C6FF3D] hover:bg-slate-100 dark:hover:bg-[#24242E] text-xs font-bold font-mono shadow-md dark:shadow-2xl transition-all cursor-pointer hover:scale-105"
           title="Exit Focus Mode (Show Sidebar)"
           aria-label="Exit Focus Mode (Show Sidebar)"
         >
@@ -436,7 +436,7 @@ export function AppLayout() {
       {isMobileOpen && (
         <div
           onClick={() => setIsMobileOpen(false)}
-          className="md:hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-40 animate-in fade-in duration-200"
+          className="md:hidden fixed inset-0 bg-slate-900/40 dark:bg-black/75 backdrop-blur-sm z-40 animate-in fade-in duration-200"
           aria-hidden="true"
         />
       )}

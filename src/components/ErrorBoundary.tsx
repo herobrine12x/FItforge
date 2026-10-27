@@ -36,20 +36,20 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     if (this.state.hasError) {
       return (
         <div className="min-h-[420px] flex items-center justify-center p-4 sm:p-8 animate-in fade-in duration-300">
-          <div className="bg-[#16161D] border border-rose-900/60 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center space-y-6 shadow-2xl">
+          <div className="bg-white dark:bg-[#16161D] border border-rose-200 dark:border-rose-900/60 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center space-y-6 shadow-xl dark:shadow-2xl">
             <div className="w-14 h-14 rounded-2xl bg-rose-950/40 border border-rose-800/80 text-rose-400 flex items-center justify-center mx-auto">
               <AlertTriangle className="w-7 h-7" />
             </div>
 
             <div className="space-y-2">
-              <h2 className="text-xl font-heading font-black text-[#F4F4F6] uppercase tracking-wide">
+              <h2 className="text-xl font-heading font-black text-slate-900 dark:text-[#F4F4F6] uppercase tracking-wide">
                 Something Went Wrong
               </h2>
               <p className="text-xs text-[#A1A1AA] leading-relaxed">
                 An unexpected error occurred while rendering this view. You can reload the page or use the sidebar to navigate to another section.
               </p>
               {this.state.error?.message && (
-                <div className="p-3 rounded-xl bg-[#0B0B0F] border border-[#24242E] text-rose-400 font-mono text-[11px] text-left break-words max-h-28 overflow-y-auto">
+                <div className="p-3 rounded-xl bg-slate-100 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-rose-600 dark:text-rose-400 font-mono text-[11px] text-left break-words max-h-28 overflow-y-auto">
                   {this.state.error.message}
                 </div>
               )}
@@ -68,7 +68,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <button
                 type="button"
                 onClick={this.handleResetState}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-[#24242E] hover:bg-[#2E2E3C] text-[#F4F4F6] text-xs font-semibold transition-colors cursor-pointer"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-100 dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] border border-slate-200 dark:border-transparent text-slate-700 dark:text-[#F4F4F6] text-xs font-semibold transition-colors cursor-pointer"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Try Again</span>

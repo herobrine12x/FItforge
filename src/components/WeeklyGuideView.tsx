@@ -660,11 +660,11 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
       {activeView === 'month' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left: Month Calendar Grid (8 cols) */}
-          <div className="lg:col-span-8 p-6 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-5 shadow-xl">
+          <div className="lg:col-span-8 p-6 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] space-y-5 shadow-sm dark:shadow-xl">
             {/* Calendar Month Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#24242E]">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#24242E]">
               <div className="flex items-center gap-3">
-                <h2 className="font-heading text-2xl font-black uppercase text-[#F4F4F6]">
+                <h2 className="font-heading text-2xl font-black uppercase text-slate-900 dark:text-[#F4F4F6]">
                   {currentCalendarMonth.toLocaleDateString('en-US', {
                     month: 'long',
                     year: 'numeric',
@@ -677,7 +677,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     setCurrentCalendarMonth(today);
                     setSelectedCalendarDate(getTodayDateString());
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-[#0B0B0F] border border-[#24242E] text-[10px] font-mono text-[#A1A1AA] hover:text-[#C6FF3D] transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] text-[10px] font-mono text-slate-700 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#C6FF3D] hover:bg-slate-50 dark:hover:bg-[#24242E] transition-colors cursor-pointer"
                 >
                   Today
                 </button>
@@ -692,7 +692,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     prev.setMonth(prev.getMonth() - 1);
                     setCurrentCalendarMonth(prev);
                   }}
-                  className="p-2 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+                  className="p-2 rounded-xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] text-slate-700 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] transition-colors cursor-pointer"
                   aria-label="Previous Month"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -704,7 +704,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     next.setMonth(next.getMonth() + 1);
                     setCurrentCalendarMonth(next);
                   }}
-                  className="p-2 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+                  className="p-2 rounded-xl bg-white dark:bg-[#0B0B0F] hover:bg-slate-100 dark:hover:bg-[#24242E] border border-slate-200 dark:border-[#24242E] text-slate-700 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] transition-colors cursor-pointer"
                   aria-label="Next Month"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -713,7 +713,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
             </div>
 
             {/* Weekday Column Headers */}
-            <div className="grid grid-cols-7 gap-1 text-center font-mono text-xs text-[#A1A1AA] font-bold">
+            <div className="grid grid-cols-7 gap-1 text-center font-mono text-xs text-slate-600 dark:text-[#A1A1AA] font-bold">
               {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
                 <div key={d} className="py-1">
                   {d}
@@ -740,11 +740,11 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     onClick={() => setSelectedCalendarDate(cell.dateStr)}
                     className={`min-h-[64px] sm:min-h-[72px] p-1.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                       isSelected
-                        ? 'border-[#C6FF3D] bg-[#1c1c27] ring-1 ring-[#C6FF3D]/40'
+                        ? 'border-[#C6FF3D] bg-slate-100 ring-2 ring-[#C6FF3D] dark:bg-[#1c1c27] dark:ring-1 dark:ring-[#C6FF3D]/40'
                         : isToday
-                        ? 'border-[#C6FF3D]/40 bg-[#0B0B0F]'
+                        ? 'border-[#C6FF3D] ring-2 ring-[#C6FF3D] bg-white dark:bg-[#0B0B0F]'
                         : cell.isCurrentMonth
-                        ? 'border-[#24242E] bg-[#0B0B0F] hover:border-[#383848]'
+                        ? 'border-slate-200 bg-white hover:border-slate-300 dark:border-[#24242E] dark:bg-[#0B0B0F] dark:hover:border-[#383848]'
                         : 'border-transparent bg-transparent opacity-35'
                     }`}
                   >
@@ -752,18 +752,17 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                       <span
                         className={`text-xs font-mono font-bold ${
                           isToday
-                            ? 'text-[#C6FF3D]'
+                            ? 'text-slate-900 dark:text-[#C6FF3D]'
                             : cell.isCurrentMonth
-                            ? 'text-[#F4F4F6]'
-                            : 'text-[#A1A1AA]'
+                            ? 'text-slate-900 dark:text-[#F4F4F6]'
+                            : 'text-slate-400 dark:text-[#A1A1AA]'
                         }`}
                       >
                         {cell.dayNum}
                       </span>
-
                       {/* Completed Day Check Indicator */}
                       {hasDone && (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
                       )}
                     </div>
 
@@ -771,13 +770,13 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     <div className="flex flex-wrap items-center gap-1 mt-1">
                       {hasPlanned && (
                         <span
-                          className="w-2.5 h-2.5 rounded-full bg-[#C6FF3D] shadow-sm shadow-[#C6FF3D]/50"
+                          className="w-2.5 h-2.5 rounded-full bg-lime-500 dark:bg-[#C6FF3D] shadow-sm shadow-lime-500/50 dark:shadow-[#C6FF3D]/50"
                           title="Planned Workout"
                         />
                       )}
                       {hasDone && (
                         <span
-                          className="w-2.5 h-2.5 rounded-full bg-emerald-400"
+                          className="w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400"
                           title="Completed Workout"
                         />
                       )}
@@ -794,13 +793,13 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
             </div>
 
             {/* Calendar Legend */}
-            <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-[#24242E] text-xs font-mono text-[#A1A1AA]">
+            <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-slate-200 dark:border-[#24242E] text-xs font-mono text-slate-700 dark:text-[#A1A1AA]">
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#C6FF3D]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-lime-500 dark:bg-[#C6FF3D]" />
                 <span>Planned (Lime dot)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
                 <span>Completed (Green check)</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -811,11 +810,11 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
           </div>
 
           {/* Right: Selected Date Workout Details (4 cols) */}
-          <div className="lg:col-span-4 p-6 rounded-3xl bg-[#16161D] border border-[#24242E] space-y-5 shadow-xl flex flex-col justify-between">
+          <div className="lg:col-span-4 p-6 rounded-3xl bg-[#f8fafc] dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] space-y-5 shadow-sm dark:shadow-xl flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#24242E]">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#24242E]">
                 <div>
-                  <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+                  <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                     {new Date(`${selectedCalendarDate}T00:00:00`).toLocaleDateString('en-US', {
                       weekday: 'short',
                       month: 'short',
@@ -823,15 +822,14 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                       year: 'numeric',
                     })}
                   </h3>
-                  <span className="text-xs font-mono text-[#A1A1AA]">
+                  <span className="text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
                     {selectedDateWorkouts.length} Scheduled
                   </span>
                 </div>
-
                 <button
                   type="button"
                   onClick={() => handleOpenScheduleModal(selectedCalendarDate)}
-                  className="p-2 rounded-xl bg-[#C6FF3D]/10 hover:bg-[#C6FF3D]/20 text-[#C6FF3D] border border-[#C6FF3D]/30 transition-colors cursor-pointer"
+                  className="p-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-900 border border-slate-300 dark:bg-[#C6FF3D]/10 dark:hover:bg-[#C6FF3D]/20 dark:text-[#C6FF3D] dark:border-[#C6FF3D]/30 transition-colors cursor-pointer"
                   title="Schedule a workout on this date"
                 >
                   <Plus className="w-4 h-4" />
@@ -841,16 +839,16 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
               {/* Workouts scheduled on this date */}
               {selectedDateWorkouts.length === 0 ? (
                 <div className="py-8 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex items-center justify-center text-[#A1A1AA] mx-auto">
+                  <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] flex items-center justify-center text-slate-500 dark:text-[#A1A1AA] mx-auto shadow-sm">
                     <CalendarIcon className="w-6 h-6" />
                   </div>
-                  <p className="text-xs text-[#A1A1AA]">
+                  <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
                     No workouts scheduled for this date.
                   </p>
                   <button
                     type="button"
                     onClick={() => handleOpenScheduleModal(selectedCalendarDate)}
-                    className="px-3.5 py-2 rounded-xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-xs font-mono text-[#F4F4F6] transition-colors cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 hover:border-slate-400 text-xs font-mono text-slate-800 hover:text-slate-900 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:hover:border-[#C6FF3D]/40 dark:text-[#F4F4F6] transition-colors cursor-pointer shadow-sm"
                   >
                     + Schedule on {selectedCalendarDate}
                   </button>
@@ -866,23 +864,23 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                         key={workout.id}
                         className={`p-4 rounded-2xl border space-y-3 transition-all ${
                           isDone
-                            ? 'bg-emerald-950/20 border-emerald-500/40 text-emerald-300'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-500/40 text-emerald-950 dark:text-emerald-300 shadow-sm'
                             : isMissed
-                            ? 'bg-rose-950/20 border-rose-500/50 text-rose-300'
-                            : 'bg-[#0B0B0F] border-[#24242E]'
+                            ? 'bg-rose-50 dark:bg-rose-950/20 border-rose-300 dark:border-rose-500/50 text-rose-950 dark:text-rose-300 shadow-sm'
+                            : 'bg-white dark:bg-[#0B0B0F] border-slate-200 dark:border-[#24242E] shadow-sm'
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <div className="flex items-center gap-1.5">
-                              <h4 className="font-bold text-sm text-[#F4F4F6]">
+                              <h4 className="font-bold text-sm text-slate-900 dark:text-[#F4F4F6]">
                                 {workout.routineName}
                               </h4>
                               {isDone && (
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                               )}
                             </div>
-                            <p className="text-xs text-[#A1A1AA]">
+                            <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
                               {workout.targetMuscle}
                               {workout.time && ` · ${workout.time}`}
                             </p>
@@ -892,10 +890,10 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                           <span
                             className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-md font-bold ${
                               isDone
-                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30'
                                 : isMissed
-                                ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                                : 'bg-[#C6FF3D]/10 text-[#C6FF3D] border border-[#C6FF3D]/30'
+                                ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-400 border border-rose-300 dark:border-rose-500/30'
+                                : 'bg-lime-100 dark:bg-[#C6FF3D]/10 text-lime-800 dark:text-[#C6FF3D] border border-lime-300 dark:border-[#C6FF3D]/30'
                             }`}
                           >
                             {workout.status}
@@ -904,8 +902,8 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
 
                         {/* Missed Warning & Reschedule CTA (Requirement 5) */}
                         {isMissed && (
-                          <div className="pt-2 border-t border-rose-900/40 space-y-2">
-                            <p className="text-[11px] text-rose-300/80">
+                          <div className="pt-2 border-t border-rose-200 dark:border-rose-900/40 space-y-2">
+                            <p className="text-[11px] text-rose-700 dark:text-rose-300/80">
                               This planned day passed without a logged workout.
                             </p>
                             <button
@@ -921,12 +919,12 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
 
                         {/* Normal Actions: Start, Edit, Delete */}
                         {!isMissed && (
-                          <div className="pt-2 border-t border-[#24242E] flex items-center justify-between">
+                          <div className="pt-2 border-t border-slate-200 dark:border-[#24242E] flex items-center justify-between">
                             <div className="flex items-center gap-1.5">
                               <button
                                 type="button"
                                 onClick={() => handleOpenScheduleModal(undefined, workout)}
-                                className="p-1.5 rounded-lg text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg text-slate-500 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-[#F4F4F6] transition-colors cursor-pointer"
                                 title="Edit"
                               >
                                 <Edit3 className="w-3.5 h-3.5" />
@@ -934,7 +932,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                               <button
                                 type="button"
                                 onClick={() => setItemToDelete(workout)}
-                                className="p-1.5 rounded-lg text-[#A1A1AA] hover:text-rose-400 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg text-slate-500 dark:text-[#A1A1AA] hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
                                 title="Delete"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -945,7 +943,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                               <button
                                 type="button"
                                 onClick={() => handleLaunchWorkout(workout.routineId)}
-                                className="px-3 py-1.5 rounded-xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-bold text-xs font-heading uppercase tracking-wider flex items-center gap-1 cursor-pointer shadow-sm"
+                                className="px-3 py-1.5 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-bold text-xs font-heading uppercase tracking-wider flex items-center gap-1 cursor-pointer shadow-sm"
                               >
                                 <Play className="w-3 h-3 fill-current" />
                                 <span>Start</span>
@@ -963,7 +961,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
             <button
               type="button"
               onClick={() => setIsCreateRoutineModalOpen(true)}
-              className="w-full py-2.5 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] text-xs font-mono text-[#A1A1AA] hover:text-[#F4F4F6] transition-colors cursor-pointer"
+              className="w-full py-2.5 rounded-2xl bg-white hover:bg-slate-100 border border-slate-300 hover:border-slate-400 text-xs font-mono text-slate-700 hover:text-slate-900 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] transition-colors cursor-pointer shadow-sm"
             >
               + Create Custom Routine in "My Routines"
             </button>
@@ -974,29 +972,29 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
       {/* ================= MODAL 1: SCHEDULE A WORKOUT (Requirement 3 & 4) ================= */}
       {isScheduleModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
         >
-          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl w-full max-w-md shadow-2xl p-6 sm:p-7 space-y-5">
-            <div className="flex items-center justify-between border-b border-[#24242E] pb-3">
+          <div className="bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl w-full max-w-md shadow-2xl p-6 sm:p-7 space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#24242E] pb-3">
               <div className="flex items-center gap-2.5">
-                <CalendarIcon className="w-5 h-5 text-[#C6FF3D]" />
-                <h3 className="font-heading text-xl font-bold uppercase tracking-wider text-[#F4F4F6]">
+                <CalendarIcon className="w-5 h-5 text-emerald-600 dark:text-[#C6FF3D]" />
+                <h3 className="font-heading text-xl font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                   {editingScheduleItem ? 'Edit Scheduled Workout' : 'Schedule a Workout'}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsScheduleModalOpen(false)}
-                className="text-[#A1A1AA] hover:text-[#F4F4F6] cursor-pointer"
+                className="text-slate-500 hover:text-slate-900 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {scheduleFormError && (
-              <div className="p-3 rounded-xl bg-rose-950/30 border border-rose-500/50 text-rose-300 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 dark:bg-rose-950/30 dark:border-rose-500/50 dark:text-rose-300 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{scheduleFormError}</span>
               </div>
@@ -1005,13 +1003,13 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
             <form onSubmit={handleSubmitSchedule} className="space-y-4">
               {/* Routine Selection */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-[#A1A1AA] mb-1.5">
                   Pick Routine
                 </label>
                 <select
                   value={formRoutineId}
                   onChange={(e) => setFormRoutineId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs text-[#F4F4F6] outline-none focus:border-[#C6FF3D]"
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] text-xs text-slate-900 dark:text-[#F4F4F6] outline-none focus:border-slate-500 dark:focus:border-[#C6FF3D]"
                 >
                   <optgroup label="Default 5-Exercise Splits">
                     {DEFAULT_SPLIT_OPTIONS.map((s) => (
@@ -1035,7 +1033,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
               {/* Date & Time Row */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-[#A1A1AA] mb-1.5">
                     Date
                   </label>
                   <input
@@ -1044,29 +1042,28 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     value={formDate}
                     onChange={(e) => setFormDate(e.target.value)}
                     required
-                    className="w-full px-3 py-2 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs font-mono text-[#F4F4F6] outline-none focus:border-[#C6FF3D]"
+                    className="w-full px-3 py-2 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] text-xs font-mono text-slate-900 dark:text-[#F4F4F6] outline-none focus:border-slate-500 dark:focus:border-[#C6FF3D]"
                   />
                   {!editingScheduleItem && (
-                    <span className="text-[10px] text-[#A1A1AA]">Must not be in the past</span>
+                    <span className="text-[10px] text-slate-500 dark:text-[#A1A1AA]">Must not be in the past</span>
                   )}
                 </div>
-
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-[#A1A1AA] mb-1.5">
                     Time (Optional)
                   </label>
                   <input
                     type="time"
                     value={formTime}
                     onChange={(e) => setFormTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs font-mono text-[#F4F4F6] outline-none focus:border-[#C6FF3D]"
+                    className="w-full px-3 py-2 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] text-xs font-mono text-slate-900 dark:text-[#F4F4F6] outline-none focus:border-slate-500 dark:focus:border-[#C6FF3D]"
                   />
                 </div>
               </div>
 
               {/* Repeat Options (Requirement 3: repeat weekly, every 2 weeks or never) */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-[#A1A1AA] mb-1.5">
                   Recurrence Repeat
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -1082,7 +1079,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                       className={`py-2 px-2.5 rounded-xl text-xs font-mono font-bold transition-all border ${
                         formRepeat === r.id
                           ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D]'
-                          : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E]'
+                          : 'bg-slate-100 dark:bg-[#0B0B0F] text-slate-700 dark:text-[#A1A1AA] border-slate-300 dark:border-[#24242E]'
                       }`}
                     >
                       {r.label}
@@ -1093,7 +1090,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
 
               {/* Notes */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-[#A1A1AA] mb-1.5">
                   Notes (Optional)
                 </label>
                 <input
@@ -1101,22 +1098,22 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                   placeholder="e.g. Focus on progressive overload"
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs text-[#F4F4F6] outline-none focus:border-[#C6FF3D]"
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] text-xs text-slate-900 dark:text-[#F4F4F6] outline-none focus:border-slate-500 dark:focus:border-[#C6FF3D]"
                 />
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-2 flex items-center justify-end gap-2.5 border-t border-[#24242E]">
+              <div className="pt-2 flex items-center justify-end gap-2.5 border-t border-slate-200 dark:border-[#24242E]">
                 <button
                   type="button"
                   onClick={() => setIsScheduleModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-[#24242E] hover:bg-[#2E2E3C] text-xs font-semibold text-[#F4F4F6]"
+                  className="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-xs font-semibold text-slate-800 dark:bg-[#24242E] dark:hover:bg-[#2E2E3C] dark:text-[#F4F4F6]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs shadow-md shadow-[#C6FF3D]/15"
+                  className="px-5 py-2.5 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs shadow-sm cursor-pointer"
                 >
                   {editingScheduleItem ? 'Save Changes' : 'Confirm Schedule'}
                 </button>
@@ -1129,25 +1126,25 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
       {/* ================= MODAL 2: CHANGE ROUTINE MODAL (Requirement 2) ================= */}
       {isChangeModalOpen && activeDayToModify && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
         >
-          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl w-full max-w-lg shadow-2xl p-6 sm:p-7 space-y-4">
-            <div className="flex items-center justify-between border-b border-[#24242E] pb-3">
-              <h3 className="font-heading text-xl font-bold uppercase tracking-wider text-[#F4F4F6]">
+          <div className="bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl w-full max-w-lg shadow-2xl p-6 sm:p-7 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#24242E] pb-3">
+              <h3 className="font-heading text-xl font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                 Change Routine for {WEEKDAY_FULL_NAMES[activeDayToModify]}
               </h3>
               <button
                 type="button"
                 onClick={() => setIsChangeModalOpen(false)}
-                className="text-[#A1A1AA] hover:text-[#F4F4F6]"
+                className="text-slate-500 hover:text-slate-900 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-[#A1A1AA]">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
               Select a routine to assign to {WEEKDAY_FULL_NAMES[activeDayToModify]}. You can choose from default splits, custom saved routines, or set as rest.
             </p>
 
@@ -1157,15 +1154,15 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                   key={split.id}
                   type="button"
                   onClick={() => handleConfirmChangeRoutine(split.id, split.name, split.targetMuscle)}
-                  className="w-full p-3 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-[#24242E] hover:border-[#C6FF3D]/40 text-left transition-colors flex items-center justify-between group cursor-pointer"
+                  className="w-full p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:hover:border-[#C6FF3D]/40 text-left transition-colors flex items-center justify-between group cursor-pointer"
                 >
                   <div>
-                    <h5 className="font-bold text-sm text-[#F4F4F6] group-hover:text-[#C6FF3D]">
+                    <h5 className="font-bold text-sm text-slate-900 dark:text-[#F4F4F6] group-hover:text-slate-900 dark:group-hover:text-[#C6FF3D]">
                       {split.name}
                     </h5>
-                    <p className="text-xs text-[#A1A1AA]">{split.targetMuscle}</p>
+                    <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">{split.targetMuscle}</p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#A1A1AA] group-hover:text-[#C6FF3D]" />
+                  <ArrowRight className="w-4 h-4 text-slate-400 dark:text-[#A1A1AA] group-hover:text-slate-700 dark:group-hover:text-[#C6FF3D]" />
                 </button>
               ))}
 
@@ -1174,31 +1171,31 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                   key={routine.id}
                   type="button"
                   onClick={() => handleConfirmChangeRoutine(routine.id, routine.name, routine.targetMuscle)}
-                  className="w-full p-3 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-cyan-800/40 hover:border-cyan-400 text-left transition-colors flex items-center justify-between group cursor-pointer"
+                  className="w-full p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-cyan-200 dark:border-cyan-800/40 hover:border-cyan-400 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] text-left transition-colors flex items-center justify-between group cursor-pointer"
                 >
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <h5 className="font-bold text-sm text-[#F4F4F6] group-hover:text-cyan-400">
+                      <h5 className="font-bold text-sm text-slate-900 dark:text-[#F4F4F6] group-hover:text-cyan-700 dark:group-hover:text-cyan-400">
                         {routine.name}
                       </h5>
-                      <span className="text-[10px] font-mono uppercase bg-cyan-950/60 text-cyan-300 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-mono uppercase bg-cyan-100 text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300 px-1.5 py-0.5 rounded">
                         Custom
                       </span>
                     </div>
-                    <p className="text-xs text-[#A1A1AA]">{routine.targetMuscle}</p>
+                    <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">{routine.targetMuscle}</p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#A1A1AA] group-hover:text-cyan-400" />
+                  <ArrowRight className="w-4 h-4 text-slate-400 dark:text-[#A1A1AA] group-hover:text-cyan-700 dark:group-hover:text-cyan-400" />
                 </button>
               ))}
 
               <button
                 type="button"
                 onClick={() => handleConfirmChangeRoutine('rest', 'Rest & Recovery Day', 'Active Recovery & Mobility')}
-                className="w-full p-3 rounded-2xl bg-[#0B0B0F] hover:bg-[#24242E] border border-zinc-800 text-left transition-colors flex items-center justify-between text-[#A1A1AA] hover:text-white cursor-pointer"
+                className="w-full p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 dark:border-zinc-800 text-left transition-colors flex items-center justify-between text-slate-700 hover:text-slate-900 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] dark:text-[#A1A1AA] dark:hover:text-white cursor-pointer"
               >
                 <div>
                   <h5 className="font-bold text-sm">Rest & Recovery Day</h5>
-                  <p className="text-xs">Take a day off for joint and muscle recovery</p>
+                  <p className="text-xs text-slate-500 dark:text-[#A1A1AA]">Take a day off for joint and muscle recovery</p>
                 </div>
                 <Check className="w-4 h-4" />
               </button>
@@ -1210,25 +1207,25 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
       {/* ================= MODAL 3: MOVE ROUTINE MODAL (Requirement 2) ================= */}
       {isMoveModalOpen && activeDayToModify && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
         >
-          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl w-full max-w-sm shadow-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-[#24242E] pb-3">
-              <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+          <div className="bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl w-full max-w-sm shadow-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#24242E] pb-3">
+              <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                 Move {WEEKDAY_FULL_NAMES[activeDayToModify]} Workout
               </h3>
               <button
                 type="button"
                 onClick={() => setIsMoveModalOpen(false)}
-                className="text-[#A1A1AA] hover:text-[#F4F4F6]"
+                className="text-slate-500 hover:text-slate-900 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-[#A1A1AA]">
+            <p className="text-xs text-slate-600 dark:text-[#A1A1AA]">
               Select which day to move this workout to. If the target day already has a workout, the two will swap.
             </p>
 
@@ -1247,18 +1244,18 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                     className={`p-3 rounded-2xl border text-left transition-all flex items-center justify-between cursor-pointer ${
                       isSame
                         ? 'opacity-30 border-transparent bg-transparent cursor-not-allowed'
-                        : 'bg-[#0B0B0F] hover:bg-[#24242E] border-[#24242E] hover:border-[#C6FF3D]/40'
+                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 hover:border-slate-300 dark:bg-[#0B0B0F] dark:hover:bg-[#24242E] dark:border-[#24242E] dark:hover:border-[#C6FF3D]/40'
                     }`}
                   >
                     <div>
-                      <span className="text-xs font-bold text-[#F4F4F6]">
+                      <span className="text-xs font-bold text-slate-900 dark:text-[#F4F4F6]">
                         {WEEKDAY_FULL_NAMES[targetDay]}
                       </span>
-                      <p className="text-[11px] text-[#A1A1AA]">
+                      <p className="text-[11px] text-slate-500 dark:text-[#A1A1AA]">
                         {hasExisting ? `Swaps with ${targetSched.routineName}` : 'Moves to rest day'}
                       </p>
                     </div>
-                    <ArrowLeftRight className="w-3.5 h-3.5 text-[#C6FF3D]" />
+                    <ArrowLeftRight className="w-3.5 h-3.5 text-emerald-600 dark:text-[#C6FF3D]" />
                   </button>
                 );
               })}
@@ -1270,19 +1267,19 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
       {/* ================= MODAL 4: CREATE CUSTOM ROUTINE ("MY ROUTINES") ================= */}
       {isCreateRoutineModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-[#0B0B0F]/85 backdrop-blur-sm animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
         >
-          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl w-full max-w-md shadow-2xl p-6 sm:p-7 space-y-4">
-            <div className="flex items-center justify-between border-b border-[#24242E] pb-3">
-              <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-[#F4F4F6]">
+          <div className="bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl w-full max-w-md shadow-2xl p-6 sm:p-7 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#24242E] pb-3">
+              <h3 className="font-heading text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-[#F4F4F6]">
                 Save Custom Routine
               </h3>
               <button
                 type="button"
                 onClick={() => setIsCreateRoutineModalOpen(false)}
-                className="text-[#A1A1AA] hover:text-[#F4F4F6]"
+                className="text-slate-500 hover:text-slate-900 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1290,7 +1287,7 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
 
             <form onSubmit={handleCreateCustomRoutine} className="space-y-4">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-[#A1A1AA] mb-1.5">
                   Routine Name
                 </label>
                 <input
@@ -1299,12 +1296,12 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                   value={newRoutineName}
                   onChange={(e) => setNewRoutineName(e.target.value)}
                   required
-                  className="w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs text-[#F4F4F6] outline-none focus:border-[#C6FF3D]"
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] text-xs text-slate-900 dark:text-[#F4F4F6] outline-none focus:border-slate-500 dark:focus:border-[#C6FF3D]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA] mb-1.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-700 dark:text-[#A1A1AA] mb-1.5">
                   Target Muscle Group
                 </label>
                 <input
@@ -1312,21 +1309,21 @@ export const WeeklyGuideView: React.FC<WeeklyGuideViewProps> = ({ onStartRoutine
                   placeholder="e.g. Pectorals & Front Delts"
                   value={newRoutineTarget}
                   onChange={(e) => setNewRoutineTarget(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] text-xs text-[#F4F4F6] outline-none focus:border-[#C6FF3D]"
+                  className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] text-xs text-slate-900 dark:text-[#F4F4F6] outline-none focus:border-slate-500 dark:focus:border-[#C6FF3D]"
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2.5 border-t border-[#24242E]">
+              <div className="pt-2 flex items-center justify-end gap-2.5 border-t border-slate-200 dark:border-[#24242E]">
                 <button
                   type="button"
                   onClick={() => setIsCreateRoutineModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-[#24242E] text-xs font-semibold text-[#F4F4F6]"
+                  className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-xs font-semibold text-slate-800 dark:bg-[#24242E] dark:text-[#F4F4F6]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black uppercase text-xs"
+                  className="px-5 py-2 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-heading font-black uppercase text-xs shadow-sm cursor-pointer"
                 >
                   Save Routine
                 </button>

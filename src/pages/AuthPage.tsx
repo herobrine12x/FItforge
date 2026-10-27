@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import LoginBackground from '../components/LoginBackground';
 
 export function AuthPage() {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -124,7 +125,8 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-[#0B0B0F] text-slate-900 dark:text-[#F4F4F6] flex flex-col justify-between selection:bg-lime-400 dark:selection:bg-[#C6FF3D] selection:text-slate-900 dark:selection:text-[#0B0B0F]">
+    <div className="relative overflow-hidden min-h-screen text-slate-900 dark:text-[#F4F4F6] flex flex-col justify-between selection:bg-lime-400 dark:selection:bg-[#C6FF3D] selection:text-slate-900 dark:selection:text-[#0B0B0F]">
+      <LoginBackground />
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-12">
         <div className="w-full max-w-5xl bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl overflow-hidden shadow-xl dark:shadow-2xl dark:shadow-black/80 grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
           
@@ -318,26 +320,7 @@ export function AuthPage() {
                 </button>
               </form>
 
-              {/* Divider */}
-              <div className="relative my-6 text-center">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200 dark:border-[#24242E]" />
-                </div>
-                <span className="relative bg-white dark:bg-[#16161D] px-3 text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-[#A1A1AA]">
-                  Quick Exploration
-                </span>
-              </div>
 
-              {/* Use Demo Account Button */}
-              <button
-                type="button"
-                onClick={handleDemoSignIn}
-                disabled={isSubmitting}
-                className="w-full py-3 px-4 rounded-2xl border border-slate-300 dark:border-[#24242E] hover:border-slate-400 dark:hover:border-[#C6FF3D]/60 hover:bg-slate-100 dark:hover:bg-[#24242E]/40 text-slate-800 dark:text-[#F4F4F6] text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
-              >
-                <Sparkles className="w-4 h-4 text-emerald-600 dark:text-[#C6FF3D]" />
-                <span>Use demo account (demo / demo123)</span>
-              </button>
             </div>
 
             {/* Bottom hint */}
@@ -356,22 +339,13 @@ export function AuthPage() {
           </div>
 
           {/* ================= RIGHT COLUMN: MOTIVATIONAL GRADIENT ================= */}
-          <div className="hidden lg:flex lg:col-span-6 bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-[#1A1F14] dark:via-[#16161D] dark:to-[#0B0B0F] border-l border-slate-200 dark:border-[#24242E] p-10 lg:p-12 flex-col justify-between relative overflow-hidden">
+          <div className="hidden lg:flex lg:col-span-6 bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-[#1A1F14] dark:via-[#16161D] dark:to-[#0B0B0F] border-l border-slate-200 dark:border-[#24242E] p-10 lg:p-12 flex-col justify-center relative overflow-hidden">
             {/* Subtle radial ambient lime glow */}
             <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#C6FF3D]/10 blur-3xl pointer-events-none" />
             <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#C6FF3D]/5 blur-3xl pointer-events-none" />
 
-            {/* Top Badge */}
-            <div className="relative z-10 flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-[#C6FF3D]/10 border border-emerald-300 dark:border-[#C6FF3D]/30 text-emerald-800 dark:text-[#C6FF3D] font-mono text-[10px] uppercase tracking-wider">
-                <Activity className="w-3.5 h-3.5" />
-                <span>FitForge OOP Architecture</span>
-              </span>
-              <span className="text-[11px] font-mono text-slate-500 dark:text-[#A1A1AA]">v2.0 Shell</span>
-            </div>
-
             {/* Main Motivational Typography */}
-            <div className="relative z-10 my-auto py-8">
+            <div className="relative z-10 py-4">
               <div className="text-xs font-mono uppercase tracking-widest text-emerald-700 dark:text-[#C6FF3D] mb-3 flex items-center gap-2">
                 <Flame className="w-4 h-4" />
                 <span>Workout Recommender and Progress Tracker</span>
@@ -412,12 +386,6 @@ export function AuthPage() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Bottom Proof Metric */}
-            <div className="relative z-10 pt-6 border-t border-slate-200 dark:border-[#24242E]/80 flex items-center justify-between text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
-              <span>8 Pre-Loaded Seed Sessions</span>
-              <span className="text-emerald-700 dark:text-[#C6FF3D] font-bold">100% Client-Side Storage</span>
             </div>
           </div>
 

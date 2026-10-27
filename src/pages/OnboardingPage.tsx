@@ -134,8 +134,8 @@ export function OnboardingPage() {
               Workout Recommender and Progress Tracker · Athlete Onboarding
             </span>
           </div>
-          <div className="text-xs font-mono text-[#A1A1AA]">
-            Step <span className="text-[#C6FF3D] font-bold">{step}</span> of 3
+          <div className="text-xs font-mono text-slate-600 dark:text-[#A1A1AA]">
+            Step <span className="text-green-700 dark:text-[#C6FF3D] font-bold">{step}</span> of 3
           </div>
         </div>
 
@@ -163,10 +163,10 @@ export function OnboardingPage() {
                   <span
                     className={`${
                       isCurrent
-                        ? 'text-[#F4F4F6] font-bold'
+                        ? 'text-green-700 dark:text-[#F4F4F6] font-bold'
                         : isCompleted
-                        ? 'text-[#C6FF3D]'
-                        : 'text-[#A1A1AA]'
+                        ? 'text-green-700 dark:text-[#C6FF3D]'
+                        : 'text-slate-600 dark:text-[#A1A1AA]'
                     }`}
                   >
                     {item.label}
@@ -383,10 +383,10 @@ export function OnboardingPage() {
                     <div
                       key={tier.level}
                       onClick={() => setExperienceLevel(tier.level)}
-                      className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                      className={`p-5 rounded-2xl transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
                         isSelected
-                          ? 'bg-[#1A2214] border-[#C6FF3D] shadow-lg shadow-[#C6FF3D]/10'
-                          : 'bg-[#0B0B0F] border-[#24242E] hover:border-[#383847]'
+                          ? 'bg-lime-50 dark:bg-[#1A2214] border-2 border-green-600 dark:border-[#C6FF3D] shadow-lg shadow-[#C6FF3D]/10'
+                          : 'bg-slate-50 dark:bg-[#0B0B0F] border-2 border-slate-300 dark:border-[#24242E] hover:border-slate-400 dark:hover:border-[#383847]'
                       }`}
                     >
                       <div className="space-y-1">
@@ -398,16 +398,16 @@ export function OnboardingPage() {
                             className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-md ${
                               isSelected
                                 ? 'bg-[#C6FF3D] text-[#0B0B0F] font-bold'
-                                : 'bg-slate-200 dark:bg-[#24242E] text-slate-700 dark:text-[#A1A1AA]'
+                                : 'bg-slate-200 dark:bg-[#24242E] text-slate-800 dark:text-[#A1A1AA]'
                             }`}
                           >
                             {tier.tag}
                           </span>
                         </div>
-                        <div className="text-xs font-mono font-semibold text-emerald-700 dark:text-[#C6FF3D]">
+                        <div className="text-xs font-mono font-semibold text-green-800 dark:text-[#C6FF3D]">
                           {tier.setsDesc}
                         </div>
-                        <p className="text-xs text-slate-600 dark:text-[#A1A1AA] max-w-xl leading-relaxed">
+                        <p className="text-xs text-slate-700 dark:text-[#A1A1AA] max-w-xl leading-relaxed">
                           {tier.desc}
                         </p>
                       </div>
@@ -416,7 +416,7 @@ export function OnboardingPage() {
                         className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 self-start sm:self-center ${
                           isSelected
                             ? 'border-[#C6FF3D] bg-[#C6FF3D] text-[#0B0B0F]'
-                            : 'border-slate-300 dark:border-[#383847] bg-white dark:bg-[#16161D]'
+                            : 'border-slate-400 dark:border-[#383847] bg-white dark:bg-[#16161D]'
                         }`}
                       >
                         {isSelected && <CheckCircle2 className="w-4 h-4 stroke-[3]" />}

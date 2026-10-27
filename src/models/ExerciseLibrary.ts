@@ -34,7 +34,7 @@ export class ExerciseLibrary {
       new Exercise('push_06', 'Dumbbell Shoulder Press', 'Shoulders', 'Dumbbell', 'Beginner', 'Press vertically in an arch without banging dumbbells.'),
       new Exercise('push_07', 'Standing Overhead Barbell Press', 'Shoulders', 'Barbell', 'Intermediate', 'Tighten glutes and press bar straight overhead in line with spine.'),
       new Exercise('push_08', 'Dumbbell Lateral Raises', 'Shoulders', 'Dumbbell', 'Beginner', 'Lead with elbows and pour the pitcher slightly at the apex.'),
-      new Exercise('push_09', 'Cable Lateral Raises', 'Shoulders', 'Cable', 'Advanced', 'Maintain constant cable tension behind the torso.'),
+      new Exercise('push_09', 'Cable Lateral Raises', 'Shoulders', 'Cable', 'Advanced', 'Maintain constant cable tension behind the torso.', '/exercises/cable-lateral-raises.jpg'),
       new Exercise('push_10', 'Cable Triceps Rope Pushdown', 'Triceps', 'Cable', 'Beginner', 'Pin elbows by ribs and flare rope outward at the bottom.'),
       new Exercise('push_11', 'Close-Grip Barbell Bench Press', 'Triceps', 'Barbell', 'Advanced', 'Keep grip shoulder-width and elbows tucked close to torso.'),
     ]);
@@ -47,7 +47,7 @@ export class ExerciseLibrary {
       new Exercise('pull_04', 'One-Arm Dumbbell Row', 'Back', 'Dumbbell', 'Intermediate', 'Support hand on bench and pull elbow smoothly up to rib cage.'),
       new Exercise('pull_05', 'Assisted Pull-Up Machine', 'Back', 'Machine', 'Advanced', 'Full range of motion with counterweight assistance to build vertical pulling strength.'),
       new Exercise('pull_06', 'Face Pulls', 'Rear Delts', 'Cable', 'Beginner', 'Pull rope to bridge of nose with high flared elbows for rotator cuff health.'),
-      new Exercise('pull_07', 'Reverse Pec Deck Fly', 'Rear Delts', 'Machine', 'Beginner', 'Squeeze shoulder blades together with a slight elbow bend.'),
+      new Exercise('pull_07', 'Reverse Pec Deck Fly', 'Rear Delts', 'Machine', 'Beginner', 'Squeeze shoulder blades together with a slight elbow bend.', '/exercises/reverse-pec-deck-fly.jpg'),
       new Exercise('pull_08', 'Bent-Over Dumbbell Rear Delt Fly', 'Rear Delts', 'Dumbbell', 'Intermediate', 'Hinge torso parallel to floor and sweep dumbbells wide.'),
       new Exercise('pull_09', 'Standing Dumbbell Biceps Curl', 'Biceps', 'Dumbbell', 'Beginner', 'Supinate wrists as you curl, keeping upper arms motionless.'),
       new Exercise('pull_10', 'Barbell Biceps Curl', 'Biceps', 'Barbell', 'Intermediate', 'Keep wrists neutral and control the lowering eccentric phase.'),
@@ -65,9 +65,9 @@ export class ExerciseLibrary {
       new Exercise('leg_07', 'Barbell Hip Thrust', 'Glutes', 'Barbell', 'Advanced', 'Drive hips to full extension at top while keeping chin tucked.'),
       new Exercise('leg_08', 'Dumbbell Walking Lunges', 'Glutes', 'Dumbbell', 'Intermediate', 'Take long strides with front knee staying behind front toes.'),
       new Exercise('leg_09', 'Standing Machine Calf Raise', 'Calves', 'Machine', 'Beginner', 'Pause for 1 second at full bottom stretch before driving onto toes.'),
-      new Exercise('leg_10', 'Plank with Shoulder Taps', 'Core', 'Bodyweight', 'Beginner', 'Maintain rigid flat hips and alternate tapping opposite shoulder.'),
-      new Exercise('leg_11', 'Hanging Knee Raises', 'Core', 'Bodyweight', 'Intermediate', 'Curl pelvis upward toward ribcage rather than just swinging legs.'),
-      new Exercise('leg_12', 'Dragon Flags', 'Core', 'Bodyweight', 'Advanced', 'Brace core completely and pivot off upper back with a straight body line.'),
+      new Exercise('leg_10', 'Plank with Shoulder Taps', 'Core', 'Bodyweight', 'Beginner', 'Hold a rigid high plank and alternate tapping each opposite shoulder without rotating the hips.'),
+      new Exercise('leg_11', 'Hanging Knee Raises', 'Core', 'Bodyweight', 'Intermediate', 'Hang from a pull-up bar and raise both bent knees toward the chest without swinging.'),
+      new Exercise('leg_12', 'Dragon Flags', 'Core', 'Bodyweight', 'Advanced', 'Pivot on the upper back, brace the core, and lower and raise the straight body as one line.'),
     ]);
 
     // 4. FULL BODY POOL (11 exercises: Balanced mix across muscle groups)
@@ -80,8 +80,8 @@ export class ExerciseLibrary {
       new Exercise('full_06', 'Bent-Over Barbell Row', 'Back', 'Barbell', 'Intermediate', 'Pull bar to abdomen while maintaining flat lumbar spine.'),
       new Exercise('full_07', 'Dumbbell Shoulder Press', 'Shoulders', 'Dumbbell', 'Beginner', 'Keep elbows under dumbbells and press smoothly overhead.'),
       new Exercise('full_08', 'Conventional Barbell Deadlift', 'Hamstrings', 'Barbell', 'Advanced', 'Engage lats, push floor away, and stand tall.'),
-      new Exercise('full_09', 'Barbell Power Clean and Press', 'Full Body', 'Barbell', 'Advanced', 'Explosively triple-extend hips, rack on shoulders, and drive overhead.'),
-      new Exercise('full_10', 'Kettlebell Russian Swings', 'Glutes', 'Dumbbell', 'Intermediate', 'Snap hips forcefully forward; the weight floats on hip momentum.'),
+      new Exercise('full_09', 'Barbell Power Clean and Press', 'Full Body', 'Barbell', 'Advanced', 'Explosively triple-extend hips, rack on shoulders, and drive overhead.', '/exercises/barbell-power-clean-and-press.jpg'),
+      new Exercise('full_10', 'Kettlebell Russian Swings', 'Glutes', 'Dumbbell', 'Intermediate', 'Snap hips forcefully forward; the weight floats on hip momentum.', '/exercises/kettlebell-russian-swings.jpg'),
       new Exercise('full_11', 'Hanging Leg Raises', 'Core', 'Bodyweight', 'Advanced', 'Lift toes smoothly to the bar without momentum.'),
     ]);
 
@@ -117,7 +117,7 @@ export class ExerciseLibrary {
 
     // 7. CARDIO HIIT POOL (11 exercises: Timed intervals, high heart rate stimulus)
     this._pools.set('cardio_hiit', [
-      new Exercise('hiit_01', 'Jumping Jacks', 'Full Body', 'Bodyweight', 'Beginner', 'Fast, springy footwork and wide overhead arm swings.'),
+      new Exercise('hiit_01', 'Jumping Jacks', 'Full Body', 'Bodyweight', 'Beginner', 'Fast, springy footwork and wide overhead arm swings.', '/exercises/jumping-jacks.jpg'),
       new Exercise('hiit_02', 'Mountain Climbers', 'Core', 'Bodyweight', 'Beginner', 'Drive knees alternately toward chest in high plank tempo.'),
       new Exercise('hiit_03', 'High Knees Sprint in Place', 'Cardio', 'Bodyweight', 'Beginner', 'Pump arms and bring knees up to waist height quickly.'),
       new Exercise('hiit_04', 'Burpees with Jump', 'Full Body', 'Bodyweight', 'Intermediate', 'Drop chest to floor, snap feet in, and jump with reach.'),
@@ -129,6 +129,7 @@ export class ExerciseLibrary {
       new Exercise('hiit_10', 'Plyometric Alternating Lunges', 'Quads', 'Bodyweight', 'Advanced', 'Switch lunge legs dynamically in mid-air with soft landing.'),
       new Exercise('hiit_11', 'Shadow Boxing with Light Dumbbells', 'Cardio', 'Dumbbell', 'Advanced', 'Rapid punch combos while staying light and agile on toes.'),
     ]);
+
   }
 
   /**

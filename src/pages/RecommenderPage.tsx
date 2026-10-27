@@ -439,14 +439,14 @@ export function RecommenderPage() {
       {/* ================= BODYWEIGHT SWAP NOTE BANNER ================= */}
       {workoutPlan.hasEquipmentSwaps && exercises.length > 0 && (
         <section
-          className="p-4 sm:p-5 rounded-3xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 text-[#F4F4F6] flex items-center gap-3.5 shadow-md shadow-[#C6FF3D]/5 animate-in fade-in"
+          className="p-4 sm:p-5 rounded-3xl bg-[#C6FF3D]/10 border border-green-300 dark:border-[#C6FF3D]/30 text-slate-700 dark:text-[#F4F4F6] flex items-center gap-3.5 shadow-md shadow-[#C6FF3D]/5 animate-in fade-in"
           role="note"
         >
-          <div className="w-9 h-9 rounded-2xl bg-[#C6FF3D]/20 border border-[#C6FF3D]/40 flex items-center justify-center text-[#C6FF3D] shrink-0">
+          <div className="w-9 h-9 rounded-2xl bg-green-700/15 dark:bg-[#C6FF3D]/20 border border-green-700/40 dark:border-[#C6FF3D]/40 flex items-center justify-center text-green-700 dark:text-[#C6FF3D] shrink-0">
             <Info className="w-5 h-5 stroke-[2.2]" />
           </div>
-          <div className="text-xs sm:text-sm text-[#F4F4F6] leading-relaxed">
-            <span className="font-bold text-[#C6FF3D]">Equipment Adaptation: </span>
+          <div className="text-xs sm:text-sm text-slate-700 dark:text-[#F4F4F6] leading-relaxed">
+            <span className="font-bold text-green-800 dark:text-[#C6FF3D]">Equipment Adaptation: </span>
             Some exercises were swapped for bodyweight alternatives because of your equipment.
           </div>
         </section>

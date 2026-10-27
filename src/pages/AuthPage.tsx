@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Activity,
   AlertCircle,
@@ -309,6 +309,18 @@ export function AuthPage() {
                   </div>
                 )}
 
+                {/* Forgot password link for Sign In */}
+                {!isRegisterMode && (
+                  <div className="flex justify-end -mt-1">
+                    <Link
+                      to="/forgot-password"
+                      className="text-xs text-slate-500 hover:text-slate-800 dark:text-[#A1A1AA] dark:hover:text-[#C6FF3D] transition-colors cursor-pointer"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+                )}
+
                 {/* Primary Submit Button */}
                 <button
                   type="submit"
@@ -319,6 +331,18 @@ export function AuthPage() {
                   <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                 </button>
               </form>
+
+              {/* Forgot password link under the login form */}
+              {!isRegisterMode && (
+                <div className="text-center mt-3">
+                  <Link
+                    to="/forgot-password"
+                    className="text-xs text-emerald-700 hover:text-emerald-800 dark:text-[#C6FF3D] dark:hover:underline font-medium cursor-pointer"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              )}
 
 
             </div>

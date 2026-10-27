@@ -17,6 +17,17 @@ import { Stage1TestPage } from './pages/Stage1TestPage';
 import { SummaryPage } from './pages/SummaryPage';
 import { WorkoutPage } from './pages/WorkoutPage';
 import { BeginnerBasicsPage } from './pages/BeginnerBasicsPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
+
+// Sync direct pathname navigation to HashRouter when loaded without hash
+if (typeof window !== 'undefined' && !window.location.hash) {
+  if (window.location.pathname.startsWith('/reset-password')) {
+    window.location.replace(`/#/reset-password${window.location.search}`);
+  } else if (window.location.pathname.startsWith('/forgot-password')) {
+    window.location.replace(`/#/forgot-password${window.location.search}`);
+  }
+}
 
 export default function App() {
   return (
@@ -24,9 +35,11 @@ export default function App() {
       <AuthProvider>
         <HashRouter>
           <Routes>
-            {/* Public Authentication Route */}
+            {/* Public Authentication & Recovery Routes */}
             <Route path="/login" element={<AuthPage />} />
             <Route path="/register" element={<AuthPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
             {/* Test Harness Routes */}
             <Route path="/test" element={<Stage1TestPage />} />

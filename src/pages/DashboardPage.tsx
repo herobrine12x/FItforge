@@ -346,7 +346,7 @@ export function DashboardPage() {
       {/* ================= FIRST-VISIT BEGINNER BASICS BANNER ================= */}
       {!isBasicsBannerDismissed && (
         <section
-          className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#16161D] via-[#1c1c28] to-[#16161D] border border-[#C6FF3D]/30 text-[#F4F4F6] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl shadow-[#C6FF3D]/5 animate-in slide-in-from-top-3 duration-300 relative overflow-hidden"
+          className="p-4 sm:p-5 rounded-3xl bg-slate-50 border border-slate-200 dark:bg-gradient-to-r dark:from-[#16161D] dark:via-[#1c1c28] dark:to-[#16161D] dark:border-[#C6FF3D]/30 text-slate-900 dark:text-[#F4F4F6] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm dark:shadow-xl dark:shadow-[#C6FF3D]/5 animate-in slide-in-from-top-3 duration-300 relative overflow-hidden"
           role="region"
           aria-label="Beginner basics introduction"
         >
@@ -356,14 +356,14 @@ export function DashboardPage() {
             </div>
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono uppercase tracking-wider text-[#C6FF3D] font-bold">
+                <span className="text-xs font-mono uppercase tracking-wider text-emerald-600 dark:text-[#C6FF3D] font-bold">
                   New to Training?
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#24242E] text-[#A1A1AA]">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-200 dark:bg-[#24242E] text-slate-700 dark:text-[#A1A1AA]">
                   Beginner Guide
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-[#F4F4F6]">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-[#F4F4F6]">
                 Learn what sets, reps, and rest mean, how to pick your starting weights, and how to train safely.
               </p>
             </div>
@@ -964,17 +964,17 @@ export function DashboardPage() {
           role="dialog"
           aria-modal="true"
         >
-          <div className="bg-[#16161D] border border-[#24242E] rounded-3xl w-full max-w-md shadow-2xl p-6 sm:p-7 space-y-5 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-[#24242E]">
+          <div className="bg-white dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] rounded-3xl w-full max-w-md shadow-2xl p-6 sm:p-7 space-y-5 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#24242E]">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/30 flex items-center justify-center text-[#C6FF3D]">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 dark:bg-[#C6FF3D]/10 border border-emerald-500/30 dark:border-[#C6FF3D]/30 flex items-center justify-center text-emerald-700 dark:text-[#C6FF3D]">
                   <Footprints className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-heading text-lg font-bold uppercase text-[#F4F4F6]">
+                  <h3 className="font-heading text-lg font-bold uppercase text-slate-900 dark:text-[#F4F4F6]">
                     Log a Walk Session
                   </h3>
-                  <p className="text-[11px] text-[#A1A1AA]">
+                  <p className="text-[11px] text-slate-500 dark:text-[#A1A1AA]">
                     Active recovery walks count toward streaks and weekly targets!
                   </p>
                 </div>
@@ -982,7 +982,7 @@ export function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setIsLogWalkModalOpen(false)}
-                className="p-1.5 rounded-xl border border-[#24242E] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl border border-slate-200 dark:border-[#24242E] text-slate-500 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                 aria-label="Close modal"
               >
                 <X className="w-4 h-4" />
@@ -991,7 +991,7 @@ export function DashboardPage() {
 
             <form onSubmit={handleSaveWalk} className="space-y-4">
               <div>
-                <label htmlFor="walk-duration" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                <label htmlFor="walk-duration" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                   Walk Duration (Minutes)
                 </label>
                 <input
@@ -1002,15 +1002,15 @@ export function DashboardPage() {
                   required
                   value={walkDuration}
                   onChange={(e) => setWalkDuration(Math.max(1, Number(e.target.value)))}
-                  className="w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] focus:border-[#C6FF3D] text-sm text-[#F4F4F6] font-mono outline-none"
+                  className="w-full px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] focus:border-slate-500 dark:focus:border-[#C6FF3D] text-sm text-slate-900 dark:text-[#F4F4F6] font-mono outline-none"
                 />
-                <span className="text-[11px] text-[#A1A1AA] mt-1 block">
+                <span className="text-[11px] text-slate-500 dark:text-[#A1A1AA] mt-1 block">
                   Estimated burn: ~{Math.max(1, Math.round(3.8 * (currentProfile?.weightKg || 70) * (walkDuration / 60)))} kcal
                 </span>
               </div>
 
               <div>
-                <label htmlFor="walk-notes" className="block text-xs font-semibold text-[#F4F4F6] mb-1.5">
+                <label htmlFor="walk-notes" className="block text-xs font-semibold text-slate-700 dark:text-[#F4F4F6] mb-1.5">
                   Activity Notes (Optional)
                 </label>
                 <input
@@ -1019,21 +1019,21 @@ export function DashboardPage() {
                   value={walkNotes}
                   onChange={(e) => setWalkNotes(e.target.value)}
                   placeholder="e.g. Brisk outdoor park stroll"
-                  className="w-full px-4 py-2.5 rounded-2xl bg-[#0B0B0F] border border-[#24242E] focus:border-[#C6FF3D] text-sm text-[#F4F4F6] outline-none"
+                  className="w-full px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] focus:border-slate-500 dark:focus:border-[#C6FF3D] text-sm text-slate-900 dark:text-[#F4F4F6] outline-none"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#24242E] flex items-center justify-end gap-2.5">
+              <div className="pt-3 border-t border-slate-200 dark:border-[#24242E] flex items-center justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setIsLogWalkModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl border border-[#24242E] hover:bg-[#24242E] text-xs font-semibold text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-[#24242E] bg-slate-100 hover:bg-slate-200 dark:bg-transparent dark:hover:bg-[#24242E] text-xs font-semibold text-slate-700 dark:text-[#A1A1AA] hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#C6FF3D] hover:bg-[#d5ff6a] text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-md shadow-[#C6FF3D]/20 cursor-pointer"
+                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#cbd5e1] hover:bg-[#94a3b8] text-slate-900 border border-slate-300 dark:border-transparent dark:bg-[#C6FF3D] dark:hover:bg-[#d5ff6a] dark:text-[#0B0B0F] font-heading font-black uppercase tracking-wider text-xs transition-all shadow-sm dark:shadow-md dark:shadow-[#C6FF3D]/20 cursor-pointer"
                 >
                   <Footprints className="w-4 h-4" />
                   <span>Save Walk Record</span>

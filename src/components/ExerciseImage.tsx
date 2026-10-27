@@ -38,13 +38,13 @@ export const ExerciseImage: React.FC<ExerciseImageProps> = ({
 
   return (
     <div
-      className={`relative overflow-hidden bg-[#16161D] flex items-center justify-center shrink-0 ${aspectClass} ${className}`}
+      className={`relative overflow-hidden bg-slate-100 dark:bg-[#16161D] flex items-center justify-center shrink-0 ${aspectClass} ${className}`}
     >
       {hasError ? (
-        <div className="w-full h-full bg-[#16161D] border border-[#24242E] flex flex-col items-center justify-center p-2 text-center select-none">
-          <Dumbbell className="w-6 h-6 text-[#C6FF3D] shrink-0" />
+        <div className="w-full h-full bg-slate-50 dark:bg-[#16161D] border border-slate-200 dark:border-[#24242E] flex flex-col items-center justify-center p-2 text-center select-none">
+          <Dumbbell className="w-6 h-6 text-slate-700 dark:text-[#C6FF3D] shrink-0" />
           {targetMuscle && (
-            <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-[#0B0B0F] border border-[#24242E] text-[#A1A1AA] mt-1.5 truncate max-w-[90%]">
+            <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-slate-200 dark:bg-[#0B0B0F] border border-slate-300 dark:border-[#24242E] text-slate-700 dark:text-[#A1A1AA] mt-1.5 truncate max-w-[90%]">
               {targetMuscle}
             </span>
           )}

@@ -171,7 +171,7 @@ export function OnboardingPage() {
                   >
                     {item.label}
                   </span>
-                  {isCompleted && <CheckCircle2 className="w-3.5 h-3.5 text-[#C6FF3D]" />}
+                  {isCompleted && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-[#C6FF3D]" />}
                 </div>
               </div>
             );
@@ -187,7 +187,7 @@ export function OnboardingPage() {
           {step === 1 && (
             <div className="space-y-6">
               <div>
-                <h2 className="font-heading text-3xl font-bold tracking-tight text-[#F4F4F6] uppercase">
+                <h2 className="font-heading text-3xl font-bold tracking-tight text-slate-900 dark:text-[#F4F4F6] uppercase">
                   Biometrics & Physiological Profile
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A1A1AA] mt-1">
@@ -213,8 +213,8 @@ export function OnboardingPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Alex Morgan"
-                    className={`w-full px-4 py-3 bg-[#0B0B0F] border rounded-2xl text-sm text-[#F4F4F6] focus:outline-none transition-colors ${
-                      errors.name ? 'border-rose-500' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                    className={`w-full px-4 py-3 bg-slate-50 dark:bg-[#0B0B0F] border rounded-2xl text-sm text-slate-900 dark:text-[#F4F4F6] focus:outline-none transition-colors ${
+                      errors.name ? 'border-rose-500' : 'border-slate-300 dark:border-[#24242E] focus:border-slate-500 dark:focus:border-[#C6FF3D]'
                     }`}
                   />
                   {errors.name && (
@@ -239,7 +239,7 @@ export function OnboardingPage() {
                         className={`py-2.5 px-3 rounded-2xl text-xs font-semibold border transition-all cursor-pointer ${
                           gender === g
                             ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D]'
-                            : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E] hover:text-[#F4F4F6]'
+                            : 'bg-slate-50 dark:bg-[#0B0B0F] text-slate-700 dark:text-[#A1A1AA] border-slate-200 dark:border-[#24242E] hover:text-slate-900 dark:hover:text-[#F4F4F6]'
                         }`}
                       >
                         {g}
@@ -259,8 +259,8 @@ export function OnboardingPage() {
                     max={100}
                     value={age || ''}
                     onChange={(e) => setAge(parseInt(e.target.value, 10))}
-                    className={`w-full px-4 py-3 bg-[#0B0B0F] border rounded-2xl text-sm text-[#F4F4F6] focus:outline-none transition-colors ${
-                      errors.age ? 'border-rose-500' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                    className={`w-full px-4 py-3 bg-slate-50 dark:bg-[#0B0B0F] border rounded-2xl text-sm text-slate-900 dark:text-[#F4F4F6] focus:outline-none transition-colors ${
+                      errors.age ? 'border-rose-500' : 'border-slate-300 dark:border-[#24242E] focus:border-slate-500 dark:focus:border-[#C6FF3D]'
                     }`}
                   />
                   {errors.age && (
@@ -282,8 +282,8 @@ export function OnboardingPage() {
                     max={250}
                     value={heightCm || ''}
                     onChange={(e) => setHeightCm(parseFloat(e.target.value))}
-                    className={`w-full px-4 py-3 bg-[#0B0B0F] border rounded-2xl text-sm text-[#F4F4F6] focus:outline-none transition-colors ${
-                      errors.heightCm ? 'border-rose-500' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                    className={`w-full px-4 py-3 bg-slate-50 dark:bg-[#0B0B0F] border rounded-2xl text-sm text-slate-900 dark:text-[#F4F4F6] focus:outline-none transition-colors ${
+                      errors.heightCm ? 'border-rose-500' : 'border-slate-300 dark:border-[#24242E] focus:border-slate-500 dark:focus:border-[#C6FF3D]'
                     }`}
                   />
                   {errors.heightCm && (
@@ -305,8 +305,8 @@ export function OnboardingPage() {
                     max={300}
                     value={weightKg || ''}
                     onChange={(e) => setWeightKg(parseFloat(e.target.value))}
-                    className={`w-full px-4 py-3 bg-[#0B0B0F] border rounded-2xl text-sm text-[#F4F4F6] focus:outline-none transition-colors ${
-                      errors.weightKg ? 'border-rose-500' : 'border-[#24242E] focus:border-[#C6FF3D]'
+                    className={`w-full px-4 py-3 bg-slate-50 dark:bg-[#0B0B0F] border rounded-2xl text-sm text-slate-900 dark:text-[#F4F4F6] focus:outline-none transition-colors ${
+                      errors.weightKg ? 'border-rose-500' : 'border-slate-300 dark:border-[#24242E] focus:border-slate-500 dark:focus:border-[#C6FF3D]'
                     }`}
                   />
                   {errors.weightKg && (
@@ -320,18 +320,18 @@ export function OnboardingPage() {
 
               {/* Real-time Dynamic BMI Banner */}
               {bmiCalculation && (
-                <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#24242E] flex items-center justify-center text-[#C6FF3D]">
+                    <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-[#24242E] flex items-center justify-center text-emerald-600 dark:text-[#C6FF3D]">
                       <Scale className="w-5 h-5" />
                     </div>
                     <div>
                       <div className="text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-[#A1A1AA]">
                         Estimated Body Mass Index (BMI)
                       </div>
-                      <div className="text-xl font-heading font-black text-[#F4F4F6]">
+                      <div className="text-xl font-heading font-black text-slate-900 dark:text-[#F4F4F6]">
                         {bmiCalculation.score}{' '}
-                        <span className="text-xs font-sans font-medium text-[#C6FF3D] ml-2">
+                        <span className="text-xs font-sans font-medium text-emerald-600 dark:text-[#C6FF3D] ml-2">
                           {bmiCalculation.category}
                         </span>
                       </div>
@@ -349,7 +349,7 @@ export function OnboardingPage() {
           {step === 2 && (
             <div className="space-y-6">
               <div>
-                <h2 className="font-heading text-3xl font-bold tracking-tight text-[#F4F4F6] uppercase">
+                <h2 className="font-heading text-3xl font-bold tracking-tight text-slate-900 dark:text-[#F4F4F6] uppercase">
                   Select Training Experience
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A1A1AA] mt-1">
@@ -391,20 +391,20 @@ export function OnboardingPage() {
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-heading text-2xl font-bold uppercase tracking-wide text-[#F4F4F6]">
+                          <span className="font-heading text-2xl font-bold uppercase tracking-wide text-slate-900 dark:text-[#F4F4F6]">
                             {tier.level}
                           </span>
                           <span
                             className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-md ${
                               isSelected
                                 ? 'bg-[#C6FF3D] text-[#0B0B0F] font-bold'
-                                : 'bg-[#24242E] text-[#A1A1AA]'
+                                : 'bg-slate-200 dark:bg-[#24242E] text-slate-700 dark:text-[#A1A1AA]'
                             }`}
                           >
                             {tier.tag}
                           </span>
                         </div>
-                        <div className="text-xs font-mono font-semibold text-[#C6FF3D]">
+                        <div className="text-xs font-mono font-semibold text-emerald-700 dark:text-[#C6FF3D]">
                           {tier.setsDesc}
                         </div>
                         <p className="text-xs text-slate-600 dark:text-[#A1A1AA] max-w-xl leading-relaxed">
@@ -416,7 +416,7 @@ export function OnboardingPage() {
                         className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 self-start sm:self-center ${
                           isSelected
                             ? 'border-[#C6FF3D] bg-[#C6FF3D] text-[#0B0B0F]'
-                            : 'border-[#383847] bg-[#16161D]'
+                            : 'border-slate-300 dark:border-[#383847] bg-white dark:bg-[#16161D]'
                         }`}
                       >
                         {isSelected && <CheckCircle2 className="w-4 h-4 stroke-[3]" />}
@@ -432,7 +432,7 @@ export function OnboardingPage() {
           {step === 3 && (
             <div className="space-y-6">
               <div>
-                <h2 className="font-heading text-3xl font-bold tracking-tight text-[#F4F4F6] uppercase">
+                <h2 className="font-heading text-3xl font-bold tracking-tight text-slate-900 dark:text-[#F4F4F6] uppercase">
                   Commit to Your Weekly Target
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A1A1AA] mt-1">
@@ -454,7 +454,7 @@ export function OnboardingPage() {
                       className={`py-4 rounded-2xl border text-center transition-all cursor-pointer ${
                         weeklyGoal === days
                           ? 'bg-[#C6FF3D] text-[#0B0B0F] border-[#C6FF3D] shadow-md shadow-[#C6FF3D]/20 font-black'
-                          : 'bg-[#0B0B0F] text-[#A1A1AA] border-[#24242E] hover:border-[#383847] hover:text-[#F4F4F6]'
+                          : 'bg-slate-50 dark:bg-[#0B0B0F] text-slate-700 dark:text-[#A1A1AA] border-slate-200 dark:border-[#24242E] hover:border-slate-300 dark:hover:border-[#383847] hover:text-slate-900 dark:hover:text-[#F4F4F6]'
                       }`}
                     >
                       <div className="font-heading text-3xl">{days}</div>
@@ -494,26 +494,26 @@ export function OnboardingPage() {
               </div>
 
               {/* Summary Card */}
-              <div className="p-4 rounded-2xl bg-[#0B0B0F] border border-[#24242E] space-y-2">
-                <div className="text-xs font-mono uppercase text-[#A1A1AA] tracking-wider">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0B0B0F] border border-slate-200 dark:border-[#24242E] space-y-2">
+                <div className="text-xs font-mono uppercase text-slate-500 dark:text-[#A1A1AA] tracking-wider">
                   Athlete Profile Summary
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-1">
                   <div>
                     <span className="text-[#A1A1AA] block text-[10px]">Name:</span>
-                    <span className="font-semibold text-[#F4F4F6]">{name}</span>
+                    <span className="font-semibold text-slate-900 dark:text-[#F4F4F6]">{name}</span>
                   </div>
                   <div>
                     <span className="text-[#A1A1AA] block text-[10px]">Tier:</span>
-                    <span className="font-semibold text-[#C6FF3D]">{experienceLevel}</span>
+                    <span className="font-semibold text-emerald-700 dark:text-[#C6FF3D]">{experienceLevel}</span>
                   </div>
                   <div>
                     <span className="text-[#A1A1AA] block text-[10px]">Weekly Commitment:</span>
-                    <span className="font-semibold text-[#F4F4F6]">{weeklyGoal} Days / Week</span>
+                    <span className="font-semibold text-slate-900 dark:text-[#F4F4F6]">{weeklyGoal} Days / Week</span>
                   </div>
                   <div>
                     <span className="text-[#A1A1AA] block text-[10px]">BMI Index:</span>
-                    <span className="font-semibold text-[#C6FF3D]">
+                    <span className="font-semibold text-emerald-700 dark:text-[#C6FF3D]">
                       {bmiCalculation ? `${bmiCalculation.score} (${bmiCalculation.category})` : '—'}
                     </span>
                   </div>
@@ -523,12 +523,12 @@ export function OnboardingPage() {
           )}
 
           {/* ================= STEP ACTION BUTTONS ================= */}
-          <div className="mt-8 pt-6 border-t border-[#24242E] flex items-center justify-between gap-4">
+          <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#24242E] flex items-center justify-between gap-4">
             {step > 1 ? (
               <button
                 type="button"
                 onClick={handlePrevStep}
-                className="py-3 px-5 rounded-2xl border border-[#24242E] hover:border-[#383847] text-[#A1A1AA] hover:text-[#F4F4F6] text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors"
+                className="py-3 px-5 rounded-2xl border border-slate-300 dark:border-[#24242E] hover:border-slate-400 dark:hover:border-[#383847] text-slate-600 hover:text-slate-900 dark:text-[#A1A1AA] dark:hover:text-[#F4F4F6] text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back</span>

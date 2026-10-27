@@ -5,7 +5,7 @@
  * can be verified in client-side preview environments without setup friction.
  */
 
-const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) || '';
+const BASE_URL = 'http://127.0.0.1:5000';
 
 export interface PasswordResetResponse {
   success: boolean;
